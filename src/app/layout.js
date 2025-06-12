@@ -97,7 +97,7 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body className={inter.className}>
+      <body suppressHydrationWarning={true} className={inter.className}>
         {children}
       </body>
     </html>

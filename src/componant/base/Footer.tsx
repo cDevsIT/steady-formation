@@ -109,30 +109,36 @@ export default function Footer() {
 
                 {/* Bottom Section */}
                 <div className="border-t border-gray-200 mt-8 pt-8">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <div className="text-sm text-gray-500">
-                            © {currentYear} All Right Reserved by Steady Formation
-                        </div>
+                    <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-4">
 
-                        <div className="flex items-center gap-6">
-                            <div className="text-sm text-gray-600">We Accept</div>
+                        {/* Left: Copyright */}
+                        <span className="text-sm text-gray-500 whitespace-nowrap w-full md:w-auto">
+                            © {currentYear} All Rights Reserved by Steady Formation
+                        </span>
+
+                        {/* Middle: Payments */}
+                        <div className="flex items-center gap-2 flex-nowrap w-full md:w-auto">
+                            <span className="text-sm text-gray-600 whitespace-nowrap">We Accept</span>
                             <div className="flex items-center gap-2">
-                                <Image className='h-6' url='/icons/master_card.svg' alt='MasterCard' />
-                                <Image className='h-6' url='/icons/paypal.svg' alt='MasterCard' />
-                                <Image className='h-6' url='/icons/visa.svg' alt='MasterCard' />
+                                <Image className="h-6 w-full" url="/icons/master_card.svg" alt="MasterCard" />
+                                <Image className="h-6 w-full" url="/icons/paypal.svg" alt="PayPal" />
+                                <Image className="h-6 w-full" url="/icons/visa.svg" alt="Visa" />
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 text-sm">
-                            <Link href="/privacy" className="text-gray-600 hover:text-purple-600 transition-colors">
+                        {/* Right: Links */}
+                        <div className="flex items-center gap-4 text-sm w-full md:w-auto justify-center md:justify-end">
+                            <Link href="/privacy" className="text-gray-600 hover:text-purple-600 transition-colors whitespace-nowrap">
                                 Privacy Policy
                             </Link>
-                            <Link href="/terms" className="text-gray-600 hover:text-purple-600 transition-colors">
+                            <Link href="/terms" className="text-gray-600 hover:text-purple-600 transition-colors whitespace-nowrap">
                                 Terms of Use
                             </Link>
                         </div>
+
                     </div>
                 </div>
+
             </div>
         </footer>
     );
