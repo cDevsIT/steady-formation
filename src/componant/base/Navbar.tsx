@@ -4,7 +4,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from '../ui/Image';
 
-export default function Navbar() {
+interface NavbarProps {
+}
+
+
+const Navbar: React.FC<NavbarProps> = ({
+}) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navItems = [
@@ -17,8 +22,8 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className=" border-b border-purple-100 sticky top-0 z-50 backdrop-blur-lg">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav className={`border-b border-purple-100 bg-transparent sticky top-0 z-50 backdrop-blur-lg`}>
+            <div className="max-w-[1512px] mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
                     <div className="flex items-center">
@@ -29,7 +34,7 @@ export default function Navbar() {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:block">
-                        <div className="ml-10 flex items-baseline space-x-8">
+                        <div className="ml-10 flex items-baseline">
                             {navItems.map((item) => (
                                 <Link
                                     key={item.name}
@@ -97,3 +102,5 @@ export default function Navbar() {
         </nav>
     );
 }
+
+export default Navbar;

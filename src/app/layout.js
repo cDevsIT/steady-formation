@@ -1,5 +1,7 @@
+import Navbar from '@/componant/base/Navbar';
 import './globals.css';
 import { Inter } from 'next/font/google';
+import Footer from '@/componant/base/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -97,8 +99,13 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body suppressHydrationWarning={true} className={inter.className}>
-        {children}
+      <body  className={inter.className}>
+        <main>
+          <Navbar />
+          <div className='mt-[-65px]'>{children}</div>
+          <Footer />
+        </main>
+        
       </body>
     </html>
   );

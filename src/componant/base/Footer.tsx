@@ -22,10 +22,10 @@ export default function Footer() {
 
     return (
         <footer className="bg-gray-50 border-t border-gray-200">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="max-w-[1512px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                     {/* Company Info */}
-                    <div className="space-y-4">
+                    <div className="space-y-4 lg:col-span-2">
                         <div className="flex items-center space-x-2">
                             <Image className='w-[150px]' url='/steady_formation_logo.svg' alt='Steady Formation Logo' />
                         </div>
@@ -39,10 +39,10 @@ export default function Footer() {
                                     <Link
                                         key={social.name}
                                         href={social.href}
-                                        className="w-8 h-8 bg-gray-200 hover:bg-purple-600 rounded-full flex items-center justify-center transition-colors duration-200 group"
+                                        className="bg-gray-200 hover:bg-purple-600 rounded-full flex items-center justify-center transition-colors duration-200 group"
                                         aria-label={social.name}
                                     >
-                                        <Image className='h-4 w-4' url={Icon} alt={social.name} />
+                                        <Image className='h-8 w-8' url={Icon} alt={social.name} />
                                     </Link>
                                 );
                             })}
@@ -50,7 +50,7 @@ export default function Footer() {
                     </div>
 
                     {/* Links */}
-                    <div className="space-y-4">
+                    <div className="space-y-4 lg:col-span-1">
                         <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">LINKS</h3>
                         <ul className="space-y-3">
                             {links.map((link) => (
@@ -67,7 +67,7 @@ export default function Footer() {
                     </div>
 
                     {/* Info */}
-                    <div className="space-y-4">
+                    <div className="space-y-4 lg:col-span-1">
                         <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">INFO</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
@@ -89,7 +89,7 @@ export default function Footer() {
                     </div>
 
                     {/* Newsletter */}
-                    <div className="space-y-4">
+                    <div className="space-y-4 lg:col-span-1">
                         <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">NEWSLETTER</h3>
                         <p className="text-sm text-gray-600">
                             Sign up to get updates & news.
