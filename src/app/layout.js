@@ -28,7 +28,7 @@ export const metadata = {
     siteName: 'Steady Formation',
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/steady_formation_logo.svg',
         width: 1200,
         height: 630,
         alt: 'Steady Formation - Business Formation Services',
@@ -41,7 +41,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Steady Formation - Launch Your Business in Any State at 0 Cost',
     description: 'Launch your business in any U.S. state with zero upfront costs. Professional business formation services for U.S. residents.',
-    images: ['/og-image.jpg'],
+    images: ['/steady_formation_logo.svg'],
     creator: '@steadyformation',
   },
   robots: {
@@ -80,7 +80,7 @@ export default function RootLayout({ children }) {
               "@type": "Organization",
               "name": "Steady Formation",
               "url": "https://steadyformation.com",
-              "logo": "https://steadyformation.com/logo.png",
+              "logo": "https://steadyformation.com/steady_formation_logo.png",
               "description": "Professional business formation services for U.S. residents with zero upfront costs.",
               "address": {
                 "@type": "PostalAddress",
