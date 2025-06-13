@@ -16,7 +16,7 @@ const Navbar: React.FC<NavbarProps> = ({
         { name: 'Home', href: '/' },
         { name: 'About Us', href: '/about' },
         { name: 'Success Stories', href: '/success-stories' },
-        { name: 'Contact US', href: '/contact' },
+        { name: 'Contact US', href: '/contact-us' },
         { name: 'Blog', href: '/blog' },
         { name: 'Affiliate', href: '/affiliate' },
     ];
@@ -28,7 +28,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     {/* Logo */}
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center space-x-2">
-                            <Image className='h-8 w-full' url='/steady_formation_logo.png' alt='Steady Formation Logo'/>
+                            <Image className='h-8 w-full' url='/steady_formation_logo.png' alt='Steady Formation Logo' />
                         </Link>
                     </div>
 
@@ -66,9 +66,9 @@ const Navbar: React.FC<NavbarProps> = ({
                         >
                             <span className="sr-only">Open main menu</span>
                             {isMenuOpen ? (
-                                <Image className='block h-6 w-6' url='/icons/close.svg' alt='Close Menu'/>
+                                <Image className='block h-6 w-6' url='/icons/close.svg' alt='Close Menu' />
                             ) : (
-                                <Image className='block h-6 w-6' url='/icons/menu.svg' alt='Open Menu'/>
+                                <Image className='block h-6 w-6' url='/icons/menu.svg' alt='Open Menu' />
                             )}
                         </button>
                     </div>
