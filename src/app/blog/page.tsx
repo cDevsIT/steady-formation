@@ -1,3 +1,6 @@
+"use client";
+import React from 'react';
+
 // Data for small cards
 const smallCards = [
   {
@@ -94,6 +97,26 @@ const businessIdeas = [
   },
 ];
 
+// Data for all main blog cards (featured + small cards)
+const mainBlogCards = [
+  {
+    img: '/blog/Steady-formations-blog-image-1.png',
+    alt: 'Blog 1',
+    title: 'Wise Spending Habits, 13 Tips for Maximizing Your Money.',
+    date: '18 Jul 2023',
+    comments: 'Comments',
+  },
+  ...smallCards,
+];
+
+type BlogCard = {
+  img: string;
+  alt: string;
+  title: string;
+  date: string;
+  comments: string;
+};
+
 export default function BlogPage() {
 
   return (
@@ -102,9 +125,9 @@ export default function BlogPage() {
       {/* Banner Section */}
       <div className="w-full bg-[#F4F3FF] pt-[65px]">
         <div className="w-full max-w-[360px] md:max-w-[1280px] mx-auto py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-[14px] md:text-[16px] font-semibold text-[#7856FC] mb-[16px] font-inter leading-[20px] md:leading-[24px] text-center">Blog</p>
-          <h1 className="text-[36px] md:text-[48px] font-semibold mb-4 font-inter leading-[44px] md:leading-[60px] tracking-[-0.02em] text-center">
-            Resources and insights
+          <p className="text-[16px] md:text-[16px] font-semibold text-[#7856FC] mb-[16px] font-inter leading-[20px] md:leading-[24px] text-center">Blog</p>
+          <h1 className="text-[30px] md:text-[48px] font-semibold mb-4 font-inter leading-[38px] md:leading-[60px] tracking-[-0.02em] text-center">
+            Resources and Insights
           </h1>
           <p className="text-[16px] md:text-[20px] text-[#475467] font-normal font-inter leading-[24px] md:leading-[30px] text-center">
             The latest industry news, interviews, technologies, and resources.
@@ -113,7 +136,8 @@ export default function BlogPage() {
       </div>
 
       {/* Blog Cards Section - New Design */}
-      <section className="w-full max-w-[1280px] mx-auto mt-24 mb-[80px] grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Desktop/Tablet Only */}
+      <section className="w-full max-w-[1280px] mx-auto mt-24 mb-[80px] grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 hidden md:grid">
         {/* Featured Post (Left) */}
         <div className="bg-white rounded-xl p-0 flex flex-col">
           <img
@@ -134,10 +158,9 @@ export default function BlogPage() {
           <h2 className="px-6 mb-6 font-cabinet font-bold text-[28px] leading-[42px] tracking-[-0.5px]">Wise Spending Habits, 13 Tips for Maximizing Your Money.</h2>
           <div className="px-6 pb-6">
             <button
-              className="bg-white px-6 py-2 rounded-full cursor-pointer font-inter font-bold text-[16px] leading-[1.7] text-[#081717] border-[1.5px]"
-              style={{ borderColor: 'rgba(8,23,23,0.2)' }}
+              className="w-full md:w-auto bg-white text-[#6C3EF5] font-medium rounded-md px-6 py-3 mb-10 shadow hover:bg-[#f3f0ff] transition"
             >
-              Learn More
+              Book A Free Call
             </button>
           </div>
         </div>
@@ -173,9 +196,14 @@ export default function BlogPage() {
         </div>
       </section>
 
+      {/* Mobile Only Slider */}
+      <section className="block md:hidden w-full max-w-[390px] mx-auto mt-8 mb-12 px-4">
+        <MobileBlogSlider cards={mainBlogCards} />
+      </section>
+
       {/* Latest Blogs Section */}
-      <section className="w-full max-w-[1280px] mx-auto mb-[96px]">
-        <h2 className="text-[28px] font-bold mb-6 ml-2">Latest Blogs</h2>
+      <section className="w-full max-w-[1280px] mx-auto mb-[96px] px-4 md:px-0">
+        <h2 className="text-[30px] font-bold mb-6 ml-2">Latest Blogs</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {latestBlogs.map((card) => (
             <div key={card.alt} className="bg-white rounded-xl p-4">
@@ -203,7 +231,9 @@ export default function BlogPage() {
       </section>
 
       {/* Business Ideas and Tips Section */}
-      <section className="w-full max-w-[1280px] mx-auto mb-[60px]">
+
+      {/* Desktop/Tablet Only */}
+      <section className="w-full max-w-[1280px] mx-auto mb-[60px] px-4 md:px-0 hidden md:block">
         <h2 className="text-[28px] font-bold mb-6 ml-2">Business Ideas and Tips</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
           {businessIdeas.map((card, idx) => (
@@ -235,36 +265,79 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Pagination Section */}
-      <div className="w-full flex justify-center mb-[96px]">
-        <nav className="inline-flex items-center gap-1 rounded-md border border-[#EFF1F5] bg-white px-2 py-1">
-          <button className="flex items-center cursor-pointer gap-1 px-3 py-2 text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition">
-            <span className="text-lg mr-2">&#8592;</span> Previous
-          </button>
-          {[1, 2, 3, '...', 8, 9, 10].map((item, idx) => (
-            <button
-              key={`${item}-${idx}`}
-              className={`px-3 py-2 font-medium rounded-md ${item === 1 ? 'bg-[#F9FAFB] text-[#344054]' : 'text-[#475467] hover:bg-[#F9FAFB]'} transition`}
-              disabled={item === '...'}
-            >
-              {item}
-            </button>
+      {/* Mobile Only: Business Ideas and Tips as Cards */}
+      <section className="block md:hidden w-full max-w-[390px] mx-auto mb-[60px] px-4">
+        <h2 className="text-[28px] font-bold mb-6 ml-2">Business Ideas and Tips</h2>
+        <div className="grid grid-cols-1 gap-8">
+          {businessIdeas.map((card, idx) => (
+            <div key={card.alt + idx} className="bg-white rounded-xl p-4">
+              <img
+                src={card.img}
+                alt={card.alt}
+                className="w-full h-[220px] object-cover rounded-xl mb-4"
+              />
+              <div className="flex items-center gap-6 mb-2">
+                <span className="font-inter font-medium text-[16px] leading-6 text-[#475467] flex items-center gap-3">
+                  <img src="/blog/date-icon.svg" alt="Date" className="w-5 h-5" />
+                  {card.date}
+                </span>
+                <span className="font-inter font-medium text-[16px] leading-6 text-[#475467] flex items-center gap-3">
+                  <img src="/blog/comment-icon.svg" alt="Comments" className="w-5 h-5" />
+                  {card.comments}
+                </span>
+              </div>
+              <h3 className="font-inter font-bold text-[20px] leading-[30px] text-[#081717] mt-2">
+                {card.title}
+              </h3>
+            </div>
           ))}
-          <button className="flex items-center cursor-pointer gap-1 px-3 py-2 text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition">
-            Next <span className="text-lg ml-2">&#8594;</span>
+        </div>
+      </section>
+
+      {/* Pagination Section */}
+      <div className="w-full flex justify-center mb-[96px] px-4 md:px-0">
+        <nav className="inline-flex items-center gap-1 rounded-md border border-[#EFF1F5] bg-white px-2 py-1 md:px-2 md:py-1">
+          <button className="flex items-center cursor-pointer gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition">
+            <span className="text-lg mr-2 md:text-lg md:mr-2">&#8592;</span> Previous
+          </button>
+          {/* Mobile: short pagination, Desktop: full pagination */}
+          <span className="flex md:hidden">
+            {[1, 2, '...'].map((item, idx) => (
+              <button
+                key={`mobile-${item}-${idx}`}
+                className={`px-3 py-2 text-sm font-medium rounded-md ${item === 1 ? 'bg-[#F9FAFB] text-[#344054]' : 'text-[#475467] hover:bg-[#F9FAFB]'} transition`}
+                disabled={item === '...'}
+              >
+                {item}
+              </button>
+            ))}
+          </span>
+          <span className="hidden md:flex">
+            {[1, 2, 3, '...', 8, 9, 10].map((item, idx) => (
+              <button
+                key={`desktop-${item}-${idx}`}
+                className={`px-2 py-1 text-[16px] font-medium rounded-md ${item === 1 ? 'bg-[#F9FAFB] text-[#344054]' : 'text-[#475467] hover:bg-[#F9FAFB]'} transition`}
+                disabled={item === '...'}
+              >
+                {item}
+              </button>
+            ))}
+          </span>
+          <button className="flex items-center cursor-pointer gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition">
+            Next <span className="text-lg ml-2 md:text-lg md:ml-2">&#8594;</span>
           </button>
         </nav>
       </div>
 
-      <section className="w-full max-w-[1280px] mx-auto mt-[96px]">
-        <div className="flex" style={{ gap: '21px' }}>
+      <section className="w-full max-w-[1280px] mx-auto mt-[96px] px-4 md:px-0">
+        <div className="flex flex-col md:flex-row gap-[21px]">
           {/* Left Column */}
-          <div style={{ width: '66%' }}>
-            <div className="bg-[#6C3EF5] rounded-2xl px-10 py-16 h-full flex flex-col justify-between text-white relative overflow-hidden">
-              <div style={{ width: '80%' }} className="mb-9">
-                <h2 className="font-inter font-bold text-[36px] leading-[44px] tracking-[-0.02em] mb-6">Get expert advice and a custom strategy session worth $799 at no cost.</h2>
-                <button className="bg-white text-[#6C3EF5] font-medium rounded-md px-6 py-3 mb-10 shadow hover:bg-[#f3f0ff] transition">Book A Free Call</button>
-                <p className="font-inter font-bold text-[24px] leading-[32px] mb-8">“Our sales growth has increased by 150% in last month after usign Dopler.”</p>
+          <div className="w-full md:w-[66%]">
+            <div className="bg-[#6C3EF5] rounded-2xl px-8 md:px-10 py-10 md:py-16 h-full flex flex-col justify-between text-white relative overflow-hidden">
+              <div className="w-full md:w-[80%] mb-9">
+                <h2 className="font-inter font-bold text-[36px] leading-[44px] tracking-[-0.02em] mb-9">Get expert advice and a custom strategy session worth $799 at no cost.</h2>
+                <button className="w-full md:w-auto bg-white text-[#6C3EF5] font-medium rounded-md px-6 py-3 mb-10 shadow hover:bg-[#f3f0ff] transition">Book A Free Call</button>
+                <p className="font-inter font-bold text-[24px] leading-[32px] mb-5 md:mb-6">“Our sales growth has increased by 150% in last month after usign Dopler.”</p>
               </div>
               <div className="flex items-center gap-4">
                 <img src="/blog/steady-formation-employee.png" alt="Andrew Pearson" className="w-12 h-12 rounded-full object-cover border-2 border-white" />
@@ -277,10 +350,10 @@ export default function BlogPage() {
             </div>
           </div>
           {/* Right Column */}
-          <div style={{ width: '32%' }}>
+          <div className="w-full md:w-[32%] mt-6 md:mt-0">
             <div className="bg-[#F9FAFB] rounded-2xl p-8 h-full flex flex-col shadow">
-              <h3 className="font-inter font-bold text-[30px] leading-[38px] text-black mb-3">Join our Steady Formation community!</h3>
-              <p className="font-inter font-normal text-[14px] leading-[20px] text-[#42526B] mb-32">Get early access to new features, software tips, and the latest trends in development — straight to your inbox.</p>
+              <h3 className="font-inter font-bold text-[30px] leading-[38px] mb-[30px]">Join our Steady Formation community!</h3>
+              <p className="font-inter font-normal text-[14px] leading-[20px] mb-[45px] text-[#42526B]">Get early access to new features, software tips, and the latest trends in development — straight to your inbox.</p>
               <form className="flex flex-col gap-4">
                 <input type="text" placeholder="Your Name" className="bg-white rounded-md px-4 py-3 text-[16px] focus:outline-none focus:border-[#6C3EF5] border-[1.46px] border-[#E4E7EC]" />
                 <input type="email" placeholder="Email" className="bg-white rounded-md px-4 py-3 text-[16px] focus:outline-none focus:border-[#6C3EF5] border-[1.46px] border-[#E4E7EC]" />
@@ -291,5 +364,47 @@ export default function BlogPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+function MobileBlogSlider({ cards }: { cards: BlogCard[] }) {
+  const [current, setCurrent] = React.useState(0);
+  const goTo = (idx: number) => setCurrent(idx);
+
+  return (
+    <div className="w-full">
+      <img
+        src={cards[current].img}
+        alt={cards[current].alt}
+        className="w-full h-[220px] object-cover rounded-xl mb-4"
+      />
+      <div className="flex items-center gap-6 mb-2">
+        <span className="font-inter font-medium text-[16px] leading-6 text-[#475467] flex items-center gap-3">
+          <img src="/blog/date-icon.svg" alt="Date" className="w-5 h-5" />
+          {cards[current].date}
+        </span>
+        <span className="font-inter font-medium text-[16px] leading-6 text-[#475467] flex items-center gap-3">
+          <img src="/blog/comment-icon.svg" alt="Comments" className="w-5 h-5" />
+          {cards[current].comments}
+        </span>
+      </div>
+      <h3 className="font-inter font-bold text-[20px] leading-[30px] text-[#081717] mt-2 mb-6">
+        {cards[current].title}
+      </h3>
+      <button className="w-full border border-[#E4E7EC] rounded-full py-3 font-inter font-semibold text-[16px] leading-[24px] text-[#081717] mb-6">
+        Learn More
+      </button>
+      <div className="flex justify-center gap-2">
+        {cards.map((_, idx: number) => (
+          <button
+            key={idx}
+            className={`w-2 h-2 rounded-full ${idx === current ? 'bg-[#6C3EF5]' : 'bg-[#E4E7EC]'} transition`}
+            style={{ outline: 'none', border: 'none' }}
+            onClick={() => goTo(idx)}
+            aria-label={`Go to slide ${idx + 1}`}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
