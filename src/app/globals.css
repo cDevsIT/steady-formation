@@ -45,21 +45,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Focus states for accessibility */
-.focus-visible:focus {
-  outline: 2px solid #4f46e5;
-  outline-offset: 2px;
-}
-
-/* Hover effects */
-.hover-lift {
-  transition: transform 0.2s ease-in-out;
-}
-
-.hover-lift:hover {
-  transform: translateY(-2px);
-}
-
 /* Form styling improvements */
 input:focus,
 select:focus,
@@ -76,22 +61,6 @@ button:active {
   transform: scale(0.98);
 }
 
-/* Card hover effects */
-.card-hover {
-  transition: all 0.3s ease-in-out;
-}
-
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Loading states */
-.loading {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
 /* Accessibility improvements */
 @media (prefers-reduced-motion: reduce) {
   .animate-scroll {
@@ -105,23 +74,3 @@ button:active {
   }
 }
 
-/* High contrast mode */
-@media (prefers-contrast: high) {
-  :root {
-    --border: 0 0% 0%;
-    --input: 0 0% 0%;
-  }
-}
-
-/* Print styles */
-@media print {
-  .animate-scroll {
-    animation: none;
-  }
-
-  .shadow-xl,
-  .shadow-lg,
-  .shadow-md {
-    box-shadow: none !important;
-  }
-}
