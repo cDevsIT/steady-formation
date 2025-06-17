@@ -1,10 +1,9 @@
-import HeroSection from "@/componant/home/HeroSection";
-
+import HomePage from "../componant/home/HomePage";
 
 export default function Home() {
   return (
     <>
-      <HeroSection />
+      <HomePage />
     </>
   );
 }
