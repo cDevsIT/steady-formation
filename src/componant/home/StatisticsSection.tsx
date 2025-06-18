@@ -1,8 +1,7 @@
 export default function StatisticsSection() {
     return (
         <section className="w-full bg-white py-16 px-4">
-            <div className="max-w-7xl mx-auto">
-                {/* Desktop Layout */}
+            <div className="max-w-[1512px] mx-auto">
                 <div className="flex flex-col lg:flex-row lg:flex lg:items-center justify-center  lg:gap-12">
                     {/* Stats Grid - Left Side */}
                     <div className="grid grid-cols-2 gap-6 flex-shrink-0">
@@ -10,7 +9,7 @@ export default function StatisticsSection() {
                         <div className="bg-[#EBE8FF] p-8 rounded-2xl">
                             <div className="text-4xl font-bold text-[#7856FC] mb-2">50+</div>
                             <div className="text-black font-medium leading-tight">
-                                Nations We've<br />Proudly Served
+                                Nations We&apos;ve<br />Proudly Served
                             </div>
                         </div>
 

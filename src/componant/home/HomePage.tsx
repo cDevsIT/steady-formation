@@ -1,3 +1,4 @@
+import ServicesSection from "../shared/ServiceSection";
 import HeroSection from "./HeroSection";
 import StatisticsSection from "./StatisticsSection";
 
@@ -6,6 +7,7 @@ const HomePage = () => {
     <>
       <HeroSection />
       <StatisticsSection />
+      <ServicesSection />
     </>
   );
 };
