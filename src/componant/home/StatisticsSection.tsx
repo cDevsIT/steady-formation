@@ -2,9 +2,9 @@ export default function StatisticsSection() {
     return (
         <section className="w-full bg-white py-16 px-4">
             <div className="max-w-[1512px] mx-auto">
-                <div className="flex flex-col lg:flex-row lg:flex lg:items-center justify-center gap-12">
+                <div className="flex flex-col lg:flex-row lg:flex lg:items-center justify-between gap-12">
                     {/* Stats Grid - Left Side */}
-                    <div className="grid grid-cols-2 gap-6 flex-shrink-0">
+                    <div className="grid grid-cols-2 gap-6 flex-shrink-0 w-full lg:w-1/2">
                         {/* Nations Served */}
                         <div className="bg-[#EBE8FF] p-4 lg:p-8 rounded-2xl">
                             <div className="text-[36px] lg:text-[48px] leading-[44px] lg:leading-[60px] font-bold text-[#7856FC] mb-2">50+</div>

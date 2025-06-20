@@ -4,6 +4,7 @@ import ServicesSection from "../shared/ServiceSection";
 import TrustedCustomerSection from "../shared/TrustedCustomerSection";
 import AdvantageSection from "./AdvantageSection";
 import HeroSection from "./HeroSection";
+import PricingSection from "./PricingSection";
 import StatisticsSection from "./StatisticsSection";
 
 const HomePage = () => {
@@ -12,6 +13,7 @@ const HomePage = () => {
       <HeroSection />
       <StatisticsSection />
       <AdvantageSection />
+      <PricingSection />
       <ServicesSection />
       <ReviewsSection
         reviews={sampleReviews}
