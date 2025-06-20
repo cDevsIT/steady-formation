@@ -18,8 +18,8 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = ({ handleSubmit,
         { value: "Partnership", label: "Partnership" },
       ];
   return (
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <div className="flex flex-col lg:flex-row gap-2">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 justify-center">
+          <div className="flex flex-col lg:flex-row gap-2 justify-center">
               {/* Custom Dropdown */}
               <div className="flex justify-center items-center">
                   <div className="relative w-full max-w-md flex">
