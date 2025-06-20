@@ -8,6 +8,7 @@ import FacilitySection from "./FacilitySection";
 import HeroSection from "./HeroSection";
 import PricingSection from "./PricingSection";
 import StatisticsSection from "./StatisticsSection";
+import WhatYouGetSection from "./WhatYouGetSection";
 
 const HomePage = () => {
   return (
@@ -19,6 +20,7 @@ const HomePage = () => {
       <PricingSection />
       <ServicesSection />
       <DashboardSection />
+      <WhatYouGetSection />
       <ReviewsSection
         reviews={sampleReviews}
         variant="home"
