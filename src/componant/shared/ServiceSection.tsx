@@ -60,7 +60,7 @@ export default function ServicesSection() {
   const [hoveredService, setHoveredService] = useState<string | null>(null);
 
   return (
-    <section className="pb-20 px-4 bg-white">
+    <section className="pb-20 bg-white">
       <div className="max-w-[1512px] mx-auto">
         {/* Header */}
         <div className="text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px] bg-[#F2F4F7]">
