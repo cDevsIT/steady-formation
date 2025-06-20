@@ -60,18 +60,18 @@ export default function ServicesSection() {
   const [hoveredService, setHoveredService] = useState<string | null>(null);
 
   return (
-    <section className="py-20 px-4 bg-white">
+    <section className="pb-20 px-4 bg-white">
       <div className="max-w-[1512px] mx-auto">
         {/* Header */}
-        <header className="text-center rounded-3xl pt-13 pb-50 px-[48px] md:px-[150px] lg:px-[200px] bg-[#F2F4F7]">
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight ">
+        <header className="text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px] bg-[#F2F4F7]">
+          <h2 className="text-[27px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6 ">
             All-in-One Formation Services 
             Designed for U.S Resident Founders
           </h2>
         </header>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-15 mt-[-170px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-3 lg:px-15 mt-[-170px]">
           {services.map((service) => {
             const IconComponent = service.icon;
             const isHovered = hoveredService === service.id;
@@ -80,7 +80,7 @@ export default function ServicesSection() {
               <article
                 key={service.id}
                 className={`
-                  bg-white rounded-2xl p-8 shadow-lg hover:shadow-md 
+                  bg-white rounded-2xl p-3 lg:p-8 shadow-sm hover:shadow-md 
                   transition-all duration-300 transform hover:-translate-y-2
                   border border-gray-100 group cursor-pointer text-center
                   ${isHovered ? 'ring-2 ring-blue-500 ring-opacity-50' : ''}
@@ -89,7 +89,7 @@ export default function ServicesSection() {
                 onMouseLeave={() => setHoveredService(null)}
               >
                 {/* Icon */}
-                <div className={`flex items-center justify-center py-8 rounded-xl mb-6 mx-auto group-hover:scale-110 transition-transform duration-300 ${service.bgColor}`}>
+                <div className={`flex items-center justify-center py-8 rounded-xl mb-6 mx-autotransition-transform duration-300 ${service.bgColor}`}>
                     <Image
                         className="w-[183px]"
                         url={service.icon}
@@ -100,12 +100,12 @@ export default function ServicesSection() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">
+                <h3 className="text-[24px] lg:text-[30px] leading-[32px] lg:leading-[38px] font-semibold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">
                   {service.title}
                 </h3>
                 
                 {/* Description */}
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-[16px] text-gray-600 leading-[24px]">
                   {service.description}
                 </p>
               </article>
