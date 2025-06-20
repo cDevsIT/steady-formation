@@ -112,17 +112,17 @@ export default function Footer() {
                     <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-4">
 
                         {/* Left: Copyright */}
-                        <span className="text-sm text-gray-500 whitespace-nowrap w-full md:w-auto">
+                        <span className="text-sm text-gray-500 w-full md:w-auto text-center md:text-start">
                             © {currentYear} All Rights Reserved by Steady Formation
                         </span>
 
                         {/* Middle: Payments */}
                         <div className="flex items-center gap-2 flex-nowrap w-full md:w-auto">
                             <span className="text-sm text-gray-600 whitespace-nowrap">We Accept</span>
-                            <div className="flex items-center gap-2">
-                                <Image className="h-6 w-full" url="/icons/master_card.svg" alt="MasterCard" />
-                                <Image className="h-6 w-full" url="/icons/paypal.svg" alt="PayPal" />
-                                <Image className="h-6 w-full" url="/icons/visa.svg" alt="Visa" />
+                            <div className="flex items-center gap-2 justify-center max-w-[206px]">
+                                <Image className="h-[24px] w-full" url="/icons/master_card.svg" alt="MasterCard" />
+                                <Image className="h-[24px] w-full" url="/icons/paypal.svg" alt="PayPal" />
+                                <Image className="h-[24px] w-full" url="/icons/visa.svg" alt="Visa" />
                             </div>
                         </div>
 

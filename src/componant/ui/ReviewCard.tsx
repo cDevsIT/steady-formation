@@ -146,9 +146,9 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                 </div>
 
                 {/* Rating and Platform */}
-                <footer className="pt-2 border-t border-gray-100 absolute w-[88%] bottom-[11px]">
+                <div className="pt-2 border-t border-gray-100 absolute w-[88%] bottom-[11px]">
                     {getReviewTypeIcon()}
-                </footer>
+                </div>
             </div>
         </article>
     );
