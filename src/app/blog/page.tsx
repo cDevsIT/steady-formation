@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import Link from 'next/link';
 
 // Data for small cards
 const smallCards = [
@@ -9,6 +10,7 @@ const smallCards = [
     title: 'Never Worry About What to Do About Banking Again',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'never-worry-about-banking-again'
   },
   {
     img: '/blog/Steady-formations-blog-image-3.png',
@@ -16,6 +18,7 @@ const smallCards = [
     title: 'Never Worry About What to Do About Banking Again',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'never-worry-about-banking-again-2'
   },
   {
     img: '/blog/Steady-formations-blog-image-4.png',
@@ -23,6 +26,7 @@ const smallCards = [
     title: 'Never Worry About What to Do About Banking Again',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'never-worry-about-banking-again-3'
   },
 ];
 
@@ -34,6 +38,7 @@ const latestBlogs = [
     title: 'Quick and Easy Flaky Pastry for Tasty Breakfast',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'quick-and-easy-flaky-pastry'
   },
   {
     img: '/blog/Steady-formations-blog-image-2.png',
@@ -41,6 +46,7 @@ const latestBlogs = [
     title: 'Quick and Easy Flaky Pastry for Tasty Breakfast',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'quick-and-easy-flaky-pastry-2'
   },
   {
     img: '/blog/Steady-formations-blog-image-3.png',
@@ -48,6 +54,7 @@ const latestBlogs = [
     title: 'Quick and Easy Flaky Pastry for Tasty Breakfast',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'quick-and-easy-flaky-pastry-3'
   },
 ];
 
@@ -59,6 +66,7 @@ const businessIdeas = [
     title: 'Never Worry About What to Do About Banking Again',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'banking-tips-and-tricks'
   },
   {
     img: '/blog/Steady-formations-blog-image-2.png',
@@ -66,6 +74,7 @@ const businessIdeas = [
     title: 'Never Worry About What to Do About Banking Again',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'banking-tips-and-tricks-2'
   },
   {
     img: '/blog/Steady-formations-blog-image-3.png',
@@ -73,6 +82,7 @@ const businessIdeas = [
     title: 'Never Worry About What to Do About Banking Again',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'banking-tips-and-tricks-3'
   },
   {
     img: '/blog/Steady-formations-blog-image-3.png',
@@ -80,6 +90,7 @@ const businessIdeas = [
     title: 'Never Worry About What to Do About Banking Again',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'banking-tips-and-tricks-4'
   },
   {
     img: '/blog/Steady-formations-blog-image-4.png',
@@ -87,6 +98,7 @@ const businessIdeas = [
     title: 'Never Worry About What to Do About Banking Again',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'banking-tips-and-tricks-5'
   },
   {
     img: '/blog/Steady-formations-blog-image-4.png',
@@ -94,6 +106,7 @@ const businessIdeas = [
     title: 'Never Worry About What to Do About Banking Again',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'banking-tips-and-tricks-6'
   },
 ];
 
@@ -105,6 +118,7 @@ const mainBlogCards = [
     title: 'Wise Spending Habits, 13 Tips for Maximizing Your Money.',
     date: '18 Jul 2023',
     comments: 'Comments',
+    slug: 'wise-spending-habits-tips'
   },
   ...smallCards,
 ];
@@ -115,6 +129,7 @@ type BlogCard = {
   title: string;
   date: string;
   comments: string;
+  slug: string;
 };
 
 export default function BlogPage() {
@@ -139,7 +154,7 @@ export default function BlogPage() {
       {/* Desktop/Tablet Only */}
       <section className="w-full max-w-[1280px] mx-auto mt-24 mb-[80px] grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 hidden md:grid">
         {/* Featured Post (Left) */}
-        <div className="bg-white rounded-xl p-0 flex flex-col">
+        <Link href={`/blog/${mainBlogCards[0].slug}`} className="bg-white rounded-xl p-0 flex flex-col cursor-pointer hover:shadow-lg transition-shadow">
           <img
             src="/blog/Steady-formations-blog-image-1.png"
             alt="Featured Blog"
@@ -163,12 +178,16 @@ export default function BlogPage() {
               Book A Free Call
             </button>
           </div>
-        </div>
+        </Link>
 
         {/* Other Posts (Right) */}
         <div className="flex flex-col gap-6">
           {smallCards.map((card, idx) => (
-            <div key={card.alt} className={`flex gap-4 items-center${idx < smallCards.length - 1 ? ' border-b-[1.54px] border-b-[#EFF5F5] pb-6' : ''}`}>
+            <Link
+              key={card.alt}
+              href={`/blog/${card.slug}`}
+              className={`flex gap-4 items-center cursor-pointer hover:bg-gray-50 transition-colors p-2 rounded-lg${idx < smallCards.length - 1 ? ' border-b-[1.54px] border-b-[#EFF5F5] pb-6' : ''}`}
+            >
               <div style={{ width: '42%' }}>
                 <img
                   src={card.img}
@@ -191,7 +210,7 @@ export default function BlogPage() {
                   {card.title}
                 </h3>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -206,7 +225,11 @@ export default function BlogPage() {
         <h2 className="text-[30px] font-bold mb-6 ml-2">Latest Blogs</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {latestBlogs.map((card) => (
-            <div key={card.alt} className="bg-white rounded-xl p-4">
+            <Link
+              key={card.alt}
+              href={`/blog/${card.slug}`}
+              className="bg-white rounded-xl p-4 cursor-pointer hover:shadow-lg transition-shadow"
+            >
               <img
                 src={card.img}
                 alt={card.alt}
@@ -225,7 +248,7 @@ export default function BlogPage() {
               <h3 className="font-inter font-bold text-[20px] leading-[30px] text-[#081717] mt-2">
                 {card.title}
               </h3>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -237,7 +260,11 @@ export default function BlogPage() {
         <h2 className="text-[28px] font-bold mb-6 ml-2">Business Ideas and Tips</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
           {businessIdeas.map((card, idx) => (
-            <div key={card.alt + idx} className={`flex gap-6 items-center${idx < businessIdeas.length - 2 ? ' border-b-[1.54px] border-b-[#EFF5F5] pb-6' : ''}`}>
+            <Link
+              key={card.alt + idx}
+              href={`/blog/${card.slug}`}
+              className={`flex gap-6 items-center cursor-pointer hover:bg-gray-50 transition-colors p-2 rounded-lg${idx < businessIdeas.length - 2 ? ' border-b-[1.54px] border-b-[#EFF5F5] pb-6' : ''}`}
+            >
               <div style={{ width: '42%' }}>
                 <img
                   src={card.img}
@@ -260,7 +287,7 @@ export default function BlogPage() {
                   {card.title}
                 </h3>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -270,7 +297,11 @@ export default function BlogPage() {
         <h2 className="text-[28px] font-bold mb-6 ml-2">Business Ideas and Tips</h2>
         <div className="grid grid-cols-1 gap-8">
           {businessIdeas.map((card, idx) => (
-            <div key={card.alt + idx} className="bg-white rounded-xl p-4">
+            <Link
+              key={card.alt + idx}
+              href={`/blog/${card.slug}`}
+              className="bg-white rounded-xl p-4 cursor-pointer hover:shadow-lg transition-shadow"
+            >
               <img
                 src={card.img}
                 alt={card.alt}
@@ -289,7 +320,7 @@ export default function BlogPage() {
               <h3 className="font-inter font-bold text-[20px] leading-[30px] text-[#081717] mt-2">
                 {card.title}
               </h3>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -373,24 +404,26 @@ function MobileBlogSlider({ cards }: { cards: BlogCard[] }) {
 
   return (
     <div className="w-full">
-      <img
-        src={cards[current].img}
-        alt={cards[current].alt}
-        className="w-full h-[220px] object-cover rounded-xl mb-4"
-      />
-      <div className="flex items-center gap-6 mb-2">
-        <span className="font-inter font-medium text-[16px] leading-6 text-[#475467] flex items-center gap-3">
-          <img src="/blog/date-icon.svg" alt="Date" className="w-5 h-5" />
-          {cards[current].date}
-        </span>
-        <span className="font-inter font-medium text-[16px] leading-6 text-[#475467] flex items-center gap-3">
-          <img src="/blog/comment-icon.svg" alt="Comments" className="w-5 h-5" />
-          {cards[current].comments}
-        </span>
-      </div>
-      <h3 className="font-inter font-bold text-[20px] leading-[30px] text-[#081717] mt-2 mb-6">
-        {cards[current].title}
-      </h3>
+      <Link href={`/blog/${cards[current].slug}`} className="block cursor-pointer">
+        <img
+          src={cards[current].img}
+          alt={cards[current].alt}
+          className="w-full h-[220px] object-cover rounded-xl mb-4"
+        />
+        <div className="flex items-center gap-6 mb-2">
+          <span className="font-inter font-medium text-[16px] leading-6 text-[#475467] flex items-center gap-3">
+            <img src="/blog/date-icon.svg" alt="Date" className="w-5 h-5" />
+            {cards[current].date}
+          </span>
+          <span className="font-inter font-medium text-[16px] leading-6 text-[#475467] flex items-center gap-3">
+            <img src="/blog/comment-icon.svg" alt="Comments" className="w-5 h-5" />
+            {cards[current].comments}
+          </span>
+        </div>
+        <h3 className="font-inter font-bold text-[20px] leading-[30px] text-[#081717] mt-2 mb-6">
+          {cards[current].title}
+        </h3>
+      </Link>
       <button className="w-full border border-[#E4E7EC] rounded-full py-3 font-inter font-semibold text-[16px] leading-[24px] text-[#081717] mb-6">
         Learn More
       </button>
