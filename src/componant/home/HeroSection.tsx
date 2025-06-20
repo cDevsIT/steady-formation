@@ -4,13 +4,7 @@ import { useState } from "react";
 import Image from "../ui/Image";
 import Rating from "../shared/Rating";
 import StartFunnelInput from "../shared/StartFunnelInput";
-
-const customerLogos = [
-  { name: "Waves", icon: "🌊", url: "/homepage/icons/brand_waves.svg" },
-  { name: "Waves", icon: "🌊", url: "/homepage/icons/brand_waves.svg" },
-  { name: "RateShow", icon: "⭐", url: "/homepage/icons/brand_rotashow.svg" },
-  { name: "Travelers", icon: "✈️", url: "/homepage/icons/brand_travelers.svg" },
-];
+import InfinityBrandSliding from "../shared/InfinityBrandSliding";
 
 export default function HeroSection() {
   const [businessType, setBusinessType] = useState("LLC");
@@ -27,12 +21,12 @@ export default function HeroSection() {
         {/* Desktop Grid Layout */}
         <div className="flex flex-col lg:flex-row gap-[50px] justify-between items-center">
           {/* Top Left - Heading and Form */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 items-center lg:items-start">
             <div className="flex flex-col gap-3">
-              <h1 className="text-[36px] leading-[44px] lg:text-[60px] lg:leading-[78px] font-bold text-gray-900 m-0 max-w-lg">
-                Launch Business in Any State —
-                <span className="text-[#7856FC] bg-[#aaf0c4] px-3 rounded-full mx-2 whitespace-nowrap">0 Cost</span>
-                for U.S. Residents
+              <h1 className="text-[36px] leading-[44px] lg:text-[60px] lg:leading-[78px] font-bold text-gray-900 m-0 max-w-[700px]">
+                Launch Business in Any State — 
+                <span className="text-[#7856FC] bg-[#aaf0c4] px-3 rounded-full mx-2 whitespace-nowrap"> 0 Cost </span>
+                 for U.S. Residents
               </h1>
               <p className="text-[16px] lg:text-[18px] text-gray-600 leading-relaxed max-w-lg">
                 If you&apos;re a U.S. resident, you can skip the fees and keep
@@ -74,18 +68,7 @@ export default function HeroSection() {
               </p>
             </div>
 
-            <div className="relative overflow-hidden backdrop-blur-sm rounded-2xl p-4">
-              <div className="flex animate-scroll">
-                {customerLogos?.map((logo, index) => (
-                  <Image
-                    className="h-[37px]"
-                    url={logo.url}
-                    alt="Client Brand Image"
-                    key={index}
-                  />
-                ))}
-              </div>
-            </div>
+            <InfinityBrandSliding />
           </div>
         </div>
 

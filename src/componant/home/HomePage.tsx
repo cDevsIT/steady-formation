@@ -3,6 +3,7 @@ import ReviewsSection from "../shared/ReviewSection";
 import ServicesSection from "../shared/ServiceSection";
 import TrustedCustomerSection from "../shared/TrustedCustomerSection";
 import AdvantageSection from "./AdvantageSection";
+import DashboardSection from "./DashboardSection";
 import FacilitySection from "./FacilitySection";
 import HeroSection from "./HeroSection";
 import PricingSection from "./PricingSection";
@@ -17,6 +18,7 @@ const HomePage = () => {
       <AdvantageSection />
       <PricingSection />
       <ServicesSection />
+      <DashboardSection />
       <ReviewsSection
         reviews={sampleReviews}
         variant="home"

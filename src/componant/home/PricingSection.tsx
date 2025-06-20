@@ -121,7 +121,7 @@ export default function PricingSection() {
 
                 {/* Additional Info Section */}
                 <div className="mt-16 text-center flex justify-between items-center">
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 max-w-[314px] text-start font-bold">
                         👉 Still unsure which structure fits your business best?
                     </p>
                     <Button >Talk to a Business Advisor</Button>
