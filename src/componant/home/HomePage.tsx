@@ -10,15 +10,18 @@ import HeroSection from "./HeroSection";
 import LatestBlogSection from "./LatestBlogSection";
 import LaunchCompany from "./LaunchCompany";
 import PricingSection from "./PricingSection";
+import EasyStepsSection from "./EasyStepsSection";
 import StatisticsSection from "./StatisticsSection";
 import WhatYouGetSection from "./WhatYouGetSection";
 
 const HomePage = () => {
   return (
     <>
+      
       <HeroSection />
       <StatisticsSection />
       <FacilitySection />
+      <EasyStepsSection />
       <AdvantageSection />
       <PricingSection />
       <ServicesSection />

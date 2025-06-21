@@ -2,6 +2,7 @@ import StatisticsSection from "../home/StatisticsSection";
 import ServicesSection from "../shared/ServiceSection";
 import TrustedCustomerSection from "../shared/TrustedCustomerSection";
 import AboutHelpSection from "./AboutHelpSection";
+import BrandSection from "./BrandSection";
 import HowWeThinkSection from "./HowWeThinkSection";
 
 const AboutPage = () => {
@@ -9,6 +10,7 @@ const AboutPage = () => {
         <div className="max-w-[1512px] mx-auto px-3">
             <AboutHelpSection />
             <HowWeThinkSection />
+            <BrandSection/>
             <StatisticsSection />
             <ServicesSection />
             <TrustedCustomerSection />
