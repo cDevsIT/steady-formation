@@ -14,7 +14,7 @@ export interface FAQItem {
 }
 
 export default function Accordion({ className, accordion }: AccordionProps) {
-    const [openItem, setOpenItem] = useState<number>(1); 
+    const [openItem, setOpenItem] = useState<number>(1);
     const toggleItem = (id: number) => {
         setOpenItem(openItem === id ? 0 : id);
     };
@@ -22,15 +22,15 @@ export default function Accordion({ className, accordion }: AccordionProps) {
     return (
         <div className={`rounded-2xl ${className}`}>
             {accordion.map((item, index) => {
-                const isFirstItem = (index===0);
-                const isLastItem = (accordion.length-1) === index
+                const isFirstItem = (index === 0);
+                const isLastItem = (accordion.length - 1) === index
                 return <div
                     key={index}
                     className={`bg-white/70 backdrop-blur-sm border-1 border-gray-200 overflow-hidden transition-all duration-300 ${isFirstItem && 'rounded-t-2xl'} ${isLastItem && 'rounded-b-2xl'}`}
                 >
                     <button
                         onClick={() => toggleItem(item.id)}
-                        className="w-full px-6 py-6 sm:px-8 sm:py-8 text-left transition-colors duration-200 hover:bg-white/50"
+                        className="w-full px-6 py-6 sm:px-8 sm:py-8 text-left transition-colors duration-200 hover:bg-white/50 cursor-pointer"
                         aria-expanded={openItem === item.id}
                     >
                         <div className="flex items-center justify-between">
