@@ -116,7 +116,7 @@ export default function Footer() {
                         </span>
 
                         {/* Middle: Payments */}
-                        <div className="flex items-center gap-2 flex-nowrap w-full md:w-auto">
+                        <div className="flex items-center gap-2 flex-nowrap w-full md:w-auto justify-center">
                             <span className="text-sm text-gray-600 whitespace-nowrap">We Accept</span>
                             <div className="flex items-center gap-2 justify-center max-w-[206px]">
                                 <Image className="h-[24px] w-full" url="/icons/master_card.svg" alt="MasterCard" />
