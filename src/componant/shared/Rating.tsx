@@ -20,7 +20,7 @@ const Rating: React.FC<CustomeRatingProps> = ({
             />
             <h2 className="text-[72px] leading-[90px]"> 4.8 </h2>
 
-            <div>
+            <div className="ml-[6px]">
                 <Image
                     className="w-[121px]"
                     url='/icons/rating_stars.svg'

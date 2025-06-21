@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Image from "../ui/Image";
+import Button from "../ui/Button";
 
 type CustomStartFunnelInputProps = {
     handleSubmit: (e: React.FormEvent) => void;
@@ -18,8 +19,8 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = ({ handleSubmit,
         { value: "Partnership", label: "Partnership" },
       ];
   return (
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <div className="flex flex-col lg:flex-row gap-2">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 justify-center">
+          <div className="flex flex-col lg:flex-row gap-2 justify-center">
               {/* Custom Dropdown */}
               <div className="flex justify-center items-center">
                   <div className="relative w-full max-w-md flex">
@@ -77,12 +78,7 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = ({ handleSubmit,
                   </div>
               </div>
 
-              <button
-                  type="submit"
-                  className="h-12 px-8 my-2 lg:my-0 bg-indigo-600 hover:bg-indigo-700 text-white text-xs xs:text-sm sm:text-[14px] font-semibold rounded-lg transition-all duration-200 transform focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 whitespace-nowrap"
-              >
-                  Start Now
-              </button>
+              <Button type='submit'> Start Now</Button>
           </div>
 
           <div className="flex justify-center items-center gap-2 mg:gap-4 lg:gap-8">

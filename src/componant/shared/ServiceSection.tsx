@@ -60,15 +60,15 @@ export default function ServicesSection() {
   const [hoveredService, setHoveredService] = useState<string | null>(null);
 
   return (
-    <section className="pb-20 px-4 bg-white">
+    <section className="pb-20 bg-white">
       <div className="max-w-[1512px] mx-auto">
         {/* Header */}
-        <header className="text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px] bg-[#F2F4F7]">
+        <div className="text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px] bg-[#F2F4F7]">
           <h2 className="text-[27px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6 ">
             All-in-One Formation Services 
             Designed for U.S Resident Founders
           </h2>
-        </header>
+        </div>
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-3 lg:px-15 mt-[-170px]">
