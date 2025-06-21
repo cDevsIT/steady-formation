@@ -68,7 +68,7 @@ export default function HowWeThinkSection() {
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`inline-flex items-center justify-center 
-                                            px-6 py-2 rounded-full font-semibold text-sm 
+                                            px-4 py-2 rounded-full font-semibold text-sm 
                                             transition-all duration-300 whitespace-nowrap 
                                             ${activeTab === tab.id
                                             ? 'text-[#7856FC] bg-[#EBE8FF]'
