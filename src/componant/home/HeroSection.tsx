@@ -46,9 +46,11 @@ export default function HeroSection() {
           {/* Top Right - Hero Image */}
           <div className="relative max-w-[612px]">
             <Image
-              className=""
+              className="w-[612px]"
               url="/homepage/steady_formation_hero_image.png"
               alt="Steady Formation Hero Image"
+              width={612}
+              height={524}
             />
           </div>
         </div>

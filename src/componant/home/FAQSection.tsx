@@ -37,7 +37,7 @@ const faqData: FAQItem[] = [
 const FAQSection = () => {
     return (
         <section className="pb-20 px-4 bg-white">
-            <div className="max-w-[1512px] mx-auto px-3 lg:px-10 grid grid-cols-1 lg:grid-cols-3 gap-16">
+            <div className="max-w-[1512px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 justify-items-center items-center">
                 <div className="flex flex-col justify-between">
                    <div className="mx-auto">
                         <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6  text-center lg:text-start max-w-[807px] ">Frequently asked questions</h2>
@@ -51,7 +51,7 @@ const FAQSection = () => {
                         height={400}
                     />
                 </div>
-                <Accordion className='col-span-2' accordion={faqData}/>
+                <Accordion className='lg:col-span-2' accordion={faqData}/>
             </div>
 
         </section>

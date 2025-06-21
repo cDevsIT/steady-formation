@@ -5,6 +5,7 @@ import { ReviewsSectionProps } from '@/types/review';
 import Image from '../ui/Image';
 import ReviewCard from '../ui/ReviewCard';
 
+
 const ReviewsSection = ({ reviews, variant, title, subtitle }: ReviewsSectionProps) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
@@ -152,7 +153,8 @@ const ReviewsSection = ({ reviews, variant, title, subtitle }: ReviewsSectionPro
         <section className="pb-20 bg-white" aria-labelledby="reviews-heading">
             <div className="max-w-[1512px] mx-auto">
                 {/* Section Header */}
-                <div className="text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px] bg-[#F2F4F7]">
+                <div className={`text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px]${variant === 'review-page' ? 'white'
+                    : 'bg-[#F2F4F7]'}`}>
                     <h2 className="text-[27px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6 ">
                         Trusted by 26,000+ customers
                     </h2>

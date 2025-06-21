@@ -31,6 +31,8 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
                 className="h-8 w-full"
                 url="/steady_formation_logo.png"
                 alt="Steady Formation Logo"
+                width={112}
+                height={42}
               />
             </Link>
           </div>

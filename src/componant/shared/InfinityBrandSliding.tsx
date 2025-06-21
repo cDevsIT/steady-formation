@@ -13,10 +13,12 @@ const InfinityBrandSliding = () => {
           <div className="flex animate-scroll">
               {customerLogos?.map((logo, index) => (
                   <Image
-                      className="h-[37px]"
+                      className="h-[37px] w-full ml-2"
                       url={logo.url}
                       alt="Client Brand Image"
                       key={index}
+                      width={100}
+                      height={37}
                   />
               ))}
           </div>
