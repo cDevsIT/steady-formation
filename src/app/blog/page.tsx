@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 
 // Data for small cards
@@ -399,7 +399,7 @@ export default function BlogPage() {
 }
 
 function MobileBlogSlider({ cards }: { cards: BlogCard[] }) {
-  const [current, setCurrent] = React.useState(0);
+  const [current, setCurrent] = useState(0);
   const goTo = (idx: number) => setCurrent(idx);
 
   return (

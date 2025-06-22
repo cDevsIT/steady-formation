@@ -1,17 +1,16 @@
-'use client';
 
 import NextImage from 'next/image';
 import React from 'react';
 
 interface CustomImageProps {
-  url: string;
-  className?: string;
-  style?: React.CSSProperties;
-  alt?: string;
-  width?: number;
-  height?: number;
-  fill?: boolean;
-  priority?: boolean;
+    url: string;
+    className?: string;
+    style?: React.CSSProperties;
+    alt?: string;
+    width?: number;
+    height?: number;
+    fill?: boolean;
+    priority?: boolean;
 }
 
 const Image: React.FC<CustomImageProps> = ({
@@ -26,15 +25,15 @@ const Image: React.FC<CustomImageProps> = ({
 }) => {
     return (
         <NextImage
-                className={className} 
-                style={style}
-                src={url}
-                alt={alt}
-                width={fill ? undefined : width}
-                height={fill ? undefined : height}
-                fill={fill}
-                priority={priority}
-            />
+            className={className}
+            style={style}
+            src={url}
+            alt={alt}
+            width={fill ? undefined : width}
+            height={fill ? undefined : height}
+            fill={fill}
+            priority={priority}
+        />
     );
 };
 

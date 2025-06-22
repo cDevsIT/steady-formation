@@ -7,7 +7,7 @@ interface Card {
     number: string;
     title: string;
     description: string;
-  }
+}
 
 const EasyStepsSection: React.FC = () => {
     const [activeCard, setActiveCard] = useState<number>(1);
@@ -41,15 +41,11 @@ const EasyStepsSection: React.FC = () => {
     ];
 
     const handleCardClick = (cardId: number): void => {
-        if(activeCard === cardId){
+        if (activeCard === cardId) {
             setActiveCard(1)
-        }else{
+        } else {
             setActiveCard(cardId);
         }
-    };
-
-    const resetCards = (): void => {
-        setActiveCard(1);
     };
 
     // Handle outside click
@@ -158,15 +154,15 @@ const EasyStepsSection: React.FC = () => {
                     />
 
                     <div className='mt-[-100px}'>
-                        {cards.map((card,i)=>{
+                        {cards.map((card, i) => {
                             return <div key={i} className={`w-[330px] h-[215px] rounded-xl p-4 mb-3 cursor-pointer
                             transition-all duration-700 ease-out transform-gpu text-white
                             ${activeCard === card.id
                                     ? 'bg-[#7856FC] z-10 '
                                     : 'bg-gradient-to-b from-[#ECE2FF] to-[#FFFFFF] z-auto border border-gray-200'
-                                        }
+                                }
                             `} onClick={() => handleCardClick(card.id)}>
-                                <div className={`absolute top-[-10px] right-5 text-[60px] font-bold  ${activeCard === card.id ? 'opacity-30' :'opacity-100'}`}>
+                                <div className={`absolute top-[-10px] right-5 text-[60px] font-bold  ${activeCard === card.id ? 'opacity-30' : 'opacity-100'}`}>
                                     {card.number}
                                 </div>
 
@@ -177,13 +173,13 @@ const EasyStepsSection: React.FC = () => {
 
                                     <p className={`text-[16px] leading-relaxed mt-[15px] ${activeCard === card.id ? 'text-white' : 'text-black'}`}>
                                         {card.description}
-                                    </p> 
+                                    </p>
 
 
                                 </div>
                             </div>
                         })}
-                        
+
                     </div>
                 </div>
             </div>

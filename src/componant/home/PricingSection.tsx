@@ -1,4 +1,4 @@
-'use client';
+
 import Button from '../ui/Button';
 import Image from '../ui/Image';
 

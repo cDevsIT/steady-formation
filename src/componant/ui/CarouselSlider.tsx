@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
@@ -7,10 +8,10 @@ type CustomCarouselSliderProps = {
   className?: string;
 };
 
-const CarouselSlider: React.FC<CustomCarouselSliderProps> = ({ children, className='' }) => {
-    return (
-        <div className={`${className}`}>
-            <style jsx global>{`
+const CarouselSlider: React.FC<CustomCarouselSliderProps> = ({ children, className = '' }) => {
+  return (
+    <div className={`${className}`}>
+      <style jsx global>{`
                 .carousel-root {
                   outline: none;
                 }
@@ -75,26 +76,26 @@ const CarouselSlider: React.FC<CustomCarouselSliderProps> = ({ children, classNa
                 }
                         `}</style>
 
-            <Carousel
-                showArrows={false}
-                showStatus={false}
-                showThumbs={false}
-                infiniteLoop={true}
-                autoPlay={true}
-                interval={5000}
-                stopOnHover={true}
-                swipeable={true}
-                emulateTouch={true}
-                useKeyboardArrows={true}
-                dynamicHeight={false}
-                centerMode={false}
-                centerSlidePercentage={100}
-                className="carousel-container"
-            >
-                {children}
-            </Carousel>
-        </div>
-    );
+      <Carousel
+        showArrows={false}
+        showStatus={false}
+        showThumbs={false}
+        infiniteLoop={true}
+        autoPlay={true}
+        interval={5000}
+        stopOnHover={true}
+        swipeable={true}
+        emulateTouch={true}
+        useKeyboardArrows={true}
+        dynamicHeight={false}
+        centerMode={false}
+        centerSlidePercentage={100}
+        className="carousel-container"
+      >
+        {children}
+      </Carousel>
+    </div>
+  );
 };
 
 export default CarouselSlider;
