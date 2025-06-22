@@ -6,7 +6,7 @@ import Image from '../ui/Image';
 import ReviewCard from '../ui/ReviewCard';
 
 
-const ReviewsSection = ({ reviews, variant, title, subtitle }: ReviewsSectionProps) => {
+const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(9);
@@ -165,8 +165,8 @@ const ReviewsSection = ({ reviews, variant, title, subtitle }: ReviewsSectionPro
                     <div
                         ref={sliderRef}
                         className={`grid gap-6 ${variant === 'home'
-                                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                                : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3'
+                            ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                            : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3'
                             } ${variant === 'home' ? 'lg:cursor-default cursor-grab active:cursor-grabbing' : ''}`}
                         onMouseDown={handleMouseDown}
                         onMouseMove={handleMouseMove}
@@ -191,8 +191,8 @@ const ReviewsSection = ({ reviews, variant, title, subtitle }: ReviewsSectionPro
                                         key={index}
                                         onClick={() => setCurrentSlide(index)}
                                         className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === index
-                                                ? 'bg-blue-600 scale-110'
-                                                : 'bg-gray-300 hover:bg-gray-400'
+                                            ? 'bg-blue-600 scale-110'
+                                            : 'bg-gray-300 hover:bg-gray-400'
                                             }`}
                                         aria-label={`Go to slide ${index + 1}`}
                                     />

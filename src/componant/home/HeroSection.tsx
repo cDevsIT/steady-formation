@@ -1,19 +1,10 @@
-"use client";
-
-import { useState } from "react";
 import Image from "../ui/Image";
 import Rating from "../shared/Rating";
 import StartFunnelInput from "../shared/StartFunnelInput";
 import InfinityBrandSliding from "../shared/InfinityBrandSliding";
 
 export default function HeroSection() {
-  const [businessType, setBusinessType] = useState("LLC");
-  const [companyName, setCompanyName] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", { businessType, companyName });
-  };
 
   return (
     <section className="bg-[#f4f3ff] pt-[65px] px-4">
@@ -24,9 +15,9 @@ export default function HeroSection() {
           <div className="flex flex-col gap-3 items-center lg:items-start">
             <div className="flex flex-col gap-3">
               <h1 className="text-[36px] leading-[44px] lg:text-[60px] lg:leading-[78px] font-bold text-gray-900 m-0 max-w-[700px]">
-                Launch Business in Any State — 
+                Launch Business in Any State —
                 <span className="text-[#7856FC] bg-[#aaf0c4] px-3 rounded-full mx-2 whitespace-nowrap"> 0 Cost </span>
-                 for U.S. Residents
+                for U.S. Residents
               </h1>
               <p className="text-[16px] lg:text-[18px] text-gray-600 leading-relaxed max-w-lg">
                 If you&apos;re a U.S. resident, you can skip the fees and keep
@@ -35,11 +26,6 @@ export default function HeroSection() {
             </div>
 
             <StartFunnelInput
-              handleSubmit={handleSubmit}
-              businessType={businessType}
-              setBusinessType={setBusinessType}
-              companyName={companyName}
-              setCompanyName={setCompanyName}
             />
           </div>
 
