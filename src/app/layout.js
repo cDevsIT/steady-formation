@@ -28,7 +28,7 @@ export const metadata = {
     siteName: 'Steady Formation',
     images: [
       {
-        url: '/steady_formation_logo.svg',
+        url: '/steady-formation-logo.svg',
         width: 1200,
         height: 630,
         alt: 'Steady Formation - Business Formation Services',
@@ -41,7 +41,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Steady Formation - Launch Your Business in Any State at 0 Cost',
     description: 'Launch your business in any U.S. state with zero upfront costs. Professional business formation services for U.S. residents.',
-    images: ['/steady_formation_logo.svg'],
+    images: ['/steady-formation-logo.svg'],
     creator: '@steadyformation',
   },
   robots: {
@@ -66,7 +66,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" href="/favicon.png"/>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -80,7 +80,7 @@ export default function RootLayout({ children }) {
               "@type": "Organization",
               "name": "Steady Formation",
               "url": "https://steadyformation.com",
-              "logo": "https://steadyformation.com/steady_formation_logo.png",
+              "logo": "https://steadyformation.com/steady-formation-logo.png",
               "description": "Professional business formation services for U.S. residents with zero upfront costs.",
               "address": {
                 "@type": "PostalAddress",
