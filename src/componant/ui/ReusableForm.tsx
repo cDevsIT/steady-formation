@@ -1,5 +1,5 @@
-
 import React, { useState, useRef, useEffect } from 'react';
+import { useForm, Controller, FieldErrors } from 'react-hook-form';
 
 // Types
 interface Country {
@@ -11,21 +11,28 @@ interface Country {
     format: string;
 }
 
+interface CompanyType {
+    label: string;
+    value: string;
+    abbreviation: string;
+}
+
 interface InputFieldProps {
     name: string;
     label: string;
-    type: 'text' | 'number' | 'email' | 'select' | 'phone';
+    type: 'text' | 'number' | 'email' | 'select' | 'phone' | 'company';
     required?: boolean;
     placeholder?: string;
     options?: { label: string; value: string }[];
     defaultValue?: string;
-    onChange?: (name: string, value: string) => void;
-    error?: string;
-    registerInput?: (inputRef: InputFieldRef) => void;
+    control?: any;
+    errors?: FieldErrors;
+    rules?: any;
 }
 
-export interface SimpleFormData {
-    [key: string]: string;
+// Custom form data interface to avoid conflict with built-in FormData
+interface CustomFormData {
+    [key: string]: any;
 }
 
 // Country data with phone regex patterns and formats
@@ -43,6 +50,20 @@ const countries: Country[] = [
     { name: 'Bangladesh', code: 'BD', dialCode: '+880', flag: '🇧🇩', phoneRegex: /^1[3-9]\d{8}$/, format: '1XXX XXXXXX' }
 ];
 
+// Company types data
+const companyTypes: CompanyType[] = [
+    { label: 'Limited Liability Company', value: 'llc', abbreviation: 'LLC' },
+    { label: 'Corporation', value: 'corp', abbreviation: 'Corp' },
+    { label: 'Incorporated', value: 'inc', abbreviation: 'Inc' },
+    { label: 'Limited', value: 'ltd', abbreviation: 'Ltd' },
+    { label: 'Partnership', value: 'partnership', abbreviation: 'LP' },
+    { label: 'Limited Partnership', value: 'lp', abbreviation: 'LP' },
+    { label: 'Professional Corporation', value: 'pc', abbreviation: 'PC' },
+    { label: 'Limited Liability Partnership', value: 'llp', abbreviation: 'LLP' },
+    { label: 'Public Limited Company', value: 'plc', abbreviation: 'PLC' },
+    { label: 'Private Limited Company', value: 'pvt', abbreviation: 'Pvt Ltd' }
+];
+
 // Input Field Component
 export const InputField: React.FC<InputFieldProps> = ({
     name,
@@ -52,20 +73,19 @@ export const InputField: React.FC<InputFieldProps> = ({
     placeholder,
     options = [],
     defaultValue = '',
-    onChange,
-    error
+    control,
+    errors = {},
+    rules = {}
 }) => {
-    const [value, setValue] = useState(defaultValue);
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
     const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
-    const [localError, setLocalError] = useState('');
+    const [selectedCompanyType, setSelectedCompanyType] = useState<CompanyType>(companyTypes[0]);
+    const [companyTypeDropdownOpen, setCompanyTypeDropdownOpen] = useState(false);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const countryDropdownRef = useRef<HTMLDivElement>(null);
-
-    // Email regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const companyTypeDropdownRef = useRef<HTMLDivElement>(null);
 
     // Handle outside clicks
     useEffect(() => {
@@ -76,97 +96,93 @@ export const InputField: React.FC<InputFieldProps> = ({
             if (countryDropdownRef.current && !countryDropdownRef.current.contains(event.target as Node)) {
                 setCountryDropdownOpen(false);
             }
+            if (companyTypeDropdownRef.current && !companyTypeDropdownRef.current.contains(event.target as Node)) {
+                setCompanyTypeDropdownOpen(false);
+            }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Validation function
-    const validateInput = (inputValue: string, inputType: string): string => {
-        if (required && !inputValue.trim()) {
-            return `${label} is required`;
+    // Email validation
+    const emailValidation = {
+        pattern: {
+            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            message: 'Please enter a valid email address'
+        }
+    };
+
+    // Phone validation
+    const phoneValidation = {
+        validate: (value: string) => {
+            if (!value) return true;
+            if (!selectedCountry.phoneRegex.test(value)) {
+                return `Please use format: ${selectedCountry.format}`;
+            }
+            return true;
+        }
+    };
+
+    // Company name validation
+    const companyValidation = {
+        validate: (value: string) => {
+            if (!value) return true;
+            if (value.length < 2) {
+                return 'Company name must be at least 2 characters';
+            }
+            if (value.length > 100) {
+                return 'Company name must be less than 100 characters';
+            }
+            return true;
+        }
+    };
+
+    // Get validation rules based on type
+    const getValidationRules = () => {
+        const baseRules = { ...rules };
+
+        if (required) {
+            baseRules.required = `${label} is required`;
         }
 
-        switch (inputType) {
+        switch (type) {
             case 'email':
-                if (inputValue && !emailRegex.test(inputValue)) {
-                    return 'Please enter a valid email address';
-                }
-                break;
+                return { ...baseRules, ...emailValidation };
             case 'phone':
-                if (inputValue && !selectedCountry.phoneRegex.test(inputValue)) {
-                    return `Please use format: ${selectedCountry.format}`;
-                }
-                break;
+                return { ...baseRules, ...phoneValidation };
+            case 'company':
+                return { ...baseRules, ...companyValidation };
+            default:
+                return baseRules;
         }
-        return '';
-    };
-
-    // Handle input change with proper validation feedback
-    const handleInputChange = (newValue: string) => {
-        setValue(newValue);
-
-        // Always update form data first
-        onChange?.(name, newValue);
-
-        // Then validate and show local error
-        const validationError = validateInputWithCountry(newValue, type);
-        setLocalError(validationError);
-    };
-
-    // Handle select option
-    const handleSelectOption = (optionValue: string) => {
-        setValue(optionValue);
-        setIsOpen(false);
-        setLocalError('');
-
-        // Update form data immediately
-        onChange?.(name, optionValue);
-    };
-
-    // Handle country selection with revalidation
-    const handleCountrySelect = (country: Country) => {
-        setSelectedCountry(country);
-        setCountryDropdownOpen(false);
-
-        // Revalidate current phone number with new country
-        if (value) {
-            const validationError = validateInputWithCountry(value, 'phone', country);
-            setLocalError(validationError);
-        }
-    };
-
-    // Validation function with country parameter for phone validation
-    const validateInputWithCountry = (inputValue: string, inputType: string, country?: Country): string => {
-        if (required && !inputValue.trim()) {
-            return `${label} is required`;
-        }
-
-        switch (inputType) {
-            case 'email':
-                if (inputValue && !emailRegex.test(inputValue)) {
-                    return 'Please enter a valid email address';
-                }
-                break;
-            case 'phone':
-                const phoneCountry = country || selectedCountry;
-                if (inputValue && !phoneCountry.phoneRegex.test(inputValue)) {
-                    return `Please use format: ${phoneCountry.format}`;
-                }
-                break;
-        }
-        return '';
     };
 
     // Get selected option label
-    const getSelectedLabel = () => {
+    const getSelectedLabel = (value: string) => {
+        if (!value) return placeholder || 'Select an option';
         const selectedOption = options.find(option => option.value === value);
         return selectedOption ? selectedOption.label : placeholder || 'Select an option';
     };
 
+    // Early return if no control is provided
+    if (!control) {
+        return (
+            <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {label}
+                    {required && <span className="text-red-500 ml-1">*</span>}
+                </label>
+                <div className="text-red-500 text-sm">Error: Control prop is required</div>
+            </div>
+        );
+    }
+
     // Render different input types
-    const renderInput = () => {
+    const renderInput = (field: any) => {
+        const { value, onChange, onBlur } = field;
+        const hasError = errors[name];
+
         switch (type) {
             case 'select':
                 return (
@@ -174,11 +190,12 @@ export const InputField: React.FC<InputFieldProps> = ({
                         <button
                             type="button"
                             onClick={() => setIsOpen(!isOpen)}
-                            className={`w-full px-3 py-2 border rounded-md bg-white text-left flex items-center justify-between focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${error || localError ? 'border-red-500' : 'border-gray-300'
+                            onBlur={onBlur}
+                            className={`w-full px-3 py-2 border rounded-md bg-white text-left flex items-center justify-between focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
                                 }`}
                         >
                             <span className={value ? 'text-gray-900' : 'text-gray-500'}>
-                                {getSelectedLabel()}
+                                {getSelectedLabel(value)}
                             </span>
                             <svg
                                 className={`w-3 h-3 sm:w-4 sm:h-4 text-gray-400 transition-transform flex-shrink-0 ml-1 ${isOpen ? "rotate-180" : ""
@@ -202,7 +219,10 @@ export const InputField: React.FC<InputFieldProps> = ({
                                     <button
                                         key={option.value}
                                         type="button"
-                                        onClick={() => handleSelectOption(option.value)}
+                                        onClick={() => {
+                                            onChange(option.value);
+                                            setIsOpen(false);
+                                        }}
                                         className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
                                     >
                                         {option.label}
@@ -220,7 +240,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                             <button
                                 type="button"
                                 onClick={() => setCountryDropdownOpen(!countryDropdownOpen)}
-                                className={`px-3 py-2 border border-r-0 rounded-l-md bg-white flex items-center space-x-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${error || localError ? 'border-red-500' : 'border-gray-300'
+                                className={`px-3 py-2 border border-r-0 rounded-l-md bg-white flex items-center space-x-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
                                     }`}
                             >
                                 <span>{selectedCountry.flag}</span>
@@ -248,7 +268,10 @@ export const InputField: React.FC<InputFieldProps> = ({
                                         <button
                                             key={country.code}
                                             type="button"
-                                            onClick={() => handleCountrySelect(country)}
+                                            onClick={() => {
+                                                setSelectedCountry(country);
+                                                setCountryDropdownOpen(false);
+                                            }}
                                             className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none flex items-center space-x-2"
                                         >
                                             <span>{country.flag}</span>
@@ -262,10 +285,73 @@ export const InputField: React.FC<InputFieldProps> = ({
 
                         <input
                             type="tel"
-                            value={value}
-                            onChange={(e) => handleInputChange(e.target.value)}
+                            value={value || ''}
+                            onChange={onChange}
+                            onBlur={onBlur}
                             placeholder={placeholder}
-                            className={`flex-1 px-3 py-2 border rounded-r-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${error || localError ? 'border-red-500' : 'border-gray-300'
+                            className={`flex-1 px-3 py-2 border rounded-r-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
+                                }`}
+                        />
+                    </div>
+                );
+
+            case 'company':
+                return (
+                    <div className="flex">
+                        <div className="relative" ref={companyTypeDropdownRef}>
+                            <button
+                                type="button"
+                                onClick={() => setCompanyTypeDropdownOpen(!companyTypeDropdownOpen)}
+                                className={`px-3 py-2 border border-r-0 rounded-l-md bg-white flex items-center space-x-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                            >
+                                <span className="font-medium">{selectedCompanyType.abbreviation}</span>
+
+                                <svg
+                                    className={`w-3 h-3 sm:w-4 sm:h-4 text-gray-400 transition-transform flex-shrink-0 ml-1 ${companyTypeDropdownOpen ? "rotate-180" : ""
+                                        }`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M19 9l-7 7-7-7"
+                                    />
+                                </svg>
+                            </button>
+
+                            {companyTypeDropdownOpen && (
+                                <div className="absolute z-10 w-64 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                                    {companyTypes.map((companyType) => (
+                                        <button
+                                            key={companyType.value}
+                                            type="button"
+                                            onClick={() => {
+                                                setSelectedCompanyType(companyType);
+                                                setCompanyTypeDropdownOpen(false);
+                                            }}
+                                            className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <span>{companyType.label}</span>
+                                                <span className="text-gray-500 text-sm font-medium">{companyType.abbreviation}</span>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <input
+                            type="text"
+                            value={value || ''}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            placeholder={placeholder}
+                            className={`flex-1 px-3 py-2 border rounded-r-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
                                 }`}
                         />
                     </div>
@@ -275,10 +361,11 @@ export const InputField: React.FC<InputFieldProps> = ({
                 return (
                     <input
                         type="number"
-                        value={value}
-                        onChange={(e) => handleInputChange(e.target.value)}
+                        value={value || ''}
+                        onChange={onChange}
+                        onBlur={onBlur}
                         placeholder={placeholder}
-                        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${error || localError ? 'border-red-500' : 'border-gray-300'
+                        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${hasError ? 'border-red-500' : 'border-gray-300'
                             }`}
                     />
                 );
@@ -287,10 +374,11 @@ export const InputField: React.FC<InputFieldProps> = ({
                 return (
                     <input
                         type={type}
-                        value={value}
-                        onChange={(e) => handleInputChange(e.target.value)}
+                        value={value || ''}
+                        onChange={onChange}
+                        onBlur={onBlur}
                         placeholder={placeholder}
-                        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${error || localError ? 'border-red-500' : 'border-gray-300'
+                        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
                             }`}
                     />
                 );
@@ -303,11 +391,19 @@ export const InputField: React.FC<InputFieldProps> = ({
                 {label}
                 {required && <span className="text-red-500 ml-1">*</span>}
             </label>
-            {renderInput()}
-            {(error || localError) && (
+
+            <Controller
+                name={name}
+                control={control}
+                defaultValue={defaultValue}
+                rules={getValidationRules()}
+                render={({ field }) => renderInput(field)}
+            />
+
+            {errors[name] && (
                 <p className="text-red-500 text-sm mt-1 flex items-start">
                     <span className="text-red-500 mr-1">⚠</span>
-                    {error || localError}
+                    {errors[name]?.message as string}
                 </p>
             )}
         </div>
@@ -316,127 +412,72 @@ export const InputField: React.FC<InputFieldProps> = ({
 
 // Reusable Form Component
 interface ReusableFormProps {
-    onSubmit: (data: SimpleFormData) => void;
+    onSubmit: (data: CustomFormData) => void;
     children: React.ReactNode;
     submitText?: string;
     className?: string;
-}
-
-interface InputFieldRef {
-    name: string;
-    type: string;
-    required: boolean;
-    value: string;
-    validate: () => string;
+    defaultValues?: CustomFormData;
+    onFormStateChange?: (formMethods: any) => void;
 }
 
 export const ReusableForm: React.FC<ReusableFormProps> = ({
     onSubmit,
     children,
     submitText = 'Submit',
-    className = ''
+    className = '',
+    defaultValues = {},
+    onFormStateChange
 }) => {
-    const [formData, setFormData] = useState<SimpleFormData>({});
-    const [errors, setErrors] = useState<SimpleFormData>({});
-    const [inputRefs, setInputRefs] = useState<InputFieldRef[]>([]);
+    const formMethods = useForm({
+        defaultValues,
+        mode: 'onBlur'
+    });
 
-    const handleInputChange = (name: string, value: string) => {
-        setFormData(prev => ({ ...prev, [name]: value }));
-        if (errors[name]) {
-            setErrors(prev => ({ ...prev, [name]: '' }));
+    const {
+        control,
+        handleSubmit,
+        formState: { errors, isSubmitting, isDirty, isValid },
+        reset,
+        watch,
+        setValue,
+        getValues,
+        trigger
+    } = formMethods;
+
+    // Expose form methods to parent component
+    useEffect(() => {
+        if (onFormStateChange) {
+            onFormStateChange({
+                control,
+                handleSubmit,
+                formState: { errors, isSubmitting, isDirty, isValid },
+                reset,
+                watch,
+                setValue,
+                getValues,
+                trigger,
+                // Helper methods
+                resetForm: () => reset(),
+                setFieldValue: (name: string, value: any) => setValue(name, value),
+                getFieldValue: (name: string) => getValues(name),
+                getAllValues: () => getValues(),
+                validateField: (name: string) => trigger(name),
+                validateForm: () => trigger()
+            });
         }
+    }, [control, handleSubmit, errors, isSubmitting, isDirty, isValid, reset, watch, setValue, getValues, trigger, onFormStateChange]);
+
+    const onFormSubmit = (data: CustomFormData) => {
+        console.log('Form submitted successfully:', data);
+        onSubmit(data);
     };
 
-    const registerInput = (inputRef: InputFieldRef) => {
-        setInputRefs(prev => {
-            const existing = prev.find(ref => ref.name === inputRef.name);
-            if (existing) {
-                return prev.map(ref => ref.name === inputRef.name ? inputRef : ref);
-            }
-            return [...prev, inputRef];
-        });
-    };
-
-    const handleSubmit = () => {
-        const newErrors: SimpleFormData = {};
-        let hasErrors = false;
-
-        // Email regex
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        // Validate each child input directly
-        React.Children.forEach(children, (child) => {
-            if (React.isValidElement(child) && child.type === InputField) {
-                const inputChild = child as React.ReactElement<InputFieldProps>;
-                const { name, type, required } = inputChild.props;
-                const value = formData[name] || '';
-
-                // Check required fields
-                if (required && (!value || value.trim() === '')) {
-                    newErrors[name] = `This field is required`;
-                    hasErrors = true;
-                    return;
-                }
-
-                // Skip validation if field is empty and not required
-                if (!value || value.trim() === '') {
-                    return;
-                }
-
-                // Validate based on type
-                switch (type) {
-                    case 'email':
-                        if (!emailRegex.test(value)) {
-                            newErrors[name] = 'Please enter a valid email address';
-                            hasErrors = true;
-                        }
-                        break;
-
-                    case 'phone':
-                        // Get the selected country for this phone field
-                        const phoneInputRef = inputRefs.find(ref => ref.name === name);
-                        if (phoneInputRef) {
-                            const error = phoneInputRef.validate();
-                            if (error) {
-                                newErrors[name] = error;
-                                hasErrors = true;
-                            }
-                        } else {
-                            // Fallback validation with default country (Bangladesh)
-                            const bangladeshRegex = /^1[3-9]\d{8}$/;
-                            if (!bangladeshRegex.test(value)) {
-                                newErrors[name] = 'Please use format: 1XXX XXXXXX';
-                                hasErrors = true;
-                            }
-                        }
-                        break;
-                }
-            }
-        });
-
-        // If there are any errors, show them and prevent submission
-        if (hasErrors || Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
-            console.log('Form validation failed:', newErrors);
-            alert('Please fix the errors before submitting');
-            return;
-        }
-
-        // Clear any previous errors
-        setErrors({});
-        console.log('Form validation passed, submitting:', formData);
-        onSubmit(formData);
-    };
-
-    // Clone children and pass props
+    // Clone children and pass required props
     const enhancedChildren = React.Children.map(children, (child) => {
         if (React.isValidElement(child) && child.type === InputField) {
-            const inputChild = child as React.ReactElement<InputFieldProps>;
-            const fieldName = inputChild.props.name;
             return React.cloneElement(child as React.ReactElement<InputFieldProps>, {
-                onChange: handleInputChange,
-                error: errors[fieldName],
-                registerInput: registerInput
+                control,
+                errors
             });
         }
         return child;
@@ -445,12 +486,22 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     return (
         <div className={`space-y-4 ${className}`}>
             {enhancedChildren}
-            <button
-                onClick={handleSubmit}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
-            >
-                {submitText}
-            </button>
+            <div className="flex gap-2">
+                <button
+                    onClick={handleSubmit(onFormSubmit)}
+                    disabled={isSubmitting}
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {isSubmitting ? 'Submitting...' : submitText}
+                </button>
+                <button
+                    onClick={() => reset()}
+                    disabled={!isDirty}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Reset
+                </button>
+            </div>
         </div>
     );
 };

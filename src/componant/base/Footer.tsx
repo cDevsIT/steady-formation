@@ -28,7 +28,7 @@ export default function Footer() {
                     {/* Company Info */}
                     <div className="space-y-4 lg:col-span-2">
                         <div className="flex items-center space-x-2">
-                            <Image className='w-[150px]' url='/steady_formation_logo.svg' alt='Steady Formation Logo' />
+                            <Image className='w-[150px]' url='/steady-formation-logo.svg' alt='Steady Formation Logo' />
                         </div>
                         <p className="text-gray-600 text-sm leading-relaxed max-w-xs">
                             Steady Formation is a business formation company that specializes in providing high-quality business formation services.
