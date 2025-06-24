@@ -139,7 +139,7 @@ export default function BlogPage() {
 
       {/* Banner Section */}
       <div className="w-full bg-[#F4F3FF] pt-[65px]">
-        <div className="w-full max-w-[360px] md:max-w-[1280px] mx-auto py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 text-center">
+        <div className="w-full max-w-[360px] md:max-w-[1293px] mx-auto py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-[16px] md:text-[16px] font-semibold text-[#7856FC] mb-[16px] font-inter leading-[20px] md:leading-[24px] text-center">Blog</p>
           <h1 className="text-[30px] md:text-[48px] font-semibold mb-4 font-inter leading-[38px] md:leading-[60px] tracking-[-0.02em] text-center">
             Resources and Insights
@@ -221,7 +221,7 @@ export default function BlogPage() {
       </section>
 
       {/* Latest Blogs Section */}
-      <section className="w-full max-w-[1280px] mx-auto mb-[96px] px-4 md:px-0">
+      <section className="w-full max-w-[1293px] mx-auto mb-[96px] px-4 md:px-0">
         <h2 className="text-[30px] font-bold mb-6 ml-2">Latest Blogs</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {latestBlogs.map((card) => (

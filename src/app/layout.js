@@ -2,6 +2,7 @@ import Navbar from '@/componant/base/Navbar';
 import './globals.css';
 import { Inter } from 'next/font/google';
 import Footer from '@/componant/base/Footer';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -66,7 +67,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="icon" type="image/png" href="/favicon.png"/>
+        <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -99,13 +100,37 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body  className={inter.className}>
+      <body className={inter.className}>
         <main>
           <Navbar />
           <div className='mt-[-65px]'>{children}</div>
           <Footer />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#363636',
+                color: '#fff',
+              },
+              success: {
+                duration: 3000,
+                iconTheme: {
+                  primary: '#10B981',
+                  secondary: '#fff',
+                },
+              },
+              error: {
+                duration: 4000,
+                iconTheme: {
+                  primary: '#EF4444',
+                  secondary: '#fff',
+                },
+              },
+            }}
+          />
         </main>
-        
+
       </body>
     </html>
   );
