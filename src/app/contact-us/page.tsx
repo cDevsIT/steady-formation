@@ -4,6 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { contactService, ContactFormData } from '@/services/contactService';
 import TrustedCustomerSection from '@/componant/shared/TrustedCustomerSection';
+import Image from '@/componant/ui/Image';
 
 const countryCodes = [
     { code: '+1', country: 'US' },
@@ -111,13 +112,14 @@ export default function ContactUs() {
             </div>
 
             <div className="w-full max-w-[360px] md:max-w-[1280px] mx-auto py-8 md:py-12 lg:py-16 px-0 sm:px-6 lg:px-8">
-                <h2 className="text-[30px] md:text-[40px] lg:text-[48px] font-semibold text-left mt-10 md:mt-16 lg:mt-32 w-full md:w-3/4 lg:w-2/4 leading-[38px] md:leading-[52px] lg:leading-[60px] font-inter lg:mb-6">
+
+                <h2 className="text-[30px] md:text-[40px] lg:text-[48px] font-semibold text-left mt-10 md:mt-16 lg:mt-20 w-full md:w-3/4 lg:w-2/4 leading-[38px] md:leading-[52px] lg:leading-[60px] font-inter lg:mb-6">
                     Our friendly team would love to hear from you.
                 </h2>
 
-                <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 mt-6">
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-14 mt-6">
                     {/* Left side - Contact Form */}
-                    <div className="w-full lg:w-1/2">
+                    <div className="w-full lg:w-[52%]">
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                             {/* Name Fields Row */}
                             <div className="flex flex-col sm:flex-row gap-6">
@@ -354,20 +356,32 @@ export default function ContactUs() {
                     </div>
 
                     {/* Right side - Image */}
-                    <div className="w-full lg:w-1/2 lg:flex lg:items-stretch">
-                        <div className="w-full h-full">
-                            <img
-                                src="/steady-formations-contact-page.png"
+                    <div className="w-full lg:w-[48%] lg:flex lg:items-stretch">
+                        <div className="w-full h-full relative flex items-center justify-center">
+                            <Image
+                                url="/steady-formations-contact-page.png"
                                 alt="Contact Us"
                                 className="w-full h-full object-cover rounded-lg"
+                                fill={true}
+                                priority={true}
                             />
+                            {/* Overlayed Icons - individually positioned */}
+                            <span className="absolute top-[15%] right-[40%] bg-white rounded-full shadow-md flex items-center justify-center w-16 h-16 z-10">
+                                <Image url="/call-icon.svg" alt="Call" width={30} height={30} />
+                            </span>
+                            <span className="absolute top-[10%] right-[18%] -translate-x-1/2 bg-white rounded-full shadow-md flex items-center justify-center w-16 h-16 z-10">
+                                <Image url="/inbox-icon.svg" alt="Inbox" width={30} height={30} />
+                            </span>
+                            <span className="absolute top-[12%] right-[8%] bg-white rounded-full shadow-md flex items-center justify-center w-16 h-16 z-10">
+                                <Image url="/chat-icon.svg" alt="Chat" width={30} height={30} />
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Contact Cards Section */}
-            <div className="w-full max-w-[360px] md:max-w-[1280px] mx-auto py-8 md:py-12 px-0 sm:px-6 lg:px-8 mt-[120px] mb-[120px]">
+            <div className="w-full max-w-[360px] md:max-w-[1280px] mx-auto py-8 md:py-12 px-0 sm:px-6 lg:px-8 mt-[40px] mb-[80px]">
                 <h2 className="text-[38px] md:text-[48px] font-semibold text-center mb-[10px] font-inter leading-[38px] md:leading-[60px] text-[#000000]">
                     We'd love to hear from you
                 </h2>
