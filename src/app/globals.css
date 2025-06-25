@@ -18,8 +18,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #000000;
   }
 }
 
@@ -78,8 +78,6 @@ button:active {
   }
 }
 
-.carousel.carousel-slider{
+.carousel.carousel-slider {
   padding-bottom: 15px;
 }
-
-
