@@ -24,9 +24,10 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: #fff;
+  color: #000;
   font-family: Arial, Helvetica, sans-serif;
+
 }
 
 /* Custom animations */
@@ -78,8 +79,6 @@ button:active {
   }
 }
 
-.carousel.carousel-slider{
+.carousel.carousel-slider {
   padding-bottom: 15px;
 }
-
-

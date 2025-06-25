@@ -100,7 +100,7 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-      <body className={inter.className}>
+      <body  >
         <main>
           <Navbar />
           <div className='mt-[-65px]'>{children}</div>

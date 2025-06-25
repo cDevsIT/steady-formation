@@ -17,7 +17,7 @@ import WhatYouGetSection from "./WhatYouGetSection";
 const HomePage = () => {
   return (
     <>
-      
+
       <HeroSection />
       <StatisticsSection />
       <FacilitySection />
