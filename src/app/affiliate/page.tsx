@@ -52,7 +52,7 @@ const faqData = [
 
 export default function AffiliatePage() {
     return (
-        <div className="w-full min-h-screen bg-white pt-[65px]">
+        <div className="w-full min-h-screen bg-white pt-[120px]">
             <div className="max-w-[975px] mx-auto px-4 py-8">
                 <div
                     className="bg-[#240D68] rounded-2xl p-6 md:p-12 text-white relative overflow-hidden"
@@ -83,7 +83,7 @@ export default function AffiliatePage() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl p-6 md:p-8 lg:p-12 mt-10 mb-5 border border-[#E4E7EC]">
+                <div className="bg-white rounded-2xl p-6 md:p-8 lg:p-12 mt-5 mb-5 border border-[#E4E7EC]">
                     <h2 className="font-bold text-center text-gray-800 text-2xl md:text-[30px] leading-tight md:leading-[38px] mb-8 md:mb-[30px]">How it works</h2>
                     <div className="relative">
                         <div className="absolute top-6 left-1/2 w-10/12 -translate-x-1/2 hidden md:block">
@@ -94,10 +94,10 @@ export default function AffiliatePage() {
 
                         <div className="relative flex flex-col md:flex-row justify-between items-center md:items-start text-center gap-12 md:gap-4">
                             {[
-                                { icon: 'resgister-icon.svg', label: 'Register', color: 'bg-purple-100' },
-                                { icon: 'refer-icon.svg', label: 'Refer', color: 'bg-cyan-100' },
-                                { icon: 'earn-icon.svg', label: 'Earn', color: 'bg-yellow-100' },
-                                { icon: 'paid.svg', label: 'Paid', color: 'bg-green-100' }
+                                { icon: 'resgister-icon.svg', label: 'Register', color: 'bg-[#EBE8FF]' },
+                                { icon: 'refer-icon.svg', label: 'Refer', color: 'bg-[#ECFDFF]' },
+                                { icon: 'earn-icon.svg', label: 'Earn', color: 'bg-[#FEFBE8]' },
+                                { icon: 'paid.svg', label: 'Paid', color: 'bg-[#EDFCF2]' }
                             ].map((step, index) => (
                                 <div key={index} className="flex flex-col items-center gap-4 w-full md:w-1/4">
                                     <div className={`relative ${step.color} rounded-full w-24 h-24 md:w-28 md:h-28 flex items-center justify-center`}>

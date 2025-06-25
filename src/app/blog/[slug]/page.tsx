@@ -89,9 +89,9 @@ export default function BlogPost() {
       <div className='hidden'>
         <LaunchCompanyPopup />
       </div>
-      <div className="max-w-[1280px] mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-        {/* Table of Content (Left) */}
-        <aside className="md:col-span-1 bg-[#fafbfc] rounded-xl p-5 h-fit border border-[#ececec] w-full md:min-w-[220px] md:max-w-[270px]">
+      <div className="max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row gap-8">
+        {/* Table of Content (Left) - 21.6% */}
+        <aside className="w-full md:w-[21.6%] bg-[#fafbfc] rounded-xl p-5 h-fit border border-[#ececec]">
           <h2 className="font-inter font-semibold text-[24px] leading-[32px] text-black mb-5">Table Of Content</h2>
           <ul>
             {tableOfContents.map((item, index) => (
@@ -116,8 +116,8 @@ export default function BlogPost() {
           </ul>
         </aside>
 
-        {/* Main Blog Content (Center) */}
-        <main className="md:col-span-2">
+        {/* Main Blog Content (Center) - 55% */}
+        <main className="w-full md:w-[55%]">
           <p className="text-[#7856FC] text-[16px] leading-[24px] font-medium mb-3">Published 13 Jan 2024</p>
           <h2 className="font-inter text-[30px] leading-[38px] md:text-[48px] md:leading-[60px] font-semibold tracking-[-0.02em] text-black mb-6">A conversation with Lucy Bond</h2>
           <p className="font-inter text-[16px] leading-[24px] md:text-[20px] md:leading-[30px] font-normal text-[#475467] mb-6">Lucy Bond is an interior designer who started her career in New Zealand, working for large architectural firms. We chatted to her about design and life.</p>
@@ -254,8 +254,8 @@ export default function BlogPost() {
 
         </main>
 
-        {/* Sidebar (Right) */}
-        <aside className="md:col-span-1 flex flex-col gap-6 w-full md:min-w-[250px] md:max-w-[320px]">
+        {/* Sidebar (Right) - 18.5% */}
+        <aside className="w-full md:w-[18.9%] flex flex-col gap-6">
           <div className="flex flex-row md:flex-col gap-4 md:gap-6">
             <div className="bg-[#EBE8FF] rounded-xl p-6 flex flex-col flex-1 md:flex-none">
               <div className="flex -space-x-3 mb-4">
