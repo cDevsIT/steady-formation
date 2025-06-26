@@ -3,7 +3,7 @@ import { useState } from "react";
 import { InputField, ReusableForm } from "./ReusableForm";
 
 // Use the same custom interface as in the form component
-interface CustomFormData {
+export interface CustomFormData {
     [key: string]: any;
 }
 

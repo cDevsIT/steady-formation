@@ -5,7 +5,6 @@ import { ReviewsSectionProps } from '@/types/review';
 import Image from '../ui/Image';
 import ReviewCard from '../ui/ReviewCard';
 
-
 const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,28 +12,34 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
     const [scrollLeft, setScrollLeft] = useState(0);
+    const [windowWidth, setWindowWidth] = useState<number | null>(null);
     const sliderRef = useRef<HTMLDivElement>(null);
 
-    // Update items per page based on variant and screen size
+    // Track window width for responsive behavior
     useEffect(() => {
-        const updateItemsPerPage = () => {
-            if (variant === 'review-page') {
-                if (window.innerWidth < 640) {
-                    setItemsPerPage(4);
-                } else if (window.innerWidth < 1024) {
-                    setItemsPerPage(6);
-                } else {
-                    setItemsPerPage(9);
-                }
+        const updateWindowWidth = () => setWindowWidth(window.innerWidth);
+        updateWindowWidth();
+
+        window.addEventListener('resize', updateWindowWidth);
+        return () => window.removeEventListener('resize', updateWindowWidth);
+    }, []);
+
+    // Update itemsPerPage based on variant and windowWidth
+    useEffect(() => {
+        if (windowWidth === null) return;
+
+        if (variant === 'review-page') {
+            if (windowWidth < 640) {
+                setItemsPerPage(4);
+            } else if (windowWidth < 1024) {
+                setItemsPerPage(6);
+            } else {
+                setItemsPerPage(9);
             }
-        };
+        }
+    }, [variant, windowWidth]);
 
-        updateItemsPerPage();
-        window.addEventListener('resize', updateItemsPerPage);
-        return () => window.removeEventListener('resize', updateItemsPerPage);
-    }, [variant]);
-
-    // Get reviews for current page (for review-page variant)
+    // Get reviews for current page (review-page variant)
     const getCurrentPageReviews = () => {
         if (variant === 'home') {
             return reviews.slice(0, 9); // Always show max 9 for home
@@ -52,11 +57,11 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
     const getVisibleReviews = () => {
         const homeReviews = reviews.slice(0, 9);
 
-        if (typeof window === 'undefined') return homeReviews;
+        if (windowWidth === null) return homeReviews;
 
-        if (window.innerWidth >= 1024) {
+        if (windowWidth >= 1024) {
             return homeReviews; // Show all 9 on desktop
-        } else if (window.innerWidth >= 768) {
+        } else if (windowWidth >= 768) {
             // Show 2 at a time on tablet
             return homeReviews.slice(currentSlide * 2, currentSlide * 2 + 2);
         } else {
@@ -66,13 +71,13 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
     };
 
     const getMaxSlides = () => {
-        if (typeof window === 'undefined') return 0;
+        if (windowWidth === null) return 0;
 
         const homeReviews = Math.min(reviews.length, 9);
 
-        if (window.innerWidth >= 1024) {
+        if (windowWidth >= 1024) {
             return 0; // No sliding on desktop
-        } else if (window.innerWidth >= 768) {
+        } else if (windowWidth >= 768) {
             return Math.ceil(homeReviews / 2) - 1;
         } else {
             return homeReviews - 1;
@@ -91,7 +96,7 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
 
     // Touch/Mouse handlers for mobile swipe
     const handleMouseDown = (e: React.MouseEvent) => {
-        if (variant !== 'home' || window.innerWidth >= 1024) return;
+        if (variant !== 'home' || (windowWidth !== null && windowWidth >= 1024)) return;
 
         setIsDragging(true);
         setStartX(e.pageX - (sliderRef.current?.offsetLeft || 0));
@@ -99,7 +104,7 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
     };
 
     const handleTouchStart = (e: React.TouchEvent) => {
-        if (variant !== 'home' || window.innerWidth >= 1024) return;
+        if (variant !== 'home' || (windowWidth !== null && windowWidth >= 1024)) return;
 
         setIsDragging(true);
         setStartX(e.touches[0].pageX - (sliderRef.current?.offsetLeft || 0));
@@ -107,7 +112,7 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isDragging || variant !== 'home' || window.innerWidth >= 1024) return;
+        if (!isDragging || variant !== 'home' || (windowWidth !== null && windowWidth >= 1024)) return;
 
         e.preventDefault();
         const x = e.pageX - (sliderRef.current?.offsetLeft || 0);
@@ -124,7 +129,7 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
     };
 
     const handleTouchMove = (e: React.TouchEvent) => {
-        if (!isDragging || variant !== 'home' || window.innerWidth >= 1024) return;
+        if (!isDragging || variant !== 'home' || (windowWidth !== null && windowWidth >= 1024)) return;
 
         const x = e.touches[0].pageX - (sliderRef.current?.offsetLeft || 0);
         const walk = (x - startX) * 2;
@@ -153,8 +158,10 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
         <section className="pb-20 bg-white" aria-labelledby="reviews-heading">
             <div className="max-w-[1512px] mx-auto">
                 {/* Section Header */}
-                <div className={`text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px]${variant === 'review-page' ? 'white'
-                    : 'bg-[#F2F4F7]'}`}>
+                <div
+                    className={`text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px] ${variant === 'review-page' ? 'white' : 'bg-[#F2F4F7]'
+                        }`}
+                >
                     <h2 className="text-[27px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6 ">
                         Trusted by 26,000+ customers
                     </h2>
@@ -176,8 +183,10 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
                         onTouchMove={handleTouchMove}
                         onTouchEnd={handleTouchEnd}
                     >
-                        {displayReviews.map((review) => (
-                            <ReviewCard key={review.id} review={review} />
+                        {displayReviews.map((review, i) => (
+                            <div key={i}>
+                                <ReviewCard review={review} />
+                            </div>
                         ))}
                     </div>
 
@@ -190,9 +199,7 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
                                     <button
                                         key={index}
                                         onClick={() => setCurrentSlide(index)}
-                                        className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === index
-                                            ? 'bg-blue-600 scale-110'
-                                            : 'bg-gray-300 hover:bg-gray-400'
+                                        className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === index ? 'bg-blue-600 scale-110' : 'bg-gray-300 hover:bg-gray-400'
                                             }`}
                                         aria-label={`Go to slide ${index + 1}`}
                                     />
@@ -210,30 +217,18 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
                             disabled={currentPage === 1}
                             className="flex items-center gap-2"
                         >
-                            <Image
-                                className="w-4"
-                                url='/icons/arrow-left.svg'
-                                alt='Left Arrow'
-                                width={20}
-                                height={20}
-                            />
+                            <Image className="w-4" url="/icons/arrow-left.svg" alt="Left Arrow" width={20} height={20} />
                             Previous
                         </button>
 
                         <div className="flex items-center gap-2">
                             {Array.from({ length: Math.min(totalPages, 5) }).map((_, index) => {
-                                const pageNum = currentPage <= 3
-                                    ? index + 1
-                                    : currentPage + index - 2;
+                                const pageNum = currentPage <= 3 ? index + 1 : currentPage + index - 2;
 
                                 if (pageNum > totalPages) return null;
 
                                 return (
-                                    <button
-                                        key={pageNum}
-                                        onClick={() => setCurrentPage(pageNum)}
-                                        className="w-10 h-10"
-                                    >
+                                    <button key={pageNum} onClick={() => setCurrentPage(pageNum)} className="w-10 h-10">
                                         {pageNum}
                                     </button>
                                 );
@@ -242,10 +237,7 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
                             {totalPages > 5 && currentPage < totalPages - 2 && (
                                 <>
                                     <span className="px-2">...</span>
-                                    <button
-                                        onClick={() => setCurrentPage(totalPages)}
-                                        className="w-10 h-10"
-                                    >
+                                    <button onClick={() => setCurrentPage(totalPages)} className="w-10 h-10">
                                         {totalPages}
                                     </button>
                                 </>
@@ -258,13 +250,7 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
                             className="flex items-center gap-2"
                         >
                             Next
-                            <Image
-                                className="w-4"
-                                url='/icons/arrow-right.svg'
-                                alt='Right Arrow'
-                                width={20}
-                                height={20}
-                            />
+                            <Image className="w-4" url="/icons/arrow-right.svg" alt="Right Arrow" width={20} height={20} />
                         </button>
                     </nav>
                 )}

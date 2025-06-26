@@ -28,6 +28,7 @@ interface InputFieldProps {
     control?: any;
     errors?: FieldErrors;
     rules?: any;
+    className?: string;
 }
 
 // Custom form data interface to avoid conflict with built-in FormData
@@ -75,7 +76,8 @@ export const InputField: React.FC<InputFieldProps> = ({
     defaultValue = '',
     control,
     errors = {},
-    rules = {}
+    rules = {},
+    className = ''
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
@@ -166,17 +168,18 @@ export const InputField: React.FC<InputFieldProps> = ({
     };
 
     // Early return if no control is provided
-    if (!control) {
-        return (
-            <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {label}
-                    {required && <span className="text-red-500 ml-1">*</span>}
-                </label>
-                <div className="text-red-500 text-sm">Error: Control prop is required</div>
-            </div>
-        );
-    }
+    // if (!control) {
+    //     return (
+    //         <div className="mb-4">
+
+    //             <label className="block text-sm font-medium text-gray-700 mb-1">
+    //                 {label}
+    //                 {required && <span className="text-red-500 ml-1">*</span>}
+    //             </label>
+    //             <div className="text-red-500 text-sm">Error: Control prop is required</div>
+    //         </div>
+    //     );
+    // }
 
     // Render different input types
     const renderInput = (field: any) => {
@@ -243,8 +246,8 @@ export const InputField: React.FC<InputFieldProps> = ({
                                 className={`px-3 py-2 border border-r-0 rounded-l-md bg-white flex items-center space-x-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
                                     }`}
                             >
-                                <span>{selectedCountry.flag}</span>
-                                <span className="text-sm">{selectedCountry.dialCode}</span>
+                                <span className='text-[16px] text-[#344054]'>{selectedCountry.flag}</span>
+                                {/* <span className="text-sm">{selectedCountry.dialCode}</span> */}
 
                                 <svg
                                     className={`w-3 h-3 sm:w-4 sm:h-4 text-gray-400 transition-transform flex-shrink-0 ml-1 ${countryDropdownOpen ? "rotate-180" : ""
@@ -290,7 +293,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                             onBlur={onBlur}
                             placeholder={placeholder}
                             className={`flex-1 px-3 py-2 border rounded-r-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                } ${className}`}
                         />
                     </div>
                 );
@@ -386,10 +389,10 @@ export const InputField: React.FC<InputFieldProps> = ({
     };
 
     return (
-        <div className="mb-4">
+        <div className={`mb-1 col-span-2 lg:col-span-1 ${className}`}>
             <label className="block text-sm font-medium text-gray-700 mb-1">
                 {label}
-                {required && <span className="text-red-500 ml-1">*</span>}
+                {required && <span className="text-[#1570EF] ml-1">*</span>}
             </label>
 
             <Controller
@@ -444,7 +447,6 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
         trigger
     } = formMethods;
 
-    // Expose form methods to parent component
     useEffect(() => {
         if (onFormStateChange) {
             onFormStateChange({
@@ -456,7 +458,6 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
                 setValue,
                 getValues,
                 trigger,
-                // Helper methods
                 resetForm: () => reset(),
                 setFieldValue: (name: string, value: any) => setValue(name, value),
                 getFieldValue: (name: string) => getValues(name),
@@ -465,7 +466,9 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
                 validateForm: () => trigger()
             });
         }
-    }, [control, handleSubmit, errors, isSubmitting, isDirty, isValid, reset, watch, setValue, getValues, trigger, onFormStateChange]);
+        // Only run once when component mounts
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const onFormSubmit = (data: CustomFormData) => {
         console.log('Form submitted successfully:', data);
@@ -484,24 +487,15 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     });
 
     return (
-        <div className={`space-y-4 ${className}`}>
+        <div className={`space-y-4 grid gap-2 grid-cols-1 lg:grid-cols-2 ${className}`}>
             {enhancedChildren}
-            <div className="flex gap-2">
-                <button
-                    onClick={handleSubmit(onFormSubmit)}
-                    disabled={isSubmitting}
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    {isSubmitting ? 'Submitting...' : submitText}
-                </button>
-                <button
-                    onClick={() => reset()}
-                    disabled={!isDirty}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    Reset
-                </button>
-            </div>
+            <button
+                onClick={handleSubmit(onFormSubmit)}
+                disabled={isSubmitting}
+                className="col-span-1 lg:col-span-2 flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                {isSubmitting ? 'Submitting...' : submitText}
+            </button>
         </div>
     );
 };

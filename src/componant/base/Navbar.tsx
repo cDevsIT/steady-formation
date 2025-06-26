@@ -20,7 +20,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
     <nav
       className={`bg-transparent sticky top-0 z-50 backdrop-blur-lg  px-4 sm:px-6 lg:px-4`}
     >
-      <div className="max-w-[1512px] mx-auto hidden md:block">
+      <div className="max-w-[1280px] mx-auto hidden md:block">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">

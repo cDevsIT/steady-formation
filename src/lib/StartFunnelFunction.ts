@@ -8,15 +8,16 @@ export function useCustomNavigation() {
 
     return (e: React.FormEvent, businessType: string, companyName: string) => {
         e.preventDefault();
-        console.log(companyName, businessType)
+        if (!companyName.trim()) {
+            return;
+        }
+        const setupData = {
+            businessType,
+            companyName,
+            currentStep: 1,
+        };
+        // Save to localStorage
+        localStorage.setItem('companyData', JSON.stringify(setupData));
         router.push('/setup-company')
-        // Custom algorithm
-        // if (input === 'dashboard') {
-        //     router.push('/dashboard');
-        // } else if (input === 'about') {
-        //     router.push('/about');
-        // } else {
-        //     router.push('/');
-        // }
     };
 }
