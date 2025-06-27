@@ -292,7 +292,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                             onChange={onChange}
                             onBlur={onBlur}
                             placeholder={placeholder}
-                            className={`flex-1 px-3 py-2 border rounded-r-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
+                            className={`flex-1 px-3 py-2 border rounded-r-md w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
                                 } ${className}`}
                         />
                     </div>
@@ -354,7 +354,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                             onChange={onChange}
                             onBlur={onBlur}
                             placeholder={placeholder}
-                            className={`flex-1 px-3 py-2 border rounded-r-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
+                            className={`flex-1 px-3 py-2 border rounded-r-md w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
                                 }`}
                         />
                     </div>

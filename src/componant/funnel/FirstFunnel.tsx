@@ -43,6 +43,10 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
     const defaultFormValues: CustomFormData = {
         companyName: data?.companyName || "",
+        fullName: 'SHIKHOR',
+        email: 'demo@email.com',
+        primaryPhone: '2345678901',
+        secondaryPhone: '2345678901'
     };
     return (
         <div>
@@ -52,12 +56,14 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             <FunnelSubHeading className="!text-[#475467]">
                 Complete a Simple Form
             </FunnelSubHeading>
-            <div className="mt-6 max-w-[615px] mx-auto">
+            <div className="mt-6 lg:max-w-[615px] mx-auto lg:mx-0 ">
                 <ReusableForm
                     onSubmit={handleSubmit}
                     defaultValues={defaultFormValues}
                     submitText="Continue"
                     onFormStateChange={handleFormStateChange}
+                    className="mb-5"
+
                 >
                     <InputField
                         name="companyName"
@@ -109,7 +115,7 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
                 </ReusableForm>
 
-                <Rating maxWidth={false} className="border w-full border-[#E4E7EC] mt-5" radius={false} />
+                <Rating maxWidth={false} className="border w-full border-[#E4E7EC] hidden lg:flex" radius={false} />
             </div>
         </div>
     );

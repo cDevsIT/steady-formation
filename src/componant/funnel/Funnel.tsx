@@ -6,6 +6,7 @@ import FirstFunnel from "./FirstFunnel";
 import Image from "../ui/Image";
 import { CustomFormData } from "../ui/FormSample";
 import ErrorPage from 'next/error';
+import SecondFunnel from "./SecondFunnel";
 
 export interface dataState {
     companyName?: string;
@@ -22,7 +23,7 @@ export interface dataState {
 const Funnel = () => {
     const router = useRouter();
     const [data, setData] = useState<dataState>({});
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(2);
     const [totalSteps] = useState(6);
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -36,7 +37,7 @@ const Funnel = () => {
         if (localData) {
             const parsedData = JSON.parse(localData);
             setData(parsedData);
-            setCurrentStep(parsedData.step || 1);
+            setCurrentStep(parsedData.currentStep || 1);
         }
     }, []);
 
@@ -80,11 +81,11 @@ const Funnel = () => {
                 />
 
                 {data?.currentStep === 1 &&
-                    <div className="max-w-[1280px] mx-auto grid grid-cols-[55%_45%] gap-4">
+                    <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4">
 
                         <FirstFunnel handleFormSubmit={handleFormSubmit} />
                         <Image
-                            className="w-[565px]"
+                            className="w-[565px] hidden lg:block"
                             url='/funnel/funnel_step.png'
                             alt='Funnel Page'
                             width={565}
@@ -94,9 +95,9 @@ const Funnel = () => {
                 }
 
                 {data?.currentStep === 2 &&
-                    <div className="max-w-[1280px] mx-auto grid grid-cols-[55%_45%] gap-4">
+                    <div className="max-w-[1280px] mx-auto ">
 
-                        <h2>2nd Step</h2>
+                        <SecondFunnel />
                     </div>
                 }
 
