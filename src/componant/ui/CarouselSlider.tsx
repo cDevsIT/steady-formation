@@ -6,9 +6,12 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 type CustomCarouselSliderProps = {
   children: React.ReactElement[];
   className?: string;
+  selectedItem?: number;
+  onChange?: (index: number) => void;
+  showIndicators?: boolean;
 };
 
-const CarouselSlider: React.FC<CustomCarouselSliderProps> = ({ children, className = '' }) => {
+const CarouselSlider: React.FC<CustomCarouselSliderProps> = ({ children, className = '', selectedItem, onChange, showIndicators = true }) => {
   return (
     <div className={`${className}`}>
       <style jsx global>{`
@@ -91,6 +94,9 @@ const CarouselSlider: React.FC<CustomCarouselSliderProps> = ({ children, classNa
         centerMode={false}
         centerSlidePercentage={100}
         className="carousel-container"
+        selectedItem={selectedItem}
+        onChange={onChange}
+        showIndicators={showIndicators}
       >
         {children}
       </Carousel>

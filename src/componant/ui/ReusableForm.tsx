@@ -246,11 +246,11 @@ export const InputField: React.FC<InputFieldProps> = ({
                                 className={`px-3 py-2 border border-r-0 rounded-l-md bg-white flex items-center space-x-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
                                     }`}
                             >
-                                <span className='text-[16px] text-[#344054]'>{selectedCountry.flag}</span>
+                                <span className='text-[16px] text-[#344054]'>{selectedCountry.code}</span>
                                 {/* <span className="text-sm">{selectedCountry.dialCode}</span> */}
 
                                 <svg
-                                    className={`w-3 h-3 sm:w-4 sm:h-4 text-gray-400 transition-transform flex-shrink-0 ml-1 ${countryDropdownOpen ? "rotate-180" : ""
+                                    className={`w-3 h-3 sm:w-4 sm:h-4 text-gray-400 transition-transform flex-shrink-0 ${countryDropdownOpen ? "rotate-180" : ""
                                         }`}
                                     fill="none"
                                     stroke="currentColor"
@@ -292,7 +292,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                             onChange={onChange}
                             onBlur={onBlur}
                             placeholder={placeholder}
-                            className={`flex-1 px-3 py-2 border rounded-r-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
+                            className={`flex-1 px-3 py-2 border rounded-r-md w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
                                 } ${className}`}
                         />
                     </div>
@@ -354,7 +354,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                             onChange={onChange}
                             onBlur={onBlur}
                             placeholder={placeholder}
-                            className={`flex-1 px-3 py-2 border rounded-r-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
+                            className={`flex-1 px-3 py-2 border rounded-r-md w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
                                 }`}
                         />
                     </div>
