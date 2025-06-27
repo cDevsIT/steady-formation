@@ -35,13 +35,18 @@ const COMPANY_TYPES = [
   },
 ];
 
-const CompanySelectSection = () => {
-  const [selected, setSelected] = useState('llc');
+interface CompanySelectSectionProps {
+    selected: string;
+    setSelected: React.Dispatch<React.SetStateAction<string>>;
+  }
+
+const CompanySelectSection: React.FC<CompanySelectSectionProps> = ({selected,setSelected}) => {
+
 
   return (
     <div>
       <label className="block text-[16px] font-medium text-gray-900 mb-3">
-        Select Company Type <span className="text-[#1570EF]">*</span>
+              Select Company Type <span className="text-[#7856FC]">*</span>
       </label>
       <div className="flex flex-col gap-4">
         {COMPANY_TYPES.map((type) => (

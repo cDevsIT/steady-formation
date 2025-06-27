@@ -14,15 +14,18 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = (
         className = '',
         theme = 'light'
     }) => {
-    const [businessType, setBusinessType] = useState("LLC");
+    const [businessType, setBusinessType] = useState("llc");
+    const [businessLabel, setBusinessLabel] = useState("LLC");
     const [companyName, setCompanyName] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useCustomNavigation();
 
     const businessTypes = [
-        { value: "LLC", label: "LLC" },
-        { value: "Corporation", label: "Corp" },
-        { value: "Partnership", label: "Partnership" },
+        { value: "llc", label: "LLC" },
+        { value: "s_corp", label: "S Corp" },
+        { value: "c_corp", label: "C Crop" },
+        { value: "non_profit", label: "Non Profit" },
+        { value: "partnership", label: "Partnership" },
     ];
 
     return (
@@ -39,7 +42,7 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = (
                                 className="w-16 sm:w-20 md:w-24 lg:w-28 h-12 px-2 sm:px-3 rounded-l-lg bg-white text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-gray-300 transition-all border border-gray-200"
                             >
                                 <span className="text-gray-900 font-medium text-xs sm:text-sm truncate">
-                                    {businessType}
+                                    {businessLabel}
                                 </span>
                                 <svg
                                     className={`w-3 h-3 sm:w-4 sm:h-4 text-gray-400 transition-transform flex-shrink-0 ml-1 ${isDropdownOpen ? "rotate-180" : ""
@@ -71,6 +74,7 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = (
                                                 type="button"
                                                 onClick={() => {
                                                     setBusinessType(type.value);
+                                                    setBusinessLabel(type.label)
                                                     setIsDropdownOpen(false);
                                                 }}
                                                 className="w-full px-2 sm:px-3 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none text-gray-900 text-xs sm:text-sm first:rounded-t-none last:rounded-b-lg transition-colors"

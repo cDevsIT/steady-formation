@@ -1,8 +1,9 @@
 import CarouselSlider from '../../ui/CarouselSlider';
 import { sampleReviews } from '../../data/review';
 import Button from '../../ui/Button';
-import Image from '../../ui/Image';
 import { useState } from 'react';
+import Image from '@/componant/ui/Image';
+import Rating from '@/componant/shared/Rating';
 
 const orderSummary = [
   { label: 'Incorporation of Your Company', value: 'Free' },
@@ -64,19 +65,20 @@ const FunnelSidebar = () => {
   );
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 max-w-[452px]">
+    <Image className='w-[452px]' url="/funnel/funnel-sidebar-head.svg" alt="stars" width={452} height={195} />
       {/* Order Summary Section */}
-      <div className="bg-white rounded-xl shadow p-4 mb-2">
-        <div className="font-bold text-lg mb-3">Order Summary</div>
-        <div className="divide-y divide-gray-100">
+          <div className="bg-gray-100 rounded-xl shadow p-4 mb-2">
+        <div className="font-bold text-[20px]">Order Summary</div>
+        <div className="divide-y space-y-1 divide-gray-100">
           {orderSummary.map((item, idx) => (
-            <div key={item.label} className="flex justify-between py-1 text-sm">
+            <div key={item.label} className="flex justify-between py-1 text-[16px]">
               <span className="text-gray-700">{item.label}</span>
               <span className="font-medium text-gray-900">{item.value}</span>
             </div>
           ))}
         </div>
-        <div className="flex justify-between font-bold text-base mt-3 pt-2 border-t border-gray-100">
+              <div className="flex justify-between font-bold text-[16px] mt-3 pt-2 border-t-2 border-gray-200">
           <span>Total Order</span>
           <span>$0.00</span>
         </div>
@@ -121,13 +123,7 @@ const FunnelSidebar = () => {
       </div>
 
       {/* Review Score Section */}
-      <div className="bg-white rounded-xl shadow flex flex-col items-center py-6">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-4xl font-bold">4.8</span>
-          <Image url="/icons/rating_stars.svg" alt="stars" width={80} height={20} />
-        </div>
-        <span className="text-gray-500 text-sm">502 reviews</span>
-      </div>
+          <Rating maxWidth={false} className="border w-full border-[#E4E7EC] hidden lg:flex" radius={false} />
 
       {/* Need Help form expert? Section */}
       <div className="bg-[#F4F6FB] rounded-xl shadow flex flex-col items-center py-6 px-4">

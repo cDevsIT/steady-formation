@@ -12,7 +12,7 @@ const Rating: React.FC<CustomeRatingProps> = ({
     maxWidth = true
 }) => {
     return (
-        <div className={`flex justify-center items-center bg-white ${maxWidth && 'max-w-[413px]'}  p-[35px] rounded-b-[32px] rounded-t-[32px]  ${radius && 'lg:rounded-t-[32px] lg:rounded-b-[0px]'} ${className}`}>
+        <div className={`flex justify-center items-center bg-white ${maxWidth && 'max-w-[413px]'}  p-[35px] rounded-b-[24px] rounded-t-[24px]  ${radius && 'lg:rounded-t-[24px] lg:rounded-b-[0px]'} ${className}`}>
             <Image
                 className="w-[35px]"
                 url='/icons/leaf_left.svg'

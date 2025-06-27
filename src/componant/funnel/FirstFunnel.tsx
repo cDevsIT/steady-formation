@@ -32,7 +32,7 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     }, [data, formMethods]);
 
     const handleSubmit = (data: CustomFormData) => {
-        handleFormSubmit(data)
+        handleFormSubmit({stepOne: data})
 
     };
 

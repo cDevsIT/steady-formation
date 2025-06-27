@@ -7,8 +7,10 @@ import Image from "../ui/Image";
 import { CustomFormData } from "../ui/FormSample";
 import ErrorPage from 'next/error';
 import SecondFunnel from "./SecondFunnel";
+import FunnelSidebar from "./Comp/FunnelSidebar";
 
 export interface dataState {
+    businessType?: string;
     companyName?: string;
     currentStep?: number;
     stepOne?: {
@@ -72,16 +74,16 @@ const Funnel = () => {
 
     return (
         <section className=" bg-white pt-[65px] px-4" key={refreshKey}>
-            <div className="max-w-[1512px] mx-auto">
+            <div className="max-w-[1280px] mx-auto">
                 <ProgressBar
                     totalSteps={totalSteps}
                     currentStep={currentStep}
                     onBack={handleBack}
-                    className="mt-2 max-w-[1280px] mx-auto mb-6"
+                    className="mt-2 mb-6"
                 />
 
                 {data?.currentStep === 1 &&
-                    <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4">
 
                         <FirstFunnel handleFormSubmit={handleFormSubmit} />
                         <Image
@@ -94,10 +96,13 @@ const Funnel = () => {
                     </div>
                 }
 
-                {data?.currentStep === 2 &&
-                    <div className="max-w-[1280px] mx-auto ">
+                {data?.currentStep !== 1 &&
+                    <div className="flex justify-between gap-4 ">
 
-                        <SecondFunnel />
+                        {data?.currentStep === 2 && <SecondFunnel handleFormSubmit={handleFormSubmit} />}
+                        
+
+                        <FunnelSidebar />
                     </div>
                 }
 
