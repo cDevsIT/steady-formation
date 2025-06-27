@@ -2,15 +2,17 @@ import Image from "../ui/Image";
 interface CustomeRatingProps {
   className?: string;
     radius?: boolean;
+    maxWidth?:boolean;
 }
 
 
 const Rating: React.FC<CustomeRatingProps> = ({
     className = '',
-    radius = false
+    radius = false,
+    maxWidth = true
 }) => {
     return (
-        <div className={`flex justify-center items-center bg-white max-w-[413px] p-[35px] rounded-b-[32px] rounded-t-[32px]  ${radius && 'lg:rounded-t-[32px] lg:rounded-b-[0px]'} ${className}`}>
+        <div className={`flex justify-center items-center bg-white ${maxWidth && 'max-w-[413px]'}  p-[35px] rounded-b-[32px] rounded-t-[32px]  ${radius && 'lg:rounded-t-[32px] lg:rounded-b-[0px]'} ${className}`}>
             <Image
                 className="w-[35px]"
                 url='/icons/leaf_left.svg'

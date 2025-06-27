@@ -2,20 +2,14 @@ import { useEffect, useState } from "react";
 import { FunnelHeading, FunnelSubHeading } from "../ui/FunnelHeading";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
+import Rating from "../shared/Rating";
+import { dataState } from "./Funnel";
 
-interface dataState {
-    companyName?: string;
-    step?: number;
-    stepOne?: {
-        fullName?: string;
-        email?: string;
-        primaryPhone?: string;
-        secondaryPhone?: string
-    }
+interface ChildComponentProps {
+    handleFormSubmit: (data: CustomFormData) => void;
+  }
 
-}
-
-const FirstFunnel = () => {
+const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [data, setData] = useState<dataState>({});
     const [formMethods, setFormMethods] = useState<any>(null);
 
@@ -37,20 +31,14 @@ const FirstFunnel = () => {
         }
     }, [data, formMethods]);
 
-    const handleFormSubmit = (data: CustomFormData) => {
-        updateCompanyData(data)
+    const handleSubmit = (data: CustomFormData) => {
+        handleFormSubmit(data)
 
     };
 
     // Handle form state changes and set up watchers
     const handleFormStateChange = (methods: any) => {
         setFormMethods(methods);
-    };
-
-    const updateCompanyData = (newData: any) => {
-        const updatedData = { ...data, ...newData };
-        setData(updatedData);
-        localStorage.setItem('companyData', JSON.stringify(updatedData));
     };
 
     const defaultFormValues: CustomFormData = {
@@ -66,7 +54,7 @@ const FirstFunnel = () => {
             </FunnelSubHeading>
             <div className="mt-6 max-w-[615px] mx-auto">
                 <ReusableForm
-                    onSubmit={handleFormSubmit}
+                    onSubmit={handleSubmit}
                     defaultValues={defaultFormValues}
                     submitText="Continue"
                     onFormStateChange={handleFormStateChange}
@@ -77,7 +65,7 @@ const FirstFunnel = () => {
                         placeholder="Enter your company name"
                         required
                         type="text"
-                        className='col-span-2 mb-1'
+                        className='lg:col-span-2 mb-1'
                     />
                     <span className="text-[12px] leading-[18px] col-span-2 max-w-[591px]text-start">*The entered name will be validated later. You Don’t have to add “LLC,” “Inc.” “Corp” etc. in this box. If your chosen name is unavailable, together we&apos;ll work on an alternative.</span>
 
@@ -120,6 +108,8 @@ const FirstFunnel = () => {
                     />
 
                 </ReusableForm>
+
+                <Rating maxWidth={false} className="border w-full border-[#E4E7EC] mt-5" radius={false} />
             </div>
         </div>
     );
