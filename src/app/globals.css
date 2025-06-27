@@ -82,3 +82,8 @@ button:active {
 .carousel.carousel-slider {
   padding-bottom: 15px;
 }
+
+.carousel .slide {
+  background: transparent;
+  padding: 0 0 !important;
+}

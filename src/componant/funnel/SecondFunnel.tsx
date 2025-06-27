@@ -4,6 +4,7 @@ import CompanySelectSection from "./Comp/CompanySelectSection";
 import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
+import { industries, llcTypes, usStates } from "./funnel.type";
 interface ChildComponentProps {
     handleFormSubmit: (data: CustomFormData) => void;
 }
@@ -44,12 +45,10 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
     const defaultFormValues: CustomFormData = {
         llcType: "singleLLC",
+        industryType: ''
     };
 
-    const llcTypes = [
-        { label: 'Single Member LLC', value: 'singleLLC' },
-        { label: 'Multi Member LLC', value: 'multiLLC' },
-    ];
+
 
     return (
         <div className="lg:max-w-[730px]">
@@ -75,6 +74,26 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                     placeholder="Select llc type"
                     options={llcTypes}
                     className="lg:col-span-2 mb-1"
+                />
+
+                <InputField
+                    name="stateName"
+                    label="State Name"
+                    type="select"
+                    required
+                    placeholder="Select State Name"
+                    options={usStates}
+                    className="mb-1"
+                />
+
+                <InputField
+                    name="industryType"
+                    label="Type of Industry"
+                    type="select"
+                    required
+                    placeholder="Select Industry Type"
+                    options={industries}
+                    className="mb-1"
                 />
 
             </ReusableForm>
