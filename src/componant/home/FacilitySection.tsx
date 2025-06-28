@@ -43,7 +43,7 @@ const features = [
 const FacilitySection = () => {
     return (
         <section className="pb-20 bg-white lg:mt-[120px] xl:mt-[180px] md:mb-[488px] lg:mb-[690px] xl:mb-[400px]">
-            <div className="max-w-[1512px] mx-auto relative">
+            <div className="max-w-[1352px] mx-auto relative">
                 <div>
                     <div className="bg-white hidden lg:flex justify-between relative">
                         <h2 className="absolute left-4 xl:left-15 top-[60px] z-10 text-[40px] xl:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-white max-w-[370px] xl:max-w-[430px] ">Everything You Need to Start, Nothing You Don’t</h2>

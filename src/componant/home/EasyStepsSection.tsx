@@ -64,7 +64,7 @@ const EasyStepsSection: React.FC = () => {
 
     return (
         <section className='pt-20 mb-4 px-4 bg-white'>
-            <div className='max-w-[1512px] mx-auto'>
+            <div className='max-w-[1280px] mx-auto'>
                 <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6  text-center max-w-[600px] mx-auto">
                     Start Your U.S. Company in 4 Easy Steps
                 </h2>

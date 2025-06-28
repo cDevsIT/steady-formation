@@ -156,7 +156,7 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
 
     return (
         <section className="pb-20 bg-white" aria-labelledby="reviews-heading">
-            <div className="max-w-[1512px] mx-auto">
+            <div className="max-w-[1392px] mx-auto">
                 {/* Section Header */}
                 <div
                     className={`text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px] ${variant === 'review-page' ? 'white' : 'bg-[#F2F4F7]'

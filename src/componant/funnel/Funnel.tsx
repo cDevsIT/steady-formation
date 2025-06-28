@@ -73,7 +73,7 @@ const Funnel = () => {
       }
 
     return (
-        <section className=" bg-white pt-[65px] px-4" key={refreshKey}>
+        <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
             <div className="max-w-[1280px] mx-auto">
                 <ProgressBar
                     totalSteps={totalSteps}

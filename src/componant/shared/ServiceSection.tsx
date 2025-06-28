@@ -58,7 +58,7 @@ export default function ServicesSection() {
 
   return (
     <section className="pb-20 bg-white">
-      <div className="max-w-[1512px] mx-auto">
+      <div className="max-w-[1392px] mx-auto">
         {/* Header */}
         <div className="text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px] bg-[#F2F4F7]">
           <h2 className="text-[27px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6 ">

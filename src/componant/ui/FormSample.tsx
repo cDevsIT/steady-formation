@@ -81,7 +81,7 @@ const FormSample = () => {
     };
 
     return (
-        <section className="bg-white pt-[65px] px-4">
+        <section className="bg-white pt-[70px] px-4">
             <div className="max-w-[1512px] mx-auto">
                 <h1 className="text-2xl font-bold mb-6">Contact Form</h1>
 

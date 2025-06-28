@@ -75,7 +75,7 @@ export default function LatestBlogSection() {
 
     return (
         <div className="pb-20 px-4 bg-white">
-            <div className="max-w-[1512px] mx-auto px-0 lg:px-10">
+            <div className="max-w-[1280px] mx-auto px-0 lg:px-10">
                 {/* Header */}
                 {/* Header */}
                 <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6  text-center max-w-[807px] mx-auto">
