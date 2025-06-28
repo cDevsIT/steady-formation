@@ -62,7 +62,7 @@ const businessStructures = [
 export default function PricingSection() {
     return (
         <section className="pb-20 px-4 bg-white">
-            <div className="max-w-[1512px] mx-auto">
+            <div className="max-w-[1280px] mx-auto">
                 {/* Header */}
                 <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6  text-center max-w-[807px] mx-auto">
                     Find the Right Business Structure for Your Success

@@ -3,7 +3,7 @@ import Image from "../ui/Image";
 const DashboardSection = () => {
     return (
         <section className=" bg-white px-[16px]">
-            <div className="max-w-[1512px] mx-auto">
+            <div className="max-w-[1280px] mx-auto">
                 <div className="flex flex-col items-center gap-3">
                     <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 text-center max-w-[625px]">
                         Your Business, One Smart Dashboard Away

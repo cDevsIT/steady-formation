@@ -5,7 +5,7 @@ const LaunchCompany = () => {
 
     return (
         <section className="pb-20 bg-white px-3">
-            <div className="max-w-[1512px] mx-auto relative">
+            <div className="max-w-[1280px] mx-auto relative">
                 <div>
                     <div className="bg-white hidden lg:flex justify-between relative">
                         <div className="absolute left-4 xl:left-15 top-[30px] xl:top-[60px]  z-10 max-w-[654px] space-y-3 xl:space-y-6 ">
