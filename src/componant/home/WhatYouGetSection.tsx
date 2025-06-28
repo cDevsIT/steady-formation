@@ -27,7 +27,7 @@ export default function WhatYouGetSection() {
 
     return (
         <section className="bg-white px-[16px]">
-            <div className="max-w-[1512px] mx-auto flex flex-col lg:flex-row gap-5 justify-evenly items-center">
+            <div className="max-w-[1280px] mx-auto flex flex-col lg:flex-row gap-5 justify-evenly items-center">
                 <div className="space-y-8">
                     <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 text-center lg:text-start max-w-[625px]">What You’ll Get with Steady Formation</h2>
                     <div className="space-y-2">

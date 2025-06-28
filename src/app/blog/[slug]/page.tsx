@@ -85,7 +85,7 @@ export default function BlogPost() {
   const blogTitle = slugToTitle(slug);
 
   return (
-    <div className="w-full min-h-screen bg-white pt-[65px]">
+    <div className="w-full min-h-screen bg-white pt-[70px]">
       <div className='hidden'>
         <LaunchCompanyPopup />
       </div>

@@ -1,7 +1,7 @@
 export default function StatisticsSection() {
     return (
         <section className="w-full bg-white py-16 px-4">
-            <div className="max-w-[1512px] mx-auto">
+            <div className="max-w-[1280px] mx-auto">
                 <div className="flex flex-col lg:flex-row lg:flex lg:items-center justify-between gap-12">
                     {/* Stats Grid - Left Side */}
                     <div className="grid grid-cols-2 gap-6 flex-shrink-0 w-full lg:w-1/2">
