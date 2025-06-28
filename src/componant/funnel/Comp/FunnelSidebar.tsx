@@ -60,7 +60,7 @@ const FunnelSidebar = () => {
     );
 
     return (
-        <div className="flex flex-col gap-6 max-w-[452px]">
+        <div className="hidden lg:flex flex-col gap-6 max-w-[452px]">
             <Image className='w-[452px]' url="/funnel/funnel-sidebar-head.svg" alt="stars" width={452} height={195} />
             {/* Order Summary Section */}
             <div className="bg-gray-100 rounded-xl shadow p-4 mb-2">

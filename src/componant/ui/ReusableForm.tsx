@@ -23,12 +23,13 @@ interface InputFieldProps {
     type: 'text' | 'number' | 'email' | 'select' | 'phone' | 'company';
     required?: boolean;
     placeholder?: string;
-    options?: { label: string; value: string }[];
+    options?: { label: string; value: string | number | boolean }[];
     defaultValue?: string;
     control?: any;
     errors?: FieldErrors;
     rules?: any;
     className?: string;
+    disabled?: boolean;
 }
 
 // Custom form data interface to avoid conflict with built-in FormData
@@ -77,7 +78,8 @@ export const InputField: React.FC<InputFieldProps> = ({
     control,
     errors = {},
     rules = {},
-    className = ''
+    className = '',
+    disabled = false
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
@@ -192,10 +194,11 @@ export const InputField: React.FC<InputFieldProps> = ({
                     <div className="relative" ref={dropdownRef}>
                         <button
                             type="button"
-                            onClick={() => setIsOpen(!isOpen)}
+                            onClick={() => !disabled && setIsOpen(!isOpen)}
                             onBlur={onBlur}
+                            disabled={disabled}
                             className={`w-full px-3 py-2 border rounded-md bg-white text-left flex items-center justify-between focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''}`}
                         >
                             <span className={value ? 'text-gray-900' : 'text-gray-500'}>
                                 {getSelectedLabel(value)}
@@ -216,14 +219,15 @@ export const InputField: React.FC<InputFieldProps> = ({
                             </svg>
                         </button>
 
-                        {isOpen && (
+                        {isOpen && !disabled && (
                             <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                                {options.map((option) => (
+                                {options.map((option,i) => (
                                     <button
-                                        key={option.value}
+                                        key={i}
                                         type="button"
                                         onClick={() => {
                                             onChange(option.value);
+                                            onBlur();
                                             setIsOpen(false);
                                         }}
                                         className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
@@ -243,8 +247,9 @@ export const InputField: React.FC<InputFieldProps> = ({
                             <button
                                 type="button"
                                 onClick={() => setCountryDropdownOpen(!countryDropdownOpen)}
+                                disabled={disabled}
                                 className={`px-3 py-2 border border-r-0 rounded-l-md bg-white flex items-center space-x-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
-                                    }`}
+                                    } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''}`}
                             >
                                 <span className='text-[16px] text-[#344054]'>{selectedCountry.code}</span>
                                 {/* <span className="text-sm">{selectedCountry.dialCode}</span> */}
@@ -265,7 +270,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                                 </svg>
                             </button>
 
-                            {countryDropdownOpen && (
+                            {countryDropdownOpen && !disabled && (
                                 <div className="absolute z-10 w-64 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                                     {countries.map((country) => (
                                         <button
@@ -292,8 +297,9 @@ export const InputField: React.FC<InputFieldProps> = ({
                             onChange={onChange}
                             onBlur={onBlur}
                             placeholder={placeholder}
+                            disabled={disabled}
                             className={`flex-1 px-3 py-2 border rounded-r-md w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
-                                } ${className}`}
+                                } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''} ${className}`}
                         />
                     </div>
                 );
@@ -305,8 +311,9 @@ export const InputField: React.FC<InputFieldProps> = ({
                             <button
                                 type="button"
                                 onClick={() => setCompanyTypeDropdownOpen(!companyTypeDropdownOpen)}
+                                disabled={disabled}
                                 className={`px-3 py-2 border border-r-0 rounded-l-md bg-white flex items-center space-x-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
-                                    }`}
+                                    } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''}`}
                             >
                                 <span className="font-medium">{selectedCompanyType.abbreviation}</span>
 
@@ -326,7 +333,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                                 </svg>
                             </button>
 
-                            {companyTypeDropdownOpen && (
+                            {companyTypeDropdownOpen && !disabled && (
                                 <div className="absolute z-10 w-64 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                                     {companyTypes.map((companyType) => (
                                         <button
@@ -354,8 +361,9 @@ export const InputField: React.FC<InputFieldProps> = ({
                             onChange={onChange}
                             onBlur={onBlur}
                             placeholder={placeholder}
+                            disabled={disabled}
                             className={`flex-1 px-3 py-2 border rounded-r-md w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                                } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''}`}
                         />
                     </div>
                 );
@@ -368,8 +376,9 @@ export const InputField: React.FC<InputFieldProps> = ({
                         onChange={onChange}
                         onBlur={onBlur}
                         placeholder={placeholder}
+                        disabled={disabled}
                         className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${hasError ? 'border-red-500' : 'border-gray-300'
-                            }`}
+                            } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''}`}
                     />
                 );
 
@@ -381,8 +390,9 @@ export const InputField: React.FC<InputFieldProps> = ({
                         onChange={onChange}
                         onBlur={onBlur}
                         placeholder={placeholder}
+                        disabled={disabled}
                         className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
-                            }`}
+                            } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''}`}
                     />
                 );
         }
@@ -398,7 +408,6 @@ export const InputField: React.FC<InputFieldProps> = ({
             <Controller
                 name={name}
                 control={control}
-                defaultValue={defaultValue}
                 rules={getValidationRules()}
                 render={({ field }) => renderInput(field)}
             />
@@ -471,7 +480,6 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     }, []);
 
     const onFormSubmit = (data: CustomFormData) => {
-        console.log('Form submitted successfully:', data);
         onSubmit(data);
     };
 
@@ -487,12 +495,12 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     });
 
     return (
-        <div className={`space-y-4 grid gap-2 grid-cols-1 lg:grid-cols-2 ${className}`}>
+        <div className={`space-y-4 grid gap-4 grid-cols-1 lg:grid-cols-2 ${className}`}>
             {enhancedChildren}
             <button
                 onClick={handleSubmit(onFormSubmit)}
                 disabled={isSubmitting}
-                className="col-span-1 lg:col-span-2 flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="col-span-1 lg:col-span-2 flex-1 bg-[#7856FC] text-white py-2 px-4 rounded-md hover:bg-purple-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 {isSubmitting ? 'Submitting...' : submitText}
             </button>
