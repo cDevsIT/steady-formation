@@ -30,7 +30,6 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     useEffect(() => {
         if (formMethods) {
             formMethods.reset({
-                companyName: data.companyName || "",
                 //remove This
                 llcType: "singleLLC",
                 industryType: "",

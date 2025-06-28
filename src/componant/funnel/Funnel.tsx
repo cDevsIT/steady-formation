@@ -10,6 +10,7 @@ import SecondFunnel from "./SecondFunnel";
 import FunnelSidebar from "./Comp/FunnelSidebar";
 import ThirdFunnel from "./ThirdFunnel";
 import FourthFunnel from "./FourthFunnel";
+import FifthFunnel from "./FifthFunnel";
 
 export interface dataState {
     businessType?: string;
@@ -106,6 +107,8 @@ const Funnel = () => {
                         {data?.currentStep === 3 && <ThirdFunnel handleFormSubmit={handleFormSubmit} />}
 
                         {data?.currentStep === 4 && <FourthFunnel handleFormSubmit={handleFormSubmit} />}
+
+                        {data?.currentStep === 5 && <FifthFunnel handleFormSubmit={handleFormSubmit} />}
                         
 
                         <FunnelSidebar />

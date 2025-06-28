@@ -75,7 +75,6 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     useEffect(() => {
         if (formMethods) {
             formMethods.reset({
-                companyName: data.companyName || "",
                 country: "USA",
                 //remove This
                 city: 'New York',
