@@ -68,3 +68,8 @@ export const usStates = [
     { label: 'Wisconsin', value: 'WI' },
     { label: 'Wyoming', value: 'WY' },
 ];
+
+export const numOfOwnerShip = [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+]

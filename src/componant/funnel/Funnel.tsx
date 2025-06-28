@@ -8,6 +8,8 @@ import { CustomFormData } from "../ui/FormSample";
 import ErrorPage from 'next/error';
 import SecondFunnel from "./SecondFunnel";
 import FunnelSidebar from "./Comp/FunnelSidebar";
+import ThirdFunnel from "./ThirdFunnel";
+import FourthFunnel from "./FourthFunnel";
 
 export interface dataState {
     businessType?: string;
@@ -100,6 +102,10 @@ const Funnel = () => {
                     <div className="flex justify-between gap-4 ">
 
                         {data?.currentStep === 2 && <SecondFunnel handleFormSubmit={handleFormSubmit} />}
+
+                        {data?.currentStep === 3 && <ThirdFunnel handleFormSubmit={handleFormSubmit} />}
+
+                        {data?.currentStep === 4 && <FourthFunnel handleFormSubmit={handleFormSubmit} />}
                         
 
                         <FunnelSidebar />
