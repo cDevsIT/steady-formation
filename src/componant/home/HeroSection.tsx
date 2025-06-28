@@ -10,7 +10,7 @@ export default function HeroSection() {
     <section className="bg-[#f4f3ff] pt-[70px] px-4">
       <div className="max-w-[1280px] mx-auto flex flex-col justify-center gap-3">
         {/* Desktop Grid Layout */}
-        <div className="flex flex-col lg:flex-row gap-[50px] justify-between items-center pt-16">
+        <div className="flex flex-col lg:flex-row gap-[50px] justify-between items-center lg:pt-16">
           {/* Top Left - Heading and Form */}
           <div className="flex flex-col gap-3 items-center lg:items-start">
             <div className="flex flex-col gap-3">
