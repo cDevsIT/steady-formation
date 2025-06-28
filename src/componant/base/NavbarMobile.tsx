@@ -21,7 +21,7 @@ const NavbarMobile: React.FC<NavbarProps> = ({ }) => {
     return (
         <>
             <div className="max-w-[1512px] mx-auto md:hidden ">
-                <div className="flex justify-between items-center h-16">
+                <div className="flex justify-between items-center h-17">
                     {/* Logo */}
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center space-x-2">
