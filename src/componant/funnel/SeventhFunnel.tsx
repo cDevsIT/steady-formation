@@ -1,206 +1,67 @@
 import { useState } from "react";
+import { FunnelHeading } from "../ui/FunnelHeading";
 import { ChildComponentProps } from "./SecondFunnel";
-
-const initialPersonalInfo = {
-  name: "Nasir Uddin",
-  email: "nasir@gmail.com",
-  phone: "+88016100000",
-};
-const initialBusinessInfo = {
-  owner: "Nasir Uddin",
-  state: "Idaho",
-  type: "SAAS",
-  members: "1",
-};
-const initialOwnerInfo = {
-  name: "Nasir Uddin",
-  email: "nasir@gmail.com",
-  phone: "+88016100000",
-  percent: "100%",
-  country: "United States of America",
-};
+import { CheckIcon } from "./SixthFunnel";
 
 const SeventhFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-  const [personalInfo, setPersonalInfo] = useState(initialPersonalInfo);
-  const [businessInfo, setBusinessInfo] = useState(initialBusinessInfo);
-  const [ownerInfo, setOwnerInfo] = useState(initialOwnerInfo);
-  const [editSection, setEditSection] = useState<string | null>(null);
-  const [tempData, setTempData] = useState<any>({});
+    const [processing, setProcessing] = useState<string>("");
 
-  // Handlers for edit/save/cancel
-  const handleEdit = (section: string, data: any) => {
-    setEditSection(section);
-    setTempData(data);
-  };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTempData({ ...tempData, [e.target.name]: e.target.value });
-  };
-  const handleSave = () => {
-    if (editSection === "personal") setPersonalInfo(tempData);
-    if (editSection === "business") setBusinessInfo(tempData);
-    if (editSection === "owner") setOwnerInfo(tempData);
-    setEditSection(null);
-    setTempData({});
-  };
-  const handleCancel = () => {
-    setEditSection(null);
-    setTempData({});
-  };
+    const handleContinue = () => {
+        if (handleFormSubmit) handleFormSubmit({ stepSeven: { processing: processing } });
+    };
+    return (
+        <div className="max-w-[728px]">
+            <FunnelHeading>
+                Expedited Filing
+            </FunnelHeading>
+            <p className="text-base font-normal text-gray-600 mb-4 mt-2">Get the fastest filing with our Expedited Filing service when you need it urgently. Standard processing may require more days or weeks. </p>
+            <p className="text-base font-normal text-gray-600">
+                Jumpstart your business with our Expedited Filing! Get legal fast, skip the wait, and dive into the market. Quick, easy, and ready for success. Let&apos;s go!</p>
+            <p className="text-base font-normal text-black bg-gray-50 rounded-2xl mt-4 p-7">
+                Note: Expedited filing service includes company formation, operating agreement, and registered agent within 1-3 business days. EIN form submission will be done within this timeframe; processing depends on the IRS.
+            </p>
 
-  return (
-    <div className="max-w-3xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Overview</h2>
-      {/* Info Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        {/* Personal Info */}
-        <div className="bg-white rounded-lg shadow p-4 relative">
-          <div className="flex justify-between items-center mb-2">
-            <span className="font-semibold">Personal Info</span>
-            {editSection !== "personal" && (
-              <button className="text-xs text-gray-500 hover:underline" onClick={() => handleEdit("personal", personalInfo)}>
-                Edit
-              </button>
-            )}
-          </div>
-          {editSection === "personal" ? (
-            <div className="space-y-2">
-              <input name="name" value={tempData.name} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-              <input name="email" value={tempData.email} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-              <input name="phone" value={tempData.phone} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-              <div className="flex gap-2 mt-2">
-                <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={handleSave}>Save</button>
-                <button className="bg-gray-200 px-3 py-1 rounded" onClick={handleCancel}>Cancel</button>
-              </div>
+            <div className="flex flex-col sm:flex-row gap-4 mb-3 mt-6">
+                <div
+                    className={`flex items-center gap-4 p-[20px] w-full h-[120px] rounded-xl border-2 cursor-pointer transition-all duration-150 ${processing === "yes" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
+                    onClick={() => setProcessing("Expedited Processing")}
+                >
+                    <CheckIcon isSelected={processing === "Expedited Processing"} />
+                    <div className="flex flex-col">
+                        <h5 className="font-semibold text-base">Expedited Processing  $99</h5>
+                        <ul className="list-disc ml-6 text-[16px] font-normal text-gray-600">
+                            <li>1-3 business days</li>
+                            <li>Company formation only</li>
+                        </ul>
+                    </div>
+                </div>
+                <div
+                    className={`flex items-center gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${processing === "no" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
+                    onClick={() => setProcessing("Standard Processing")}
+                >
+                    <CheckIcon isSelected={processing === "Standard Processing"} />
+                    <div className="flex flex-col">
+                        <h5 className="font-semibold text-base">No, I&apos;ll wait for the standard Processing</h5>
+                        <ul className="list-disc ml-6 text-[16px] font-normal text-gray-600">
+                            <li>1-15 business days</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-          ) : (
-            <div className="space-y-1 text-sm">
-              <div className="flex items-center gap-2"><span>👤</span>{personalInfo.name}</div>
-              <div className="flex items-center gap-2"><span>📧</span>{personalInfo.email}</div>
-              <div className="flex items-center gap-2"><span>📞</span>{personalInfo.phone}</div>
-            </div>
-          )}
-        </div>
-        {/* Business Info */}
-        <div className="bg-white rounded-lg shadow p-4 relative">
-          <div className="flex justify-between items-center mb-2">
-            <span className="font-semibold">Business info</span>
-            {editSection !== "business" && (
-              <button className="text-xs text-gray-500 hover:underline" onClick={() => handleEdit("business", businessInfo)}>
-                Edit
-              </button>
-            )}
-          </div>
-          {editSection === "business" ? (
-            <div className="space-y-2">
-              <input name="owner" value={tempData.owner} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-              <input name="state" value={tempData.state} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-              <input name="type" value={tempData.type} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-              <input name="members" value={tempData.members} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-              <div className="flex gap-2 mt-2">
-                <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={handleSave}>Save</button>
-                <button className="bg-gray-200 px-3 py-1 rounded" onClick={handleCancel}>Cancel</button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-1 text-sm">
-              <div className="flex items-center gap-2"><span>👤</span>{businessInfo.owner}</div>
-              <div className="flex items-center gap-2"><span>📍</span>{businessInfo.state}</div>
-              <div className="flex items-center gap-2"><span>🏷️</span>{businessInfo.type}</div>
-              <div className="flex items-center gap-2"><span>👥</span>{businessInfo.members}</div>
-            </div>
-          )}
-        </div>
-      </div>
-      {/* Owners Info */}
-      <div className="bg-white rounded-lg shadow p-4 mb-4 relative">
-        <div className="flex justify-between items-center mb-2">
-          <span className="font-semibold">Owners Info</span>
-          {editSection !== "owner" && (
-            <button className="text-xs text-gray-500 hover:underline" onClick={() => handleEdit("owner", ownerInfo)}>
-              Edit
+            <span className="text-sm font-normal text-gray-600">Note: Service Provider Expedited Service. State level Expedited service is not included here.</span>
+
+            <p className="text-base font-medium text-black my-5">The processing times will be determined based on the current state turnaround times and are subject to change based on state processing.</p>
+
+            {/* Continue Button */}
+            <button
+                type="button"
+                onClick={handleContinue}
+                className="mt-6 w-full bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-xl shadow transition-all text-lg"
+            >
+                Continue
             </button>
-          )}
         </div>
-        {editSection === "owner" ? (
-          <div className="space-y-2">
-            <input name="name" value={tempData.name} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-            <input name="email" value={tempData.email} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-            <input name="phone" value={tempData.phone} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-            <input name="percent" value={tempData.percent} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-            <input name="country" value={tempData.country} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-            <div className="flex gap-2 mt-2">
-              <button className="bg-blue-500 text-white px-3 py-1 rounded" onClick={handleSave}>Save</button>
-              <button className="bg-gray-200 px-3 py-1 rounded" onClick={handleCancel}>Cancel</button>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-1 text-sm">
-            <div className="flex items-center gap-2"><span>👤</span>{ownerInfo.name}</div>
-            <div className="flex items-center gap-2"><span>📧</span>{ownerInfo.email}</div>
-            <div className="flex items-center gap-2"><span>📞</span>{ownerInfo.phone}</div>
-            <div className="flex items-center gap-2"><span>💯</span>{ownerInfo.percent}</div>
-            <div className="flex items-center gap-2"><span>🌎</span>{ownerInfo.country}</div>
-          </div>
-        )}
-      </div>
-      {/* Fee Breakdown */}
-      <div className="bg-white rounded-lg shadow p-4 mb-4">
-        <div className="divide-y">
-          <div className="flex justify-between py-2">
-            <div>
-              <div className="font-medium">State Fee</div>
-              <div className="text-xs text-gray-500 flex items-center gap-1">🏛️ Idaho</div>
-            </div>
-            <div className="text-lg font-bold text-purple-600">$100</div>
-          </div>
-          <div className="flex justify-between py-2">
-            <div>
-              <div className="font-medium">Registered Agent Package</div>
-              <div className="text-xs text-gray-500 flex items-center gap-1">📦 Free</div>
-            </div>
-            <div className="font-bold text-purple-500">Free</div>
-          </div>
-          <div className="flex justify-between py-2">
-            <div>
-              <div className="font-medium">Business Address Package</div>
-              <div className="text-xs text-gray-500 flex items-center gap-1">📦 Free</div>
-            </div>
-            <div className="font-bold text-purple-500">Free</div>
-          </div>
-          <div className="flex justify-between py-2">
-            <div>
-              <div className="font-medium">Registered Agent</div>
-              <div className="text-xs text-gray-500 flex items-center gap-1">📦 Free</div>
-            </div>
-            <div className="font-bold text-purple-500">Free</div>
-          </div>
-          <div className="flex justify-between py-2">
-            <div>
-              <div className="font-medium">EIN</div>
-              <div className="text-xs text-gray-500 flex items-center gap-1">🆔 No</div>
-            </div>
-            <div className="font-bold text-purple-500">$0.00</div>
-          </div>
-          <div className="flex justify-between py-2">
-            <div>
-              <div className="font-medium">Operating Agreement / Bylaws</div>
-              <div className="text-xs text-gray-500 flex items-center gap-1">📝 No</div>
-            </div>
-            <div className="font-bold text-purple-500">$0.00</div>
-          </div>
-          <div className="flex justify-between py-2">
-            <div>
-              <div className="font-medium">Expedited Processing</div>
-              <div className="text-xs text-gray-500 flex items-center gap-1">⚡ No</div>
-            </div>
-            <div className="font-bold text-purple-500">$0.00</div>
-          </div>
-        </div>
-      </div>
-      {/* Continue Button */}
-      <button className="w-full bg-purple-500 text-white py-2 rounded text-lg font-semibold mt-4">Continue</button>
-    </div>
-  );
+    );
 };
 
 export default SeventhFunnel;
