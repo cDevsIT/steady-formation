@@ -221,7 +221,7 @@ export const InputField: React.FC<InputFieldProps> = ({
 
                         {isOpen && !disabled && (
                             <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                                {options.map((option,i) => (
+                                {options.map((option, i) => (
                                     <button
                                         key={i}
                                         type="button"
@@ -500,7 +500,7 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
             <button
                 onClick={handleSubmit(onFormSubmit)}
                 disabled={isSubmitting}
-                className="col-span-1 lg:col-span-2 flex-1 bg-[#7856FC] text-white py-2 px-4 rounded-md hover:bg-purple-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="col-span-1 lg:col-span-2 flex-1 bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-xl shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 {isSubmitting ? 'Submitting...' : submitText}
             </button>

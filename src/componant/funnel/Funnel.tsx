@@ -15,11 +15,15 @@ import SixthFunnel from "./SixthFunnel";
 import EightFunnel from "./EightFunnel";
 import SeventhFunnel from "./SeventhFunnel";
 import NinthFunnel from "./NinthFunnel";
+import RegisterConfirm from "./RegisterConfirm";
+import OwnersInfo from "./OwnersInfo";
 
 export interface dataState {
     businessType?: string;
     companyName?: string;
     currentStep?: number;
+    isPaymentComplete?: boolean;
+    registrationConfrim?: boolean;
     stepOne?: {
         fullName?: string;
         email?: string;
@@ -79,15 +83,34 @@ const Funnel = () => {
         return <ErrorPage statusCode={404} />;
     }
 
+    if (data?.registrationConfrim) {
+        return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
+            <div className="max-w-[1280px] mx-auto">
+                <OwnersInfo handleFormSubmit={handleFormSubmit} />
+            </div>
+        </section>;
+    }
+
+    if (data?.isPaymentComplete) {
+        return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
+            <div className="max-w-[1280px] mx-auto">
+                <RegisterConfirm handleFormSubmit={handleFormSubmit} />
+            </div>
+        </section>;
+    }
+
     return (
         <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
             <div className="max-w-[1280px] mx-auto">
-                <ProgressBar
-                    totalSteps={totalSteps}
-                    currentStep={currentStep}
-                    onBack={handleBack}
-                    className="mt-2 mb-6"
-                />
+
+                {data?.currentStep < 9 &&
+                    <ProgressBar
+                        totalSteps={totalSteps}
+                        currentStep={currentStep}
+                        onBack={handleBack}
+                        className="mt-2 mb-6"
+                    />}
+
 
                 {data?.currentStep === 1 &&
                     <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4">
@@ -123,7 +146,8 @@ const Funnel = () => {
                         {data?.currentStep === 9 && <NinthFunnel handleFormSubmit={handleFormSubmit} />}
 
 
-                        <FunnelSidebar />
+                        {data?.currentStep < 9 && <FunnelSidebar />}
+
                     </div>
                 }
 
