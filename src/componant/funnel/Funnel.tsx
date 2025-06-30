@@ -17,6 +17,7 @@ import SeventhFunnel from "./SeventhFunnel";
 import NinthFunnel from "./NinthFunnel";
 import RegisterConfirm from "./RegisterConfirm";
 import OwnersInfo from "./OwnersInfo";
+import OwnersInfoComplete from "./OwnersInfoComplete";
 
 export interface dataState {
     businessType?: string;
@@ -24,6 +25,7 @@ export interface dataState {
     currentStep?: number;
     isPaymentComplete?: boolean;
     registrationConfrim?: boolean;
+    isOwnersInfoComplete?: boolean;
     stepOne?: {
         fullName?: string;
         email?: string;
@@ -81,6 +83,14 @@ const Funnel = () => {
 
     if (!data?.currentStep) {
         return <ErrorPage statusCode={404} />;
+    }
+
+    if (data?.isOwnersInfoComplete) {
+        return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
+            <div className="max-w-[1280px] mx-auto">
+                <OwnersInfoComplete />
+            </div>
+        </section>;
     }
 
     if (data?.registrationConfrim) {
