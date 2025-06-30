@@ -16,6 +16,24 @@ export const industries = [
     { label: 'Media & Entertainment', value: 'media' },
 ];
 
+export const countries = [
+    { label: 'United States', value: 'us' },
+    { label: 'Canada', value: 'ca' },
+    { label: 'United Kingdom', value: 'uk' },
+    { label: 'Germany', value: 'de' },
+    { label: 'France', value: 'fr' },
+    { label: 'Australia', value: 'au' },
+    { label: 'India', value: 'in' },
+    { label: 'China', value: 'cn' },
+    { label: 'Japan', value: 'jp' },
+    { label: 'Brazil', value: 'br' },
+    { label: 'South Korea', value: 'kr' },
+    { label: 'Netherlands', value: 'nl' },
+    { label: 'Mexico', value: 'mx' },
+    { label: 'Italy', value: 'it' },
+    { label: 'Spain', value: 'es' },
+];
+
 export const usStates = [
     { label: 'Alabama', value: 'AL' },
     { label: 'Alaska', value: 'AK' },

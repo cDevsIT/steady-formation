@@ -16,6 +16,8 @@ export function useCustomNavigation() {
             companyName,
             currentStep: 1,
         };
+        // Clear previous value
+        localStorage.removeItem('companyData');
         // Save to localStorage
         localStorage.setItem('companyData', JSON.stringify(setupData));
         router.push('/setup-company')
