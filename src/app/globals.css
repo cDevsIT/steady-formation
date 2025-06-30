@@ -87,3 +87,23 @@ button:active {
   background: transparent;
   padding: 0 0 !important;
 }
+
+/* Custom Scrollbar for Compliance and Dashboard Page*/
+
+@media (max-width: 768px) {
+  .custom-scrollbar {
+    scrollbar-color: #7856FC #F3F4F6;
+    scrollbar-width: thin;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    height: 4px;
+    background: #F3F4F6;
+    border-radius: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #7856FC;
+    border-radius: 8px;
+  }
+}

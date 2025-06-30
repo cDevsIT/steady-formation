@@ -6,7 +6,7 @@ export default function ClientDashboard() {
 
             {/* Hello Bar Section*/}
             <div
-                className="bg-[#240D68] rounded-2xl p-6 md:p-12 text-white relative overflow-hidden mb-5"
+                className="bg-[#240D68] rounded-2xl px-10 py-6 md:px-12 text-white relative overflow-hidden mb-5 mx-4 md:mx-0"
             >
                 <div
                     className="absolute inset-0 bg-no-repeat"
@@ -26,15 +26,15 @@ export default function ClientDashboard() {
             </div>
 
             {/* Stepper/Progress Section */}
-            <div className="bg-white rounded-2xl px-6 py-8 shadow-sm border border-[#ECECEC] mb-5">
-                <div className="relative">
+            <div className="bg-white rounded-2xl mx-4 md:mx-0 px-4 md:px-6 py-8 shadow-sm border border-[#ECECEC] mb-5 overflow-hidden">
+                <div className="relative w-full">
                     {/* Background line connecting all steps */}
-                    <div className="absolute top-4 left-14 w-[775px] h-1 bg-[#ECECEC] rounded-full"></div>
+                    <div className="absolute top-4 left-0 right-0 h-1 bg-[#ECECEC] rounded-full mx-4 md:mx-6"></div>
                     {/* Progress line */}
-                    <div className="absolute top-4 left-14 h-1 bg-[#7856FC] rounded-full transition-all duration-500"
+                    <div className="absolute top-4 left-0 h-1 bg-[#7856FC] rounded-full transition-all duration-500 mx-4 md:mx-6"
                         style={{ width: 'calc(17% + 0px)' }}></div>
                     {/* Steps */}
-                    <div className="flex justify-between relative z-10">
+                    <div className="flex justify-between relative z-10 px-4 md:px-6">
                         {[
                             { label: 'Name Availability Search' },
                             { label: 'State Filing' },
@@ -47,7 +47,7 @@ export default function ClientDashboard() {
                             const isActive = idx === 1;
                             const isUpcoming = idx > 1;
                             return (
-                                <div key={step.label} className="flex flex-col items-center">
+                                <div key={step.label} className="flex flex-col items-center flex-shrink-0 min-w-[90px]">
                                     {/* Step circle */}
                                     <div className={`w-8 h-8 flex items-center justify-center rounded-full transition-all duration-300 mb-3
                                         ${isCompleted ? 'bg-[#7856FC]' : isActive ? 'bg-[#7856FC]' : 'bg-white border-2 border-[#ECECEC]'}
@@ -76,9 +76,9 @@ export default function ClientDashboard() {
             </div>
 
             {/* Quick Action Box */}
-            <div className="bg-white rounded-2xl shadow-sm border border-[#ECECEC] pt-4 mb-[28px]">
+            <div className="bg-white rounded-2xl shadow-sm border border-[#ECECEC] pt-4 mb-[28px] mx-4 md:mx-0 md:px-6">
                 <h2 className="text-xl leading-7 font-semibold mb-4 px-6">Quick Action</h2>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto custom-scrollbar">
                     <table className="min-w-full text-sm">
                         <thead className="bg-[#F9FAFB]">
                             <tr className="text-[#7C8493] text-left border-b border-[#E4E7EC]">
@@ -137,7 +137,7 @@ export default function ClientDashboard() {
             </div>
 
             {/* Support/Help Section */}
-            <div className="bg-white rounded-2xl shadow-sm border border-[#ECECEC] px-6 py-6 flex items-center justify-between relative overflow-hidden mt-7">
+            <div className="bg-white rounded-2xl shadow-sm border border-[#ECECEC] px-4 md:px-6 py-6 flex flex-col md:flex-row items-start md:items-center justify-between relative overflow-hidden mt-7 mx-4 md:mx-0">
                 {/* Decorative CSS curves */}
                 <div className="absolute top-8 right-16 w-2/3 h-12 pointer-events-none z-0"
                     style={{
@@ -154,7 +154,7 @@ export default function ClientDashboard() {
                         borderTop: '1px solid #D1E9FF',
                         borderRadius: '100% 100% 0 0 / 80% 80% 0 0'
                     }}></div>
-                <div className="flex flex-col z-10">
+                <div className="flex flex-col z-10 mb-4 md:mb-0">
                     <span className="text-[24px] leading-8 font-semibold mb-3">Need Help from expert?</span>
                     <div className="flex items-center space-x-[-12px] mt-2">
                         <img src="/client/expert-icon1.svg" alt="Expert 1" className="w-10 h-10 rounded-full border-2 border-white shadow" />
@@ -163,7 +163,7 @@ export default function ClientDashboard() {
                         <img src="/client/expert-icon4.svg" alt="Expert 4" className="w-10 h-10 rounded-full border-2 border-white shadow" />
                     </div>
                 </div>
-                <button className="z-10 bg-[#7856FC] hover:bg-[#6840e0] text-white px-8 py-3 rounded-lg font-medium text-base transition-colors duration-200">
+                <button className="z-10 bg-[#7856FC] hover:bg-[#6840e0] text-white px-8 py-3 rounded-lg font-medium text-base transition-colors duration-200 w-full md:w-auto mt-4 md:mt-0">
                     Create a Support Ticket
                 </button>
             </div>
