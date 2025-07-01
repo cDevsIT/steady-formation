@@ -3,11 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "../ui/Image";
+import { usePathname } from "next/navigation";
 
 interface NavbarProps { }
 
 const NavbarMobile: React.FC<NavbarProps> = ({ }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const pathname = usePathname();
+    const isClientRoute = pathname.startsWith('/client');
 
     const navItems = [
         { name: "Home", href: "/" },
@@ -35,33 +38,67 @@ const NavbarMobile: React.FC<NavbarProps> = ({ }) => {
                         </Link>
                     </div>
 
-                    {/* Mobile menu button */}
-                    <div className="">
-                        <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-colors duration-200"
-                            aria-expanded="false"
-                        >
-                            <span className="sr-only">Open main menu</span>
-                            {isMenuOpen ? (
+                    {/* Mobile menu button - Only show on main site */}
+                    {!isClientRoute && (
+                        <div className="">
+                            <button
+                                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-colors duration-200"
+                                aria-expanded="false"
+                            >
+                                <span className="sr-only">Open main menu</span>
+                                {isMenuOpen ? (
+                                    <Image
+                                        className="block h-6 w-6"
+                                        url="/icons/close.svg"
+                                        alt="Close Menu"
+                                    />
+                                ) : (
+                                    <Image
+                                        className="block h-6 w-6"
+                                        url="/icons/menu.svg"
+                                        alt="Open Menu"
+                                    />
+                                )}
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Client route buttons - Only show on client routes */}
+                    {isClientRoute && (
+                        <div className="flex items-center gap-2">
+                            {/* Notification Button */}
+                            <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                                <span className="text-lg">🔔</span>
+                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                                    3
+                                </span>
+                            </button>
+
+                            {/* Profile Button */}
+                            <button className="flex items-center gap-1 p-1 rounded-lg hover:bg-gray-100 transition-colors">
+                                <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                                    <span className="text-white text-xs font-medium">JD</span>
+                                </div>
+                            </button>
+
+                            {/* Logout Button */}
+                            <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
                                 <Image
-                                    className="block h-6 w-6"
-                                    url="/icons/close.svg"
-                                    alt="Close Menu"
+                                    url="/client/log-out-icon.svg"
+                                    alt="Logout"
+                                    className="w-4 h-4"
+                                    width={16}
+                                    height={16}
                                 />
-                            ) : (
-                                <Image
-                                    className="block h-6 w-6"
-                                    url="/icons/menu.svg"
-                                    alt="Open Menu"
-                                />
-                            )}
-                        </button>
-                    </div>
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {isMenuOpen && (
+            {/* Mobile menu - Only show on main site */}
+            {isMenuOpen && !isClientRoute && (
                 <div className="md:hidden bg-white border-t border-purple-100 shadow-lg">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                         {navItems.map((item) => (
