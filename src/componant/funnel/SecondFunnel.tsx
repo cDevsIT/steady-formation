@@ -16,6 +16,8 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
     const [watchedValues, setWatchedValues] = useState<any>({});
 
+    const companyType = selected === 'llc' || selected === 'multiLLC' ? llcTypes : selected === 's_corp' ? [{ label: 'S Corporation (Owners must be U.S Resident)', value: 's_corp' }] : selected === 'c_corp' ? [{ label: 'C Corporation', value: 'c_corp' }] : selected === 'partnership' ? [{ label: 'Partnership', value: 'partnership' }] : [];
+
     // Load initial data from localStorage
     useEffect(() => {
         const localData = localStorage.getItem('companyData');
@@ -49,12 +51,15 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         // Set up watchers for specific fields
         const subscription = methods.watch((value: any, { name, type }: any) => {
             setWatchedValues(value);
-            console.log('Field changed:', { name, type, value: value[name], allValues: value });
         });
 
         // Cleanup subscription when component unmounts or form changes
         return () => subscription.unsubscribe();
     };
+
+    const showNumberOfOwnership = (selected === 'llc' && watchedValues.llcType === 'singleLLC') || selected === 'non_profit'
+    console.log(showNumberOfOwnership)
+    const companyNameLabel = selected === 's_corp' || selected === 'c_corp' ? 'Corporation Type ' : 'Select LLC Type';
 
     return (
         <div className="lg:max-w-[730px]">
@@ -70,16 +75,15 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 onFormStateChange={handleFormStateChange}
                 className="mb-5 mt-10"
             >
-
-                <InputField
+                {selected !== 'non_profit' && <InputField
                     name="llcType"
-                    label="Select LLC Type"
+                    label={companyNameLabel}
                     type="select"
                     required
                     placeholder="Select llc type"
-                    options={llcTypes}
+                    options={companyType}
                     className="lg:col-span-2 mb-1"
-                />
+                />}
 
                 <InputField
                     name="stateName"
@@ -101,13 +105,23 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                     className="mb-1"
                 />
 
-                {watchedValues.llcType === 'multiLLC' && 
-                <InputField
+                {!showNumberOfOwnership &&
+                    <InputField
+                        name="numOfOwnerShip"
+                        label="Number Of Ownership"
+                        type="select"
+                        required
+                        placeholder="Select Num of Ownership"
+                        options={numOfOwnerShip}
+                        className="lg:col-span-2 mb-1"
+                    />}
+
+                {selected === 'non_profit' && <InputField
                     name="numOfOwnerShip"
-                    label="Number Of Ownership"
+                    label="Number of Director minimum 3, upto 15"
                     type="select"
                     required
-                    placeholder="Select Num of Ownership"
+                    placeholder="Select Num of Director"
                     options={numOfOwnerShip}
                     className="lg:col-span-2 mb-1"
                 />}
@@ -117,7 +131,7 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                     <h4 className="font-bold text-[18px] text-black mt-3 mb-4">In Wyoming, the filing fee is $100</h4>
                 </div>
 
-                
+
 
             </ReusableForm>
         </div>

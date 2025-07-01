@@ -3,6 +3,17 @@ export const llcTypes = [
     { label: 'Multi Member LLC', value: 'multiLLC' },
 ];
 
+export const s_corpTypes = [
+    { label: 'S Corporation (Owners must be U.S Resident)', value: 's_corp' },
+]
+
+export const c_corpTypes = [
+    { label: 'C Corporation', value: 'c_corp' },
+]
+
+export const partnarshipTypes = [
+    { label: 'Partnership', value: 'partnership' },]
+
 export const industries = [
     { label: 'Technology', value: 'technology' },
     { label: 'Healthcare', value: 'healthcare' },
