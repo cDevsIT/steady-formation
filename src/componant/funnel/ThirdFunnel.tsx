@@ -67,7 +67,6 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         if (localData) {
             const parsedData = JSON.parse(localData);
             setData(parsedData);
-            setSelected(parsedData?.businessType)
         }
     }, []);
 

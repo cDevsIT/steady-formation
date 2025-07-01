@@ -22,6 +22,14 @@ const initialOwnerInfo = {
   country: "United States of America",
 };
 
+const initialOwnerInfoTwo = {
+  name: "Nasir Uddin",
+  email: "nasir@gmail.com",
+  phone: "+88016100000",
+  percent: "100%",
+  country: "United States of America",
+};
+
 const feeData = [
   {
     id: 1,
@@ -34,42 +42,42 @@ const feeData = [
     id: 2,
     title: "Registered Agent Package",
     subtitle: "Free",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-free.svg",
     price: "Free"
   },
   {
     id: 3,
     title: "Business Address Package",
     subtitle: "Free",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-free.svg",
     price: "Free"
   },
   {
     id: 4,
     title: "Registered Agent",
     subtitle: "Free",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-free.svg",
     price: "Free"
   },
   {
     id: 5,
     title: "EIN",
     subtitle: "No",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-ein.svg",
     price: "$0.00"
   },
   {
     id: 6,
     title: "Operating Agreement / Bylaws",
     subtitle: "No",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-aggrement.svg",
     price: "$0.00"
   },
   {
     id: 7,
     title: "Expedited Processing",
     subtitle: "No",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-processing.svg",
     price: "$0.00"
   }
 
@@ -79,6 +87,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   const [personalInfo, setPersonalInfo] = useState(initialPersonalInfo);
   const [businessInfo, setBusinessInfo] = useState(initialBusinessInfo);
   const [ownerInfo, setOwnerInfo] = useState(initialOwnerInfo);
+  const [ownerInfoTwo, setOwnerInfoTwo] = useState(initialOwnerInfoTwo)
   const [editSection, setEditSection] = useState<string | null>(null);
   const [tempData, setTempData] = useState<any>({});
 
