@@ -24,9 +24,14 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
 
     useEffect(() => {
-        if (formMethods && Object.keys(data).length > 0) {
+        if (formMethods) {
             formMethods.reset({
                 companyName: data.companyName || "",
+                //remove This
+                fullName: "SHIKHOR",
+                email: "demo@email.com",
+                primaryPhone: "2345678901",
+                secondaryPhone: "2345678901",
             });
         }
     }, [data, formMethods]);
@@ -41,13 +46,6 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         setFormMethods(methods);
     };
 
-    const defaultFormValues: CustomFormData = {
-        companyName: data?.companyName || "",
-        fullName: 'SHIKHOR',
-        email: 'demo@email.com',
-        primaryPhone: '2345678901',
-        secondaryPhone: '2345678901'
-    };
     return (
         <div>
             <FunnelHeading>
@@ -59,11 +57,9 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             <div className="mt-6 lg:max-w-[615px] mx-auto lg:mx-0 ">
                 <ReusableForm
                     onSubmit={handleSubmit}
-                    defaultValues={defaultFormValues}
                     submitText="Continue"
                     onFormStateChange={handleFormStateChange}
                     className="mb-5"
-
                 >
                     <InputField
                         name="companyName"
@@ -73,7 +69,7 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                         type="text"
                         className='lg:col-span-2 mb-1'
                     />
-                    <span className="text-[12px] leading-[18px] col-span-2 max-w-[591px]text-start">*The entered name will be validated later. You Don’t have to add “LLC,” “Inc.” “Corp” etc. in this box. If your chosen name is unavailable, together we&apos;ll work on an alternative.</span>
+                    <span className="text-[12px] leading-[18px] col-span-2 max-w-[591px]text-start">*The entered name will be validated later. You Don&apos;t have to add &quot;LLC,&quot; &quot;Inc.&quot; &quot;Corp&quot; etc. in this box. If your chosen name is unavailable, together we&apos;ll work on an alternative.</span>
 
                     <FunnelSubHeading className="font-semibold mt-4 col-span-2">
                         Primary Contact

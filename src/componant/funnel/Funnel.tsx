@@ -8,11 +8,24 @@ import { CustomFormData } from "../ui/FormSample";
 import ErrorPage from 'next/error';
 import SecondFunnel from "./SecondFunnel";
 import FunnelSidebar from "./Comp/FunnelSidebar";
+import ThirdFunnel from "./ThirdFunnel";
+import FourthFunnel from "./FourthFunnel";
+import FifthFunnel from "./FifthFunnel";
+import SixthFunnel from "./SixthFunnel";
+import EightFunnel from "./EightFunnel";
+import SeventhFunnel from "./SeventhFunnel";
+import NinthFunnel from "./NinthFunnel";
+import RegisterConfirm from "./RegisterConfirm";
+import OwnersInfo from "./OwnersInfo";
+import OwnersInfoComplete from "./OwnersInfoComplete";
 
 export interface dataState {
     businessType?: string;
     companyName?: string;
     currentStep?: number;
+    isPaymentComplete?: boolean;
+    registrationConfrim?: boolean;
+    isOwnersInfoComplete?: boolean;
     stepOne?: {
         fullName?: string;
         email?: string;
@@ -26,7 +39,7 @@ const Funnel = () => {
     const router = useRouter();
     const [data, setData] = useState<dataState>({});
     const [currentStep, setCurrentStep] = useState(2);
-    const [totalSteps] = useState(6);
+    const [totalSteps] = useState(9);
     const [refreshKey, setRefreshKey] = useState(0);
 
     const handleChildSubmitSuccess = () => {
@@ -51,11 +64,11 @@ const Funnel = () => {
     };
 
     const handleFormSubmit = (data: CustomFormData) => {
-        updateCompanyData({ ...data, currentStep:currentStep+1})
-            setCurrentStep(currentStep + 1)
-            handleChildSubmitSuccess();
-    
-        };
+        updateCompanyData({ ...data, currentStep: currentStep + 1 })
+        setCurrentStep(currentStep + 1)
+        handleChildSubmitSuccess();
+
+    };
 
     const handleBack = () => {
         if (currentStep > 1) {
@@ -70,17 +83,44 @@ const Funnel = () => {
 
     if (!data?.currentStep) {
         return <ErrorPage statusCode={404} />;
-      }
+    }
+
+    if (data?.isOwnersInfoComplete) {
+        return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
+            <div className="max-w-[1280px] mx-auto">
+                <OwnersInfoComplete />
+            </div>
+        </section>;
+    }
+
+    if (data?.registrationConfrim) {
+        return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
+            <div className="max-w-[1280px] mx-auto">
+                <OwnersInfo handleFormSubmit={handleFormSubmit} />
+            </div>
+        </section>;
+    }
+
+    if (data?.isPaymentComplete) {
+        return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
+            <div className="max-w-[1280px] mx-auto">
+                <RegisterConfirm handleFormSubmit={handleFormSubmit} />
+            </div>
+        </section>;
+    }
 
     return (
         <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
             <div className="max-w-[1280px] mx-auto">
-                <ProgressBar
-                    totalSteps={totalSteps}
-                    currentStep={currentStep}
-                    onBack={handleBack}
-                    className="mt-2 mb-6"
-                />
+
+                {data?.currentStep < 9 &&
+                    <ProgressBar
+                        totalSteps={totalSteps}
+                        currentStep={currentStep}
+                        onBack={handleBack}
+                        className="mt-2 mb-6"
+                    />}
+
 
                 {data?.currentStep === 1 &&
                     <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4">
@@ -100,9 +140,24 @@ const Funnel = () => {
                     <div className="flex justify-between gap-4 ">
 
                         {data?.currentStep === 2 && <SecondFunnel handleFormSubmit={handleFormSubmit} />}
-                        
 
-                        <FunnelSidebar />
+                        {data?.currentStep === 3 && <ThirdFunnel handleFormSubmit={handleFormSubmit} />}
+
+                        {data?.currentStep === 4 && <FourthFunnel handleFormSubmit={handleFormSubmit} />}
+
+                        {data?.currentStep === 5 && <FifthFunnel handleFormSubmit={handleFormSubmit} />}
+
+                        {data?.currentStep === 6 && <SixthFunnel handleFormSubmit={handleFormSubmit} />}
+
+                        {data?.currentStep === 7 && <SeventhFunnel handleFormSubmit={handleFormSubmit} />}
+
+                        {data?.currentStep === 8 && <EightFunnel handleFormSubmit={handleFormSubmit} />}
+
+                        {data?.currentStep === 9 && <NinthFunnel handleFormSubmit={handleFormSubmit} />}
+
+
+                        {data?.currentStep < 9 && <FunnelSidebar />}
+
                     </div>
                 }
 
