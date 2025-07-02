@@ -34,13 +34,15 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             formMethods.reset({
                 //remove This
                 llcType: "singleLLC",
-                industryType: "",
+                industryType: "technology",
+                stateName: "CO",
+                numOfOwnerShip: 1,
             });
         }
     }, [data, formMethods]);
 
     const handleSubmit = (data: CustomFormData) => {
-        handleFormSubmit({ stepTwo: data })
+        handleFormSubmit({ stepTwo: data, businessType: selected });
 
     };
 
