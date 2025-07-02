@@ -31,7 +31,12 @@ export interface dataState {
         email?: string;
         primaryPhone?: string;
         secondaryPhone?: string
-    }
+    };
+    stepTwo?: {
+        industryType?: string;
+        llcType?: string;
+        stateName?: string;
+    };
 
 }
 
