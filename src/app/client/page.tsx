@@ -4,34 +4,13 @@ export default function ClientDashboard() {
     return (
         <div>
 
-            {/* Hello Bar Section*/}
-            <div
-                className="bg-[#240D68] rounded-2xl px-10 py-6 md:px-12 text-white relative overflow-hidden mb-5 mx-4 md:mx-0"
-            >
-                <div
-                    className="absolute inset-0 bg-no-repeat"
-                    style={{
-                        backgroundImage: "url('/affiliate/design-steady-formations-affiliate.png')",
-                        backgroundPosition: 'right',
-                        backgroundSize: 'cover',
-                        opacity: 0.5
-                    }}
-                ></div>
-                <div className="relative z-10">
-                    <h1 className="font-inter font-medium text-2xl md:text-[36px] leading-tight md:leading-[44px] mb-[5px]">
-                        Hi, Nasir!
-                    </h1>
-                    <p className="font-normal text-base md:text-[18px] leading-relaxed md:leading-[28px]">Here's your company status & quick actions.</p>
-                </div>
-            </div>
-
             {/* Stepper/Progress Section */}
             <div className="bg-white rounded-2xl mx-4 md:mx-0 px-4 md:px-6 py-8 shadow-sm border border-[#ECECEC] mb-5 overflow-hidden">
                 <div className="relative w-full">
                     {/* Background line connecting all steps */}
-                    <div className="absolute top-4 left-0 right-0 h-1 bg-[#ECECEC] rounded-full mx-4 md:mx-6"></div>
+                    <div className="absolute top-4 left-16 right-28 h-1 bg-[#ECECEC] rounded-full mx-4 md:mx-6"></div>
                     {/* Progress line */}
-                    <div className="absolute top-4 left-0 h-1 bg-[#7856FC] rounded-full transition-all duration-500 mx-4 md:mx-6"
+                    <div className="absolute top-4 left-14 h-1 bg-[#7856FC] rounded-full transition-all duration-500 mx-4 md:mx-6"
                         style={{ width: 'calc(17% + 0px)' }}></div>
                     {/* Steps */}
                     <div className="flex justify-between relative z-10 px-4 md:px-6">
