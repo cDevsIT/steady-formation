@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChildComponentProps } from "./SecondFunnel";
 import { FunnelHeading } from "../ui/FunnelHeading";
 import Image from "../ui/Image";
+import OwnersInfoBlock from "./Comp/OwnersInfoBlock";
+import { dataState } from "./Funnel";
 
 const initialPersonalInfo = {
   name: "Nasir Uddin",
@@ -22,6 +24,14 @@ const initialOwnerInfo = {
   country: "United States of America",
 };
 
+const initialOwnerInfoTwo = {
+  name: "Nasir Uddin",
+  email: "nasir@gmail.com",
+  phone: "+88016100000",
+  percent: "100%",
+  country: "United States of America",
+};
+
 const feeData = [
   {
     id: 1,
@@ -34,53 +44,71 @@ const feeData = [
     id: 2,
     title: "Registered Agent Package",
     subtitle: "Free",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-free.svg",
     price: "Free"
   },
   {
     id: 3,
     title: "Business Address Package",
     subtitle: "Free",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-free.svg",
     price: "Free"
   },
   {
     id: 4,
     title: "Registered Agent",
     subtitle: "Free",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-free.svg",
     price: "Free"
   },
   {
     id: 5,
     title: "EIN",
     subtitle: "No",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-ein.svg",
     price: "$0.00"
   },
   {
     id: 6,
     title: "Operating Agreement / Bylaws",
     subtitle: "No",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-aggrement.svg",
     price: "$0.00"
   },
   {
     id: 7,
     title: "Expedited Processing",
     subtitle: "No",
-    icon: "/icons/overview-company.svg",
+    icon: "/icons/overview-processing.svg",
     price: "$0.00"
   }
 
 ];
 
 const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
+  const [data, setData] = useState<dataState>({});
   const [personalInfo, setPersonalInfo] = useState(initialPersonalInfo);
   const [businessInfo, setBusinessInfo] = useState(initialBusinessInfo);
   const [ownerInfo, setOwnerInfo] = useState(initialOwnerInfo);
+  const [ownerInfoTwo, setOwnerInfoTwo] = useState(initialOwnerInfoTwo)
   const [editSection, setEditSection] = useState<string | null>(null);
   const [tempData, setTempData] = useState<any>({});
+
+
+
+
+  // Load initial data from localStorage
+  useEffect(() => {
+    const localData = localStorage.getItem('companyData');
+    if (localData) {
+      const parsedData = JSON.parse(localData);
+      setData(parsedData);
+    }
+  }, []);
+
+  const singleLLc = data?.businessType === 'llc' && data?.stepTwo?.llcType === 'singleLLC' || data?.businessType === 's_corp'
+
+  const directorInfo = data?.businessType === 'non_profit'
 
   // Handlers for edit/save/cancel
   const handleEdit = (section: string, data: any) => {
@@ -94,6 +122,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     if (editSection === "personal") setPersonalInfo(tempData);
     if (editSection === "business") setBusinessInfo(tempData);
     if (editSection === "owner") setOwnerInfo(tempData);
+    if (editSection === "ownerTwo") setOwnerInfoTwo(tempData);
     setEditSection(null);
     setTempData({});
   };
@@ -254,12 +283,82 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
           )}
         </div>
       </div>
+
       {/* Owners Info */}
-      <div className="bg-white rounded-lg border border-gray-200 px-[23px] py-[18px] relative max-w-[728px] mb-4">
+
+      {singleLLc && <OwnersInfoBlock
+        data={ownerInfo}
+        handleEdit={handleEdit}
+        editSection={editSection}
+        handleInputChange={handleInputChange}
+        handleSave={handleSave}
+        handleCancel={handleCancel}
+        tempData={tempData}
+        editSectionName='owner'
+        title="Owners Info"
+      />}
+
+      {directorInfo && <>
+        <OwnersInfoBlock
+          data={ownerInfo}
+          handleEdit={handleEdit}
+          editSection={editSection}
+          handleInputChange={handleInputChange}
+          handleSave={handleSave}
+          handleCancel={handleCancel}
+          tempData={tempData}
+          editSectionName='owner'
+          title="Director info 01"
+        />
+
+        <OwnersInfoBlock
+          data={ownerInfoTwo}
+          handleEdit={handleEdit}
+          editSection={editSection}
+          handleInputChange={handleInputChange}
+          handleSave={handleSave}
+          handleCancel={handleCancel}
+          tempData={tempData}
+          editSectionName='ownerTwo'
+          title="Director info 02"
+        />
+      </>}
+
+      {!singleLLc && !directorInfo && <>
+        <OwnersInfoBlock
+          data={ownerInfo}
+          handleEdit={handleEdit}
+          editSection={editSection}
+          handleInputChange={handleInputChange}
+          handleSave={handleSave}
+          handleCancel={handleCancel}
+          tempData={tempData}
+          editSectionName='owner'
+          title="Owners Info 01"
+        />
+
+        <OwnersInfoBlock
+          data={ownerInfoTwo}
+          handleEdit={handleEdit}
+          editSection={editSection}
+          handleInputChange={handleInputChange}
+          handleSave={handleSave}
+          handleCancel={handleCancel}
+          tempData={tempData}
+          editSectionName='ownerTwo'
+          title="Owners Info 02"
+        />
+      </>}
+
+
+
+
+      {/* Owners Info Two */}
+      {/* <div className="bg-white rounded-lg border border-gray-200 px-[23px] py-[18px] relative max-w-[728px] mb-4">
         <div className="flex justify-between items-center mb-2">
           <span className="text-base text-black font-semibold">Owners Info</span>
 
-          {editSection !== "owner" && (
+          {editSection !== "ownerTwo" && (
             <button className=" hover:underline flex items-center gap-1" onClick={() => handleEdit("owner", ownerInfo)}>
               <Image
                 className="w-[16px]"
@@ -272,7 +371,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             </button>
           )}
         </div>
-        {editSection === "owner" ? (
+        {editSection === "ownerTwo" ? (
           <div className="space-y-2">
             <input name="name" value={tempData.name} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
             <input name="email" value={tempData.email} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
@@ -294,7 +393,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 width={16}
                 height={16}
               />
-              <span className="text-sm text-gray-600 mt-1">{ownerInfo.name}</span>
+              <span className="text-sm text-gray-600 mt-1">{ownerInfoTwo.name}</span>
             </div>
 
             <div className="flex items-center gap-3">
@@ -305,7 +404,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 width={16}
                 height={16}
               />
-              <span className="text-sm text-gray-600 mt-1">{ownerInfo.email}</span>
+              <span className="text-sm text-gray-600 mt-1">{ownerInfoTwo.email}</span>
             </div>
 
             <div className="flex items-center gap-3">
@@ -316,7 +415,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 width={16}
                 height={16}
               />
-              <span className="text-sm text-gray-600 mt-1">{ownerInfo.phone}</span>
+              <span className="text-sm text-gray-600 mt-1">{ownerInfoTwo.phone}</span>
             </div>
 
             <div className="flex items-center gap-3">
@@ -327,7 +426,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 width={16}
                 height={16}
               />
-              <span className="text-sm text-gray-600 mt-1">{ownerInfo.percent}</span>
+              <span className="text-sm text-gray-600 mt-1">{ownerInfoTwo.percent}</span>
             </div>
 
             <div className="flex items-center gap-3">
@@ -338,11 +437,11 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 width={16}
                 height={16}
               />
-              <span className="text-sm text-gray-600 mt-1">{ownerInfo.country}</span>
+              <span className="text-sm text-gray-600 mt-1">{ownerInfoTwo.country}</span>
             </div>
           </div>
         )}
-      </div>
+      </div> */}
       {/* Fee Breakdown */}
       <div className="bg-white rounded-lg border border-gray-200 relative max-w-[728px]">
         <div className="divide-y divide-gray-200">
