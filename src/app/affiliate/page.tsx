@@ -54,6 +54,7 @@ export default function AffiliatePage() {
     return (
         <div className="w-full min-h-screen bg-white pt-[120px]">
             <div className="max-w-[975px] mx-auto px-4 py-8">
+                
                 <div
                     className="bg-[#240D68] rounded-2xl p-6 md:p-12 text-white relative overflow-hidden"
                 >
