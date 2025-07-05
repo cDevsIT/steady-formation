@@ -4,11 +4,13 @@ import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
 import { countries } from "./funnel.type";
+import OwnersInfoFormTypeOne from "./Comp/OwnersInfoFormTypeOne";
+import OwnersInfoFormTypeTwo from "./Comp/OwnersInfoFormTypeTwo";
+import OwnersInfoFormTypeThree from "./Comp/OwnersInfoFormTypeThree";
+import OwnersInfoFormTypeFour from "./Comp/OwnersInfoFormTypeFour";
 
 const OwnersInfo: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-    const [formMethods, setFormMethods] = useState<any>(null);
     const [data, setData] = useState<dataState>({});
-    const [watchedValues, setWatchedValues] = useState<any>({});
 
     // Load initial data from localStorage
     useEffect(() => {
@@ -18,129 +20,23 @@ const OwnersInfo: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             setData(parsedData);
         }
     }, []);
+    const singleLLc = data?.businessType === 'llc' && data?.stepTwo?.llcType === 'singleLLC'
 
+    const singleCorp = data?.businessType === 's_corp'
 
-    useEffect(() => {
-        if (formMethods) {
-            formMethods.reset({
-                name: "SHIKHOR",
-                email: "demo@email.com",
-                mobile: "2345678901",
-                country: "us",
-                city: 'New York',
-                state: 'Manhattan',
-                zipCode: '22011',
-                streetAddress: '111, manhattan, new work',
-                ownersPercentage: '100',
-            });
-        }
-    }, [data, formMethods]);
+    const directorInfo = data?.businessType === 'non_profit'
 
-    const handleSubmit = (data: CustomFormData) => {
-        handleFormSubmit({ OwnersInfo: data, isOwnersInfoComplete: true })
-    };
-
-    // Handle form state changes and set up watchers
-    const handleFormStateChange = (methods: any) => {
-        setFormMethods(methods);
-
-        // Set up watchers for specific fields
-        const subscription = methods.watch((value: any, { name, type }: any) => {
-            setWatchedValues(value);
-            console.log('Field changed:', { name, type, value: value[name], allValues: value });
-        });
-
-        // Cleanup subscription when component unmounts or form changes
-        return () => subscription.unsubscribe();
-    };
     return (
-        <div className="max-w-[758px] mx-auto py-24">
-            <h2 className="text-[30px] font-semibold text-black"> This is OwnersInfo Component </h2>
-            <ReusableForm
-                onSubmit={handleSubmit}
-                submitText="Continue"
-                onFormStateChange={handleFormStateChange}
-                className="mb-5 mt-10"
-            >
+        <div className="">
 
-                <InputField
-                    name="name"
-                    label="Name"
-                    type="text"
-                    required
-                    placeholder="Enter Your Name"
-                    className="lg:col-span-2 "
-                />
+            {singleLLc && <OwnersInfoFormTypeOne handleFormSubmit={handleFormSubmit} />}
 
-                <InputField
-                    name="email"
-                    label="Email"
-                    placeholder="Enter your email"
-                    required
-                    type="text"
-                    className=''
-                />
+            {directorInfo && <OwnersInfoFormTypeThree handleFormSubmit={handleFormSubmit} />}
 
-                <InputField
-                    name="mobile"
-                    label="Mobile Number"
-                    type="phone"
-                    required
-                    placeholder="Enter mobile number"
-                />
-                <InputField
-                    name="country"
-                    label="Country"
-                    type="select"
-                    required
-                    placeholder="Select Country"
-                    className=""
-                    options={countries}
-                />
+            {singleCorp && <OwnersInfoFormTypeFour handleFormSubmit={handleFormSubmit} />}
 
-                <InputField
-                    name="city"
-                    label="City"
-                    type="text"
-                    required
-                    placeholder="Enter City"
-                />
+            {!singleLLc && !directorInfo && !singleCorp && <OwnersInfoFormTypeTwo handleFormSubmit={handleFormSubmit} />}
 
-                <InputField
-                    name="state"
-                    label="State"
-                    type="text"
-                    required
-                    placeholder="Enter State"
-                />
-                <InputField
-                    name="zipCode"
-                    label="Zip Code"
-                    type="text"
-                    required
-                    placeholder="Enter Zip Code"
-                />
-
-                <InputField
-                    name="streetAddress"
-                    label="Streen Address"
-                    type="text"
-                    required
-                    placeholder="Enter Street Address"
-                />
-
-                <InputField
-                    name="ownersPercentage"
-                    label="Ownership Percentage"
-                    type="text"
-                    required
-                    placeholder="Enter Ownership Percentage"
-                />
-
-
-
-
-            </ReusableForm>
 
         </div>
     );
