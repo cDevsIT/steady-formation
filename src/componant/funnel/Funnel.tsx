@@ -18,6 +18,7 @@ import NinthFunnel from "./NinthFunnel";
 import RegisterConfirm from "./RegisterConfirm";
 import OwnersInfo from "./OwnersInfo";
 import OwnersInfoComplete from "./OwnersInfoComplete";
+import FirstFunnelSidebar from "./Comp/FirstFunnelSidebar";
 
 export interface dataState {
     businessType?: string;
@@ -131,13 +132,7 @@ const Funnel = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4">
 
                         <FirstFunnel handleFormSubmit={handleFormSubmit} />
-                        <Image
-                            className="w-[565px] hidden lg:block"
-                            url='/funnel/funnel_step.png'
-                            alt='Funnel Page'
-                            width={565}
-                            height={719}
-                        />
+                        <FirstFunnelSidebar/>
                     </div>
                 }
 

@@ -20,14 +20,6 @@ const FunnelSidebar = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const reviews = sampleReviews.slice(0, 3);
 
-    // Avatars for the expert section
-    const expertAvatars = [
-        'https://randomuser.me/api/portraits/men/32.jpg',
-        'https://randomuser.me/api/portraits/women/44.jpg',
-        'https://randomuser.me/api/portraits/men/45.jpg',
-        'https://randomuser.me/api/portraits/women/46.jpg',
-    ];
-
     // Custom arrows for the carousel
     const ArrowButton = ({ direction, onClick, disabled }: { direction: 'left' | 'right'; onClick?: () => void; disabled?: boolean }) => (
         <button
