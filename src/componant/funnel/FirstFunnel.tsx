@@ -47,7 +47,7 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     };
 
     return (
-        <div>
+        <div className="pb-2">
             <FunnelHeading>
                 Start Your Free Registration
             </FunnelHeading>
@@ -69,9 +69,9 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                         type="text"
                         className='lg:col-span-2 mb-1'
                     />
-                    <span className="text-[12px] leading-[18px] col-span-2 max-w-[591px]text-start">*The entered name will be validated later. You Don&apos;t have to add &quot;LLC,&quot; &quot;Inc.&quot; &quot;Corp&quot; etc. in this box. If your chosen name is unavailable, together we&apos;ll work on an alternative.</span>
+                    <span className="text-[12px] leading-[18px] col-span-2 max-w-[591px] text-start m-0">*The entered name will be validated later. You Don&apos;t have to add &quot;LLC,&quot; &quot;Inc.&quot; &quot;Corp&quot; etc. in this box. If your chosen name is unavailable, together we&apos;ll work on an alternative.</span>
 
-                    <FunnelSubHeading className="font-semibold mt-4 col-span-2">
+                    <FunnelSubHeading className="font-semibold col-span-2 m-0">
                         Primary Contact
                     </FunnelSubHeading>
 
