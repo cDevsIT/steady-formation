@@ -48,7 +48,6 @@ const OwnersInfoFormTypeFour: React.FC<ChildComponentProps> = ({ handleFormSubmi
         // Set up watchers for specific fields
         const subscription = methods.watch((value: any, { name, type }: any) => {
             setWatchedValues(value);
-            console.log('Field changed:', value);
         });
 
         // Cleanup subscription when component unmounts or form changes

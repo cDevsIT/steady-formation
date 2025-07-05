@@ -13,7 +13,6 @@ const FormSample = () => {
     const [watchedValues, setWatchedValues] = useState<any>({});
 
     const handleFormSubmit = (data: CustomFormData) => {
-        console.log('Form submitted successfully:', data);
         setFormSubmissions(prev => [...prev, data]);
 
         // Show success message with submitted data
@@ -28,7 +27,6 @@ const FormSample = () => {
         // Set up watchers for specific fields
         const subscription = methods.watch((value: any, { name, type }: any) => {
             setWatchedValues(value);
-            console.log('Field changed:', { name, type, value: value[name], allValues: value });
         });
 
         // Cleanup subscription when component unmounts or form changes
