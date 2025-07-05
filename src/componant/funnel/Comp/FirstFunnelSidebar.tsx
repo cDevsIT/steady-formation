@@ -2,7 +2,7 @@ import Image from "@/componant/ui/Image";
 
 const FirstFunnelSidebar = () => {
     return (
-        <div className="max-w-[565px] min-h-[677px] bg-white rounded-3xl">
+        <div className="max-w-[565px] min-h-[677px] bg-white rounded-3xl hidden lg:block pr-4">
             <div className="grid grid-cols-[70%_30%] bg-gray-100">
                 <div className="flex flex-col gap-4 rounded-br-3xl pl-10 pb-4 bg-white align-middle">
                     <Image url='/icons/rating_stars.svg' alt='Trust Pilot' width={105} height={20} className="w-[105px]" />
