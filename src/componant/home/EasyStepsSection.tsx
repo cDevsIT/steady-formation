@@ -64,7 +64,7 @@ const EasyStepsSection: React.FC = () => {
 
     return (
         <section className='pt-20 mb-4 px-4 bg-white'>
-            <div className='max-w-[1280px] mx-auto'>
+            <div className='max-w-[980px] xl:max-w-[1280px] mx-auto'>
                 <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6  text-center max-w-[600px] mx-auto">
                     Start Your U.S. Company in 4 Easy Steps
                 </h2>
@@ -144,7 +144,7 @@ const EasyStepsSection: React.FC = () => {
                     </div>
                 </div>
 
-                <div className=' xl:hidden flex flex-col gap-3'>
+                <div className=' xl:hidden flex flex-col gap-3 justify-center items-center'>
                     <Image
                         className="w-[663px] mb-8"
                         url='/homepage/four_steps_image.png'
@@ -153,7 +153,7 @@ const EasyStepsSection: React.FC = () => {
                         height={450}
                     />
 
-                    <div className='mt-[-100px}'>
+                    <div className='mt-[-100px} flex justify-center items-center flex-wrap gap-15'>
                         {cards.map((card, i) => {
                             return <div key={i} className={`w-[330px] h-[215px] rounded-xl p-4 mb-3 cursor-pointer
                             transition-all duration-700 ease-out transform-gpu text-white
