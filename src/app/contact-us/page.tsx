@@ -97,7 +97,7 @@ export default function ContactUs() {
     };
 
     return (
-        <main className="w-full max-w-[390px] md:max-w-[1512px] mx-auto min-h-screen bg-white text-black">
+        <main className="w-full max-w-[390px] md:max-w-[980px] xl:max-w-[1512px] mx-auto min-h-screen bg-white text-black">
             {/* Banner Section */}
             <div className="w-full bg-[#F4F3FF] pt-[70px]">
                 <div className="w-full max-w-[360px] md:max-w-[1280px] mx-auto py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 text-center">
@@ -402,7 +402,7 @@ export default function ContactUs() {
                         </div>
                         <h4 className="text-[20px] font-semibold mb-[20px] font-inter leading-[30px]">Chat to sales</h4>
                         <p className="text-[16px] font-normal text-[#475467] mb-[16px] font-inter leading-[24px]">Speak to our friendly team.</p>
-                        <a href="mailto:info@steadyformation.com" className="text-[16px] text-[#7856FC] font-semibold font-inter leading-[24px]">
+                        <a href="mailto:info@steadyformation.com" className="text-[16px] text-[#7856FC] font-semibold font-inter leading-[24px] overflow-auto break-all">
                             info@steadyformation.com
                         </a>
                     </div>
@@ -419,7 +419,7 @@ export default function ContactUs() {
                         </div>
                         <h4 className="text-[20px] font-semibold mb-[20px] font-inter leading-[30px]">Chat to support</h4>
                         <p className="text-[16px] font-normal text-[#475467] mb-[16px] font-inter leading-[24px]">We're here to help.</p>
-                        <a href="mailto:info@steadyformation.com" className="text-[16px] text-[#7856FC] font-semibold font-inter leading-[24px]">
+                        <a href="mailto:info@steadyformation.com" className="text-[16px] text-[#7856FC] font-semibold font-inter leading-[24px] overflow-auto break-all">
                             info@steadyformation.com
                         </a>
                     </div>

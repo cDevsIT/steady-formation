@@ -3,7 +3,7 @@ import Image from "../ui/Image";
 const AboutHelpSection = () => {
     return (
         <div className="pb-20 px-4 bg-white">
-            <div className="max-w-[1512px] mx-auto px-3 flex flex-col lg:flex-row gap-4 mt-20 justify-between">
+            <div className="max-w-[980px] xl:max-w-[1512px] mx-auto px-3 grid grid-cols-1 lg:grid-cols-2 gap-4 mt-20 justify-between">
                 <div>
                     <h2 className="text-[30px] lg:text-[45px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-3  text-start max-w-[605px]">
                         How we’re helping entrepreneurs around the world build successful U.S.
@@ -25,7 +25,7 @@ const AboutHelpSection = () => {
                 </div>
 
                 <Image
-                    className="w-[592px]"
+                    className="w-full self-center"
                     url='/aboutpage/about_help_section.png'
                     alt='About Page Image'
                     width={600}
