@@ -30,6 +30,7 @@ interface InputFieldProps {
     rules?: any;
     className?: string;
     disabled?: boolean;
+    belowText?: string;
 }
 
 // Custom form data interface to avoid conflict with built-in FormData
@@ -79,7 +80,8 @@ export const InputField: React.FC<InputFieldProps> = ({
     errors = {},
     rules = {},
     className = '',
-    disabled = false
+    disabled = false,
+    belowText= ''
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
@@ -237,6 +239,10 @@ export const InputField: React.FC<InputFieldProps> = ({
                                 ))}
                             </div>
                         )}
+
+                        
+
+                        {belowText && <span className='text-sm font-normal text-gray-600'>{belowText}</span>}
                     </div>
                 );
 

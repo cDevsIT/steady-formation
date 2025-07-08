@@ -60,7 +60,7 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     };
 
     const showNumberOfOwnership = (selected === 'llc' && watchedValues.llcType === 'singleLLC') || selected === 'non_profit'
-    console.log(showNumberOfOwnership)
+
     const companyNameLabel = selected === 's_corp' || selected === 'c_corp' ? 'Corporation Type ' : 'Select LLC Type';
 
     return (

@@ -18,6 +18,7 @@ import NinthFunnel from "./NinthFunnel";
 import RegisterConfirm from "./RegisterConfirm";
 import OwnersInfo from "./OwnersInfo";
 import OwnersInfoComplete from "./OwnersInfoComplete";
+import FirstFunnelSidebar from "./Comp/FirstFunnelSidebar";
 
 export interface dataState {
     businessType?: string;
@@ -92,7 +93,7 @@ const Funnel = () => {
 
     if (data?.isOwnersInfoComplete) {
         return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
-            <div className="max-w-[1280px] mx-auto">
+            <div className="max-w-[980px] xl:max-w-[1280px] mx-auto">
                 <OwnersInfoComplete />
             </div>
         </section>;
@@ -100,7 +101,7 @@ const Funnel = () => {
 
     if (data?.registrationConfrim) {
         return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
-            <div className="max-w-[1280px] mx-auto">
+            <div className="max-w-[980px] xl:max-w-[1280px] mx-auto">
                 <OwnersInfo handleFormSubmit={handleFormSubmit} />
             </div>
         </section>;
@@ -108,7 +109,7 @@ const Funnel = () => {
 
     if (data?.isPaymentComplete) {
         return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
-            <div className="max-w-[1280px] mx-auto">
+            <div className="max-w-[980px] xl:max-w-[1280px] mx-auto">
                 <RegisterConfirm handleFormSubmit={handleFormSubmit} />
             </div>
         </section>;
@@ -116,7 +117,7 @@ const Funnel = () => {
 
     return (
         <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
-            <div className="max-w-[1280px] mx-auto">
+            <div className="max-w-[980px] xl:max-w-[1280px] mx-auto">
 
                 {data?.currentStep < 9 &&
                     <ProgressBar
@@ -131,13 +132,7 @@ const Funnel = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4">
 
                         <FirstFunnel handleFormSubmit={handleFormSubmit} />
-                        <Image
-                            className="w-[565px] hidden lg:block"
-                            url='/funnel/funnel_step.png'
-                            alt='Funnel Page'
-                            width={565}
-                            height={719}
-                        />
+                        <FirstFunnelSidebar/>
                     </div>
                 }
 

@@ -14,6 +14,11 @@ export const c_corpTypes = [
 export const partnarshipTypes = [
     { label: 'Partnership', value: 'partnership' },]
 
+export const manageTypes = [
+    { label: 'Member Manage', value: 'member_manage' },
+    { label: 'Manager Mange', value: 'manager_manage' },
+    ]
+
 export const industries = [
     { label: 'Technology', value: 'technology' },
     { label: 'Healthcare', value: 'healthcare' },
