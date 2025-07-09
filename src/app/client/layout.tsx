@@ -11,6 +11,7 @@ const menu = [
     { name: 'Company', path: '/client/company', icon: '/client/company-icon.svg' },
     { name: 'Documents', path: '/client/documents', icon: '/client/documents-icon.svg' },
     { name: 'Tax Filing', path: '/client/tax-filing', icon: '/client/tax-filing-icon.svg' },
+    { name: 'Services', path: '/client/services', icon: '/client/tax-filing-icon.svg' },
     { name: 'Payment History', path: '/client/payment', icon: '/client/payment-icon.svg' },
     { name: 'Support / Help', path: '/client/support-help', icon: '/client/support-help-icon.svg' },
     { name: 'Affiliate', path: '/client/affiliate', icon: '/client/affiliate-icon.svg' },
@@ -63,7 +64,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     }
 
     return (
-        <div className="w-full flex justify-center bg-[#f8f9fb] pt-[70px] min-h-screen">
+        <div className="w-full flex justify-center bg-white mb-3 pt-[70px] min-h-screen">
             {/* Floating Menu Button - left edge, vertically centered, mobile only, always visible except when sidebar is open */}
             {(!mobileMenuOpen) && (
                 <button
