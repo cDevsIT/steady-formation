@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { useForm, Controller, FieldErrors } from 'react-hook-form';
 
@@ -20,7 +21,7 @@ interface CompanyType {
 interface InputFieldProps {
     name: string;
     label: string;
-    type: 'text' | 'number' | 'email' | 'select' | 'phone' | 'company';
+    type: 'text' | 'number' | 'email' | 'select' | 'phone' | 'company' | 'radio' | 'file'; // Added 'radio' and 'file'
     required?: boolean;
     placeholder?: string;
     options?: { label: string; value: string | number | boolean }[];
@@ -81,7 +82,7 @@ export const InputField: React.FC<InputFieldProps> = ({
     rules = {},
     className = '',
     disabled = false,
-    belowText= ''
+    belowText = ''
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
@@ -92,6 +93,36 @@ export const InputField: React.FC<InputFieldProps> = ({
     const dropdownRef = useRef<HTMLDivElement>(null);
     const countryDropdownRef = useRef<HTMLDivElement>(null);
     const companyTypeDropdownRef = useRef<HTMLDivElement>(null);
+
+    // File input hooks (moved to top level)
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [dragActive, setDragActive] = useState(false);
+    const [fileName, setFileName] = useState('');
+
+    // File input handlers (top-level)
+    const handleFileChange = (onChange: (file: File) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+            setFileName(file.name);
+            onChange(file);
+        }
+    };
+    const handleDrop = (onChange: (file: File) => void) => (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            setFileName(e.dataTransfer.files[0].name);
+            onChange(e.dataTransfer.files[0]);
+        }
+    };
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(true);
+    };
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(false);
+    };
 
     // Handle outside clicks
     useEffect(() => {
@@ -186,7 +217,7 @@ export const InputField: React.FC<InputFieldProps> = ({
     // }
 
     // Render different input types
-    const renderInput = (field: any) => {
+    const RenderInput = (field: any) => {
         const { value, onChange, onBlur } = field;
         const hasError = errors[name];
 
@@ -240,7 +271,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                             </div>
                         )}
 
-                        
+
 
                         {belowText && <span className='text-sm font-normal text-gray-600'>{belowText}</span>}
                     </div>
@@ -388,6 +419,60 @@ export const InputField: React.FC<InputFieldProps> = ({
                     />
                 );
 
+            case 'radio':
+                return (
+                    <div className="space-y-2">
+                        {options.map((option, idx) => (
+                            <label key={idx} className="flex items-center space-x-2 cursor-pointer select-none">
+                                <input
+                                    type="radio"
+                                    name={name}
+                                    value={String(option.value)}
+                                    checked={value == option.value}
+                                    onChange={() => onChange(option.value)}
+                                    onBlur={onBlur}
+                                    disabled={disabled}
+                                    className="accent-[#7856FC] w-4 h-4 border-gray-300 focus:ring-2 focus:ring-[#7856FC]"
+                                    required={required}
+                                />
+                                <span className="text-gray-900 text-[15px]">{option.label}</span>
+                            </label>
+                        ))}
+                        {belowText && <span className='text-sm font-normal text-gray-600'>{belowText}</span>}
+                    </div>
+                );
+            case 'file':
+                // Handlers use top-level state/hooks
+                return (
+                    <div
+                        className={`flex flex-col items-center justify-center border-2 ${dragActive ? 'border-[#7856FC]' : 'border-gray-300'} border-dashed rounded-xl py-6 px-4 transition-colors duration-200 bg-white cursor-pointer w-full relative`}
+                        onClick={() => !disabled && fileInputRef.current?.click()}
+                        onDrop={handleDrop(onChange)}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        tabIndex={0}
+                        style={{ outline: 'none' }}
+                    >
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange(onChange)}
+                            onBlur={onBlur}
+                            disabled={disabled}
+                            required={required}
+                        />
+                        <div className="flex flex-col items-center">
+                            <span className="flex items-center justify-center w-10 h-10 rounded-full bg-[#F4F3FF] mb-2">
+                                <svg width="24" height="24" fill="none" stroke="#7856FC" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 16V4m0 0l-4 4m4-4l4 4" /><rect x="4" y="16" width="16" height="4" rx="2" /></svg>
+                            </span>
+                            <span className="text-[#7856FC] font-medium text-base mb-1">Click to upload</span>
+                            <span className="text-gray-500 text-sm">or drag and drop</span>
+                            {(fileName || (value && value.name)) && <span className="mt-2 text-gray-700 text-sm">{fileName || (value && value.name)}</span>}
+                        </div>
+                    </div>
+                );
+
             default:
                 return (
                     <input
@@ -404,6 +489,13 @@ export const InputField: React.FC<InputFieldProps> = ({
         }
     };
 
+    // Set default value for radio and file if not already set
+    useEffect(() => {
+        if (control && control._formValues && control._formValues[name] === undefined && defaultValue !== undefined) {
+            control._formValues[name] = defaultValue;
+        }
+    }, [control, name, defaultValue]);
+
     return (
         <div className={`mb-1 col-span-2 lg:col-span-1 ${className}`}>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -415,7 +507,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                 name={name}
                 control={control}
                 rules={getValidationRules()}
-                render={({ field }) => renderInput(field)}
+                render={({ field }) => RenderInput(field)}
             />
 
             {errors[name] && (
@@ -446,8 +538,28 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     defaultValues = {},
     onFormStateChange
 }) => {
+    // Collect defaultValue from each InputField child
+    let mergedDefaultValues = { ...defaultValues };
+    React.Children.forEach(children, (child) => {
+        if (
+            React.isValidElement(child) &&
+            (child.type === InputField || (typeof child.type === 'function' && child.type.name === 'InputField')) &&
+            typeof child.props === 'object' &&
+            child.props !== null &&
+            'name' in child.props &&
+            'defaultValue' in child.props &&
+            (child.props as Record<string, any>).name &&
+            (child.props as Record<string, any>).defaultValue !== undefined
+        ) {
+            const props = child.props as Record<string, any>;
+            if (mergedDefaultValues[props.name] === undefined) {
+                mergedDefaultValues[props.name] = props.defaultValue;
+            }
+        }
+    });
+
     const formMethods = useForm({
-        defaultValues,
+        defaultValues: mergedDefaultValues,
         mode: 'onBlur'
     });
 

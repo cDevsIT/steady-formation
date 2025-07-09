@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Image from '@/componant/ui/Image';
 import Link from 'next/link';
+import ITIN from '@/componant/client/services/service/ITIN';
 // Example component imports (these would be real imports in a real app)
 // import NewRegisteredAgent from '@/componant/client/services/NewRegisteredAgent';
 // import TransferRegisterAgent from '@/componant/client/services/TransferRegisterAgent';
@@ -109,7 +110,7 @@ const serviceComponentMap: Record<string, React.ReactNode> = {
     'us-business-address': <div>USBusinessAddress Component Rendered Here</div>,
     'ein-application': <div>EINApplication Component Rendered Here</div>,
     'operating-agreement': <div>OperatingAgreement Component Rendered Here</div>,
-    'itin': <div>ITIN Component Rendered Here</div>,
+    'itin': <ITIN />,
     'annual-compliance': <div>AnnualCompliance Component Rendered Here</div>,
     'good-standing': <div>GoodStanding Component Rendered Here</div>,
     'banking-assistance': <div>BankingAssistance Component Rendered Here</div>,
