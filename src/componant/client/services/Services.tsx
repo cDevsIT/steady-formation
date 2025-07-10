@@ -8,7 +8,7 @@ const servicesData = [
         description: 'Get a New Registered Agent for just $99 with a trusted U.S. business address.',
         price: '$99',
         oldPrice: '$199',
-        route: '/client/services/new-registered-agent',
+        route: '/services/new-registered-agent',
     },
     {
         icon: '/client/service_two.svg',
@@ -16,7 +16,7 @@ const servicesData = [
         description: 'Transfer your Registered Agent to us for just $45 with full filing support.',
         price: '$45',
         oldPrice: '$145',
-        route: '/client/services/transfer-register-agent',
+        route: '/services/transfer-register-agent',
     },
     {
         icon: '/client/service_three.svg',
@@ -24,7 +24,7 @@ const servicesData = [
         description: 'Receive a professional U.S. mailing address for your company.',
         price: '$444',
         oldPrice: '$599',
-        route: '/client/services/us-business-address',
+        route: '/services/us-business-address',
     },
     {
         icon: '/client/service_four.svg',
@@ -32,7 +32,7 @@ const servicesData = [
         description: 'We handle your Employer Identification Number (EIN) application.',
         price: '$444',
         oldPrice: '$599',
-        route: '/client/services/ein-application',
+        route: '/services/ein-application',
     },
     {
         icon: '/client/service_five.svg',
@@ -40,7 +40,7 @@ const servicesData = [
         description: 'Professionally drafted Operating Agreement to streamline operations.',
         price: '$444',
         oldPrice: '$599',
-        route: '/client/services/operating-agreement',
+        route: '/services/operating-agreement',
     },
     {
         icon: '/client/service_six.svg',
@@ -48,7 +48,7 @@ const servicesData = [
         description: 'Speed up your business registration with our expedited service.',
         price: '$444',
         oldPrice: '$599',
-        route: '/client/services/itin',
+        route: '/services/itin',
     },
     {
         icon: '/client/service_seven.svg',
@@ -56,7 +56,7 @@ const servicesData = [
         description: 'Stay in good standing with help on annual reports and filings.',
         price: '$444',
         oldPrice: '$599',
-        route: '/client/services/annual-compliance',
+        route: '/services/annual-compliance',
     },
     {
         icon: '/client/service_eight.svg',
@@ -64,7 +64,7 @@ const servicesData = [
         description: 'Get an official certificate verifying your business status.',
         price: '$444',
         oldPrice: '$599',
-        route: '/client/services/good-standing',
+        route: '/services/good-standing',
     },
     {
         icon: '/client/service_nine.svg',
@@ -72,7 +72,7 @@ const servicesData = [
         description: 'Guidance on opening a U.S. bank account as a non-resident.',
         price: '$444',
         oldPrice: '$599',
-        route: '/client/services/banking-assistance',
+        route: '/services/banking-assistance',
     },
     {
         icon: '/client/service_ten.svg',
@@ -80,7 +80,7 @@ const servicesData = [
         description: 'Forwarding and scanning service for your U.S. business mail.',
         price: '$444',
         oldPrice: '$599',
-        route: '/client/services/virtual-office',
+        route: '/services/virtual-office',
     },
 ];
 

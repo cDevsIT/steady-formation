@@ -528,6 +528,7 @@ interface ReusableFormProps {
     className?: string;
     defaultValues?: CustomFormData;
     onFormStateChange?: (formMethods: any) => void;
+    formTitle?: string;
 }
 
 export const ReusableForm: React.FC<ReusableFormProps> = ({
@@ -536,7 +537,8 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     submitText = 'Submit',
     className = '',
     defaultValues = {},
-    onFormStateChange
+    onFormStateChange,
+    formTitle
 }) => {
     // Collect defaultValue from each InputField child
     let mergedDefaultValues = { ...defaultValues };
@@ -613,15 +615,22 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     });
 
     return (
-        <div className={`space-y-4 grid gap-4 grid-cols-1 lg:grid-cols-2 ${className}`}>
-            {enhancedChildren}
-            <button
-                onClick={handleSubmit(onFormSubmit)}
-                disabled={isSubmitting}
-                className="col-span-1 lg:col-span-2 flex-1 bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-xl shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                {isSubmitting ? 'Submitting...' : submitText}
-            </button>
+        <div >
+            <div className='border border-gray-200 rounded-3xl'>
+                {formTitle && <h2 className='text-lg font-semibold text-black m-0 border-b border-gray-200 py-3 pl-4'>{formTitle}</h2>} 
+                <div className={`space-y-4 grid gap-4 grid-cols-1 lg:grid-cols-2 ${className}  py-3 px-4`}>
+                    {enhancedChildren}
+                </div>
+            </div>
+            <div className='py-3 flex justify-end '>
+                <button
+                    onClick={handleSubmit(onFormSubmit)}
+                    disabled={isSubmitting}
+                    className="bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-2 px-3 rounded-md shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {isSubmitting ? 'Submitting...' : submitText}
+                </button>
+            </div>
         </div>
     );
 };
