@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Button from "@/componant/ui/Button";
 import Image from "@/componant/ui/Image";
 
@@ -32,6 +33,7 @@ const taxFilingsData = [
 
 export default function TaxFiling() {
     const [taxFiling, setTaxFiling] = useState(true); // Change to false to see the empty state
+    const router = useRouter();
 
     if (taxFiling) {
         // Tax filings exist: show table, edge-to-edge
@@ -59,7 +61,10 @@ export default function TaxFiling() {
                             className="border border-[#E4E7EC] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-100 w-full md:w-[350px] ml-0 md:ml-6"
                         />
                     </div>
-                    <Button className="bg-[#7856FC] text-white text-[14px] leading-5 font-semibold px-6 py-2 rounded-lg hover:bg-[#6840e0] w-full md:w-auto self-end md:self-auto mr-6">
+                    <Button
+                        className="bg-[#7856FC] text-white text-[14px] leading-5 font-semibold px-6 py-2 rounded-lg hover:bg-[#6840e0] w-full md:w-auto self-end md:self-auto mr-6"
+                        onClick={() => router.push("/client/tax-filing/step1")}
+                    >
                         Get Tax Quotation
                     </Button>
                 </div>
@@ -118,7 +123,10 @@ export default function TaxFiling() {
                         className="border border-[#E4E7EC] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-100 w-full md:w-[350px] ml-0 md:ml-6"
                     />
                 </div>
-                <Button className="hidden md:block bg-[#7856FC] text-white text-[14px] leading-5 font-semibold px-5 py-2 rounded-lg hover:bg-[#6840e0] w-full md:w-auto self-end md:self-auto">
+                <Button
+                    className="hidden md:block bg-[#7856FC] text-white text-[14px] leading-5 font-semibold px-5 py-2 rounded-lg hover:bg-[#6840e0] w-full md:w-auto self-end md:self-auto"
+                    onClick={() => router.push("/client/tax-filing/step1")}
+                >
                     Get Tax Quotation
                 </Button>
             </div>
