@@ -3,8 +3,44 @@ export const llcTypes = [
     { label: 'Multi Member LLC', value: 'multiLLC' },
 ];
 
+export const companyTypes = [
+    { label: 'Limited Liability Company', value: 'llc', },
+    { label: 'Corporation', value: 'corp', },
+    { label: 'Incorporated', value: 'inc', },
+    { label: 'Limited', value: 'ltd', },
+    { label: 'Partnership', value: 'partnership', },
+    { label: 'Limited Partnership', value: 'lp', },
+    { label: 'Professional Corporation', value: 'pc', },
+    { label: 'Limited Liability Partnership', value: 'llp', },
+    { label: 'Public Limited Company', value: 'plc', },
+    { label: 'Private Limited Company', value: 'pvt',}
+];
+
+export const serviceTypes = [
+    { label: 'Consulting', value: 'consulting' },
+    { label: 'Software Development', value: 'software_development' },
+    { label: 'Digital Marketing', value: 'digital_marketing' },
+    { label: 'Graphic Design', value: 'graphic_design' },
+    { label: 'IT Services', value: 'it_services' },
+    { label: 'Financial Services', value: 'financial_services' },
+    { label: 'Healthcare Services', value: 'healthcare_services' },
+    { label: 'Education & Training', value: 'education_training' },
+    { label: 'Legal Services', value: 'legal_services' },
+    { label: 'Construction Services', value: 'construction_services' },
+    { label: 'Logistics & Transportation', value: 'logistics_transportation' },
+    { label: 'Hospitality & Tourism', value: 'hospitality_tourism' },
+    { label: 'Real Estate Services', value: 'real_estate' },
+    { label: 'Event Management', value: 'event_management' },
+    { label: 'Cleaning Services', value: 'cleaning_services' },
+];
+
 export const s_corpTypes = [
     { label: 'S Corporation (Owners must be U.S Resident)', value: 's_corp' },
+]
+
+export const YesNo = [
+    { label: 'Yes', value: 'yes' },
+    { label: 'No', value: 'no' }
 ]
 
 export const c_corpTypes = [
