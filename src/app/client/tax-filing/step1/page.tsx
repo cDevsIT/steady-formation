@@ -1,14 +1,20 @@
+'use client';
 import React from "react";
 import Button from "@/componant/ui/Button";
 import Image from "@/componant/ui/Image";
+import { useRouter } from "next/navigation";
 
 export default function TaxFilingStep1() {
+    const router = useRouter();
     return (
         <div className="w-full py-8 px-4 md:px-6">
             {/* Top Bar: Back and Progress */}
             <div className="mb-9">
                 <div className="flex items-center justify-between mb-2">
-                    <button className="flex items-center gap-2 text-[#667085] text-[15px] font-medium hover:text-[#7856FC]">
+                    <button
+                        className="flex items-center gap-2 text-[#667085] text-[15px] font-medium hover:text-[#7856FC] cursor-pointer"
+                        onClick={() => router.push('/client/tax-filing')}
+                    >
                         <Image url="/client/chevron-left.svg" alt="Back" width={20} height={20} />
                         Back
                     </button>
@@ -158,7 +164,12 @@ export default function TaxFilingStep1() {
 
             {/* Continue Button */}
             <div className="flex justify-end mt-8">
-                <Button className="bg-[#7856FC] text-white px-10 py-3 rounded-lg text-[16px] font-semibold hover:bg-[#6840e0]">Continue</Button>
+                <Button
+                    className="bg-[#7856FC] text-white px-10 py-3 rounded-lg text-[16px] font-semibold hover:bg-[#6840e0] cursor-pointer"
+                    onClick={() => router.push('/client/tax-filing/step2')}
+                >
+                    Continue
+                </Button>
             </div>
         </div>
     );
