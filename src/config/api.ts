@@ -1,15 +1,18 @@
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.cdevs.com.bd/api';
-
-export const API_ENDPOINTS = {
-  BLOG: {
-    LIST: `${API_BASE_URL}/blogs`,
-    DETAIL: (slug: string) => `${API_BASE_URL}/blogs/${slug}`,
-    CREATE: `${API_BASE_URL}/blogs`,
-    UPDATE: (id: number) => `${API_BASE_URL}/blogs/${id}`,
-    // DELETE: (id: number) => `${API_BASE_URL}/blogs/${id}`,
-  },
-  // Add other API endpoints here as needed
+export const API_CONFIG = {
+    BASE_URL: 'https://api.cdevs.com.bd/api',
+    // BASE_URL: 'http://localhost:8000/api',
+    ENDPOINTS: {
+        AUTH: {
+            LOGIN: '/auth/login',
+            SIGNUP: '/auth/signup',
+            LOGOUT: '/auth/logout',
+            USER: '/auth/user',
+        },
+        BLOGS: {
+            LIST: '/blogs',
+            DETAIL: (slug: string) => `/blogs/${slug}`,
+        }
+    }
 };
 
 export const fetchApi = async <T>(
