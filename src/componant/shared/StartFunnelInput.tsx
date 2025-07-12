@@ -33,13 +33,13 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = (
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch w-full">
                 {/* Custom Dropdown and Input Container */}
                 <div className="flex justify-center items-center w-full max-w-md mx-auto sm:mx-0">
-                    <div className="relative w-full flex min-w-0">
+                    <div className="relative w-full flex min-w-0 rounded-lg border border-gray-200 focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
                         {/* Dropdown */}
                         <div className="relative flex-shrink-0">
                             <button
                                 type="button"
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                className="w-16 sm:w-20 md:w-24 lg:w-28 h-12 px-2 sm:px-3 rounded-l-lg bg-white text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500 hover:border-gray-300 transition-all border border-gray-200"
+                                className="w-16 sm:w-20 md:w-24 lg:w-28 h-12 px-2 sm:px-3 rounded-l-lg bg-white text-left flex items-center justify-between  hover:border-gray-300 transition-all border border-gray-200"
                             >
                                 <span className="text-gray-900 font-medium text-xs sm:text-sm truncate">
                                     {businessLabel}
@@ -77,7 +77,7 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = (
                                                     setBusinessLabel(type.label)
                                                     setIsDropdownOpen(false);
                                                 }}
-                                                className="w-full px-2 sm:px-3 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none text-gray-900 text-xs sm:text-sm first:rounded-t-none last:rounded-b-lg transition-colors"
+                                                className="w-full px-2 sm:px-3 py-2 text-left hover:bg-gray-50  text-gray-900 text-xs sm:text-sm first:rounded-t-none last:rounded-b-lg transition-colors"
                                             >
                                                 {type.label}
                                             </button>
