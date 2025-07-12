@@ -33,7 +33,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
           </div>
 
           {/* Desktop Navigation - Only show on main site */}
-          {!isClientRoute || !hideHeaderFooter && <NavLinks />}
+          {!isClientRoute && !hideHeaderFooter && <NavLinks />}
 
           {/* Desktop Login Button */}
           <div className="hidden md:block ">
