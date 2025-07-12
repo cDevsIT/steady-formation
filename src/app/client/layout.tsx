@@ -78,7 +78,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     useEffect(() => {
         const checkAuth = async () => {
             const token = localStorage.getItem('auth_token');
-            
+
             if (!token) {
                 router.push('/login');
                 return;
@@ -119,7 +119,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
     const handleLogout = async () => {
         const token = localStorage.getItem('auth_token');
-        
+
         if (token) {
             try {
                 await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGOUT}`, {
@@ -133,7 +133,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 console.error('Logout error:', error);
             }
         }
-        
+
         localStorage.removeItem('auth_token');
         router.push('/login');
     };
@@ -250,7 +250,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                         </div>
                         {/* Log Out */}
                         <div className="border-t border-[#ececec] px-6 py-4">
-                            <button 
+                            <button
                                 onClick={handleLogout}
                                 className="flex items-center gap-3 text-[#344054] text-base font-medium hover:text-[#7856FC] w-full"
                             >
@@ -342,7 +342,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     </div>
                     {/* Log Out */}
                     <div className="border-t border-[#ececec] px-6 py-4">
-                        <button 
+                        <button
                             onClick={handleLogout}
                             className="flex items-center gap-3 text-[#344054] text-base font-semibold hover:text-[#7856FC] w-full"
                         >
@@ -357,7 +357,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 <main className="flex-1 max-w-[975px] w-full bg-white rounded-[16px] min-h-[calc(100vh-70px)]">
 
                     {/* Hello Bar Section*/}
-                    {!(pathname?.includes('/client/tax-filing/step1') || pathname?.includes('/client/tax-filing/step2')) && (
+                    {!(pathname?.includes('/client/tax-filing/step1') || pathname?.includes('/client/tax-filing/step2') || pathname?.includes('/client/affiliate')) && (
                         <div
                             className="bg-[#240D68] rounded-2xl px-10 py-6 md:px-12 text-white relative overflow-hidden mb-5 mx-4 md:mx-0"
                         >
