@@ -18,7 +18,7 @@ const page = () => {
                 subTitle="See how entrepreneurs around the world used Steady Formation to launch their U.S. businesses."
                 page="Success Stories"
             />
-            <div className="max-w-[1020px] xl:max-w-[1512px] mx-auto px-3">
+            <div className="max-w-[1020px] xl:max-w-[1150px] 2xl:max-w-[1392px] mx-auto px-3">
                 <ReviewsSection
                     reviews={sampleReviews}
                     variant="review-page"
