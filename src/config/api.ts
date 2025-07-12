@@ -1,5 +1,6 @@
 export const API_CONFIG = {
-    BASE_URL: 'http://localhost:8000/api',
+    BASE_URL: 'https://api.cdevs.com.bd/api',
+    // BASE_URL: 'http://localhost:8000/api',
     ENDPOINTS: {
         AUTH: {
             LOGIN: '/auth/login',
