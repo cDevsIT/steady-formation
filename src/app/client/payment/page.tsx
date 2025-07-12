@@ -147,9 +147,172 @@ function RemoveCardModal({ open, onClose }: { open: boolean; onClose: () => void
     );
 }
 
+function PaymentDetailsModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+    if (!open) return null;
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div
+                className="bg-white mx-auto p-0 relative flex flex-col items-center w-full overflow-y-auto"
+                style={{
+                    maxWidth: 570,
+                    borderRadius: '16px',
+                    boxShadow: '0 10px 40px 0 rgba(16, 24, 40, 0.12)',
+                }}
+            >
+                {/* Top: Payment Details and close at top right */}
+                <div className="w-full flex items-center justify-between pt-5 pb-0 px-5 relative">
+                    <div className="flex items-center gap-2">
+                        <span className="text-[16px] leading-6 font-semibold text-[#101828]">Payment Details</span>
+                        <span className='px-2 py-1 bg-[#ECFDF3] text-[#12B76A] text-xs rounded font-medium'>Paid</span>
+                    </div>
+                    <div className="flex items-center gap-2 relative">
+                        <button className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2">Download PDF</button>
+                        <button onClick={onClose} className="absolute -top-4 -right-4 text-[#667085] hover:bg-gray-100 rounded-full p-1" aria-label="Close">
+                            <Image url="/client/cross-icon.svg" alt="Close" width={20} height={20} />
+                        </button>
+                    </div>
+                </div>
+                {/* Payment Summary Card */}
+                <div className="w-full px-5 pt-4 pb-2">
+
+                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
+                        <div className="text-[18px] leading-7 font-bold mb-2">Payment Summary Card</div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Transaction ID:</span> <span>#TXN-20250415-01</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Date & Time:</span> <span>April 15, 2025 at 11:30 AM</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Amount Paid:</span> <span>$10.00</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Payment Method:</span> <span>Visa ending in 2345</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Payment Gateway:</span> <span>Stripe</span></div>
+                    </div>
+
+                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
+                        <div className="text-[18px] leading-7 font-bold mb-2">Company Details</div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Company Name:</span> <span>Fission</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Entity Type:</span> <span>LLC - Delaware</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>User Email:</span> <span>fassionstorage@gmail.com</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>User ID:</span> <span>#11554882</span></div>
+                    </div>
+
+                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
+                        <div className="text-[18px] leading-7 font-bold mb-2">Billing Address</div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Name:</span> <span>Steady Formation</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Location:</span> <span>2218 Baker Street, Suite 400</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>City, State ZIP:</span> <span>San Francisco, CA 94115</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Country:</span> <span>United States</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// PayNowProcessingModal: for Pay Now button (processing)
+function PayNowProcessingModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+    if (!open) return null;
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div
+                className="bg-white mx-auto p-0 relative flex flex-col items-center w-full overflow-y-auto"
+                style={{
+                    maxWidth: 570,
+                    borderRadius: '16px',
+                    boxShadow: '0 10px 40px 0 rgba(16, 24, 40, 0.12)'
+                }}
+            >
+                {/* Top: Payment Details, Pending badge, Contact Support, and close at top right */}
+                <div className="w-full flex items-center justify-between pt-5 pb-0 px-5 relative">
+                    <div className="flex items-center gap-2">
+                        <span className="text-[16px] leading-6 font-semibold text-[#101828]">Payment Details</span>
+                        <span className='px-2 py-1 bg-[#F2F4F7] text-[#667085] text-xs rounded font-medium'>Pending</span>
+                    </div>
+                    <div className="flex items-center gap-2 relative">
+                        <button className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2">Contact Support</button>
+                        <button onClick={onClose} className="absolute -top-4 -right-4 text-[#667085] hover:bg-gray-100 rounded-full p-1" aria-label="Close">
+                            <Image url="/client/cross-icon.svg" alt="Close" width={20} height={20} />
+                        </button>
+                    </div>
+                </div>
+                {/* Payment Processing Message */}
+                <div className="w-full px-16 pt-4 pb-2">
+                    <div className="bg-[#F9FAFB] rounded-xl border border-[#E4E7EC] p-7 mb-4 flex flex-col items-center">
+                        <Image url="/client/process-icon-payment.svg" alt="Processing" width={48} height={48} className="mb-3" />
+                        <div className="text-[20px] font-bold text-center mb-1">Your payment is currently being processed.</div>
+                        <div className="text-[14px] text-[#667085] text-center leading-5">This may take a few moments to complete. Please do not refresh or close the page.</div>
+                    </div>
+                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
+                        <div className="text-[18px] leading-7 font-bold mb-2">Transaction Details</div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Amount:</span> <span>$10.00</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Date:</span> <span>April 15, 2025</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Payment Method:</span> <span>Visa ending in 2345</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Transaction ID:</span> <span>TXN-20250415-02</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// RetryPaymentModal: for Retry Payment button (fail)
+function RetryPaymentModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+    if (!open) return null;
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div
+                className="bg-white mx-auto p-0 relative flex flex-col items-center w-full overflow-y-auto"
+                style={{
+                    maxWidth: 570,
+                    borderRadius: '16px',
+                    boxShadow: '0 10px 40px 0 rgba(16, 24, 40, 0.12)'
+                }}
+            >
+                {/* Top: Payment Details, Fail badge, Retry Payment, and close at top right */}
+                <div className="w-full flex items-center justify-between pt-5 pb-0 px-5 relative">
+                    <div className="flex items-center gap-2">
+                        <span className="text-[16px] leading-6 font-semibold text-[#101828]">Payment Details</span>
+                        <span className='px-2 py-1 bg-[#FEF3F2] text-[#F04438] text-xs rounded font-medium'>Fail</span>
+                    </div>
+                    <div className="flex items-center gap-2 relative">
+                        <button className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2">Retry Payment</button>
+                        <button onClick={onClose} className="absolute -top-4 -right-4 text-[#667085] hover:bg-gray-100 rounded-full p-1" aria-label="Close">
+                            <Image url="/client/cross-icon.svg" alt="Close" width={20} height={20} />
+                        </button>
+                    </div>
+                </div>
+                {/* Payment Failed Message */}
+                <div className="w-full px-16 pt-4 pb-2">
+                    <div className="bg-[#F9FAFB] rounded-xl border border-[#E4E7EC] p-7 mb-4 flex flex-col items-center">
+                        <Image url="/client/not-processed-icon.svg" alt="Not Processed" width={48} height={48} className="mb-3" />
+                        <div className="text-[20px] font-bold text-center mb-1">We're sorry, your payment could not be processed.</div>
+                        <div className="text-[14px] text-[#667085] text-center leading-5 mb-2">Here are some possible reasons:</div>
+                        <div className="flex flex-wrap justify-center gap-x-8 gap-y-1 text-[14px] text-[#667085]">
+                            <ul className="list-disc ml-5">
+                                <li>Insufficient funds</li>
+                                <li>Network timeout</li>
+                            </ul>
+                            <ul className="list-disc ml-5">
+                                <li>Incorrect card details</li>
+                                <li>Payment gateway issue</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
+                        <div className="text-[18px] leading-7 font-bold mb-2">Transaction Details</div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Amount:</span> <span>$10.00</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Date:</span> <span>April 15, 2025</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Payment Method:</span> <span>Visa ending in 2345</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Transaction ID:</span> <span>TXN-20250415-02</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function Payment() {
     const [paymentMethod, setPaymentMethod] = useState(true); // true = Payment History, false = Invoice
     const [showRemoveModal, setShowRemoveModal] = useState(false);
+    const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+    const [showPayNowProcessing, setShowPayNowProcessing] = useState(false);
+    const [showRetryPayment, setShowRetryPayment] = useState(false);
     return (
         <div className="max-w-5xl mx-4 md:mx-auto">
             {/* Tabs Box */}
@@ -191,9 +354,23 @@ export default function Payment() {
                                             <span className={`px-3 py-1 rounded-lg text-xs leading-5 font-medium ${item.statusColor}`}>{item.status}</span>
                                         </td>
                                         <td className="py-3 px-6 text-center flex items-center justify-center gap-2">
-                                            <Button className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer" theme="secondary">
-                                                {item.action}
-                                            </Button>
+                                            {item.actionType === 'download' ? (
+                                                <Button className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer" theme="secondary" onClick={() => setShowPaymentDetails(true)}>
+                                                    {item.action}
+                                                </Button>
+                                            ) : item.actionType === 'pay' ? (
+                                                <Button className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer" theme="secondary" onClick={() => setShowPayNowProcessing(true)}>
+                                                    {item.action}
+                                                </Button>
+                                            ) : item.actionType === 'retry' ? (
+                                                <Button className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer" theme="secondary" onClick={() => setShowRetryPayment(true)}>
+                                                    {item.action}
+                                                </Button>
+                                            ) : (
+                                                <Button className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer" theme="secondary">
+                                                    {item.action}
+                                                </Button>
+                                            )}
                                             <button className="ml-2 p-2 rounded-full hover:bg-gray-100 focus:outline-none cursor-pointer" aria-label="More options">
                                                 <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
                                                     <circle cx="10" cy="4" r="1.5" fill="#98A2B3" />
@@ -271,6 +448,9 @@ export default function Payment() {
             {paymentMethod && (
                 <RemoveCardModal open={showRemoveModal} onClose={() => setShowRemoveModal(false)} />
             )}
+            <PaymentDetailsModal open={showPaymentDetails} onClose={() => setShowPaymentDetails(false)} />
+            <PayNowProcessingModal open={showPayNowProcessing} onClose={() => setShowPayNowProcessing(false)} />
+            <RetryPaymentModal open={showRetryPayment} onClose={() => setShowRetryPayment(false)} />
         </div>
     );
 } 
