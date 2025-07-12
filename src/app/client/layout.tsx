@@ -374,7 +374,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                                 <h1 className="font-inter font-medium text-2xl md:text-[36px] leading-tight md:leading-[44px] mb-[5px]">
                                     Hi, {user?.first_name || 'User'}!
                                 </h1>
-                                <p className="font-normal text-base md:text-[18px] leading-relaxed md:leading-[28px]">Here's your company status & quick actions.</p>
+                                <p className="font-normal text-base md:text-[18px] leading-relaxed md:leading-[28px]">
+                                    Here&apos;s your company status &amp; quick actions.
+                                </p>
                             </div>
                         </div>
                     )}

@@ -125,7 +125,7 @@ export default function AffiliatePage() {
                 <div className="bg-[#F9FAFB] rounded-2xl p-6 mt-5 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4 mb-28">
                     <div>
                         <h3 className="text-lg md:text-xl font-semibold text-gray-900">Still have questions?</h3>
-                        <p className="text-gray-600 mt-1 text-sm md:text-base">Can't find the answer you're looking for? Please chat to our friendly team.</p>
+                        <p className="text-gray-600 mt-1 text-sm md:text-base">Can&apos;t find the answer you&apos;re looking for? Please chat to our friendly team.</p>
                     </div>
                     <button className="bg-[#7856FC] text-white font-semibold rounded-lg px-5 py-3 hover:bg-[#6C3EF5] transition cursor-pointer w-full sm:w-auto">
                         Get in touch

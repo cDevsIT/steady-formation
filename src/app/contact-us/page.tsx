@@ -383,7 +383,7 @@ export default function ContactUs() {
             {/* Contact Cards Section */}
             <div className="w-full max-w-[360px] md:max-w-[1280px] mx-auto py-8 md:py-12 px-0 sm:px-6 lg:px-8 mt-[40px] mb-[80px]">
                 <h2 className="text-[38px] md:text-[48px] font-semibold text-center mb-[10px] font-inter leading-[38px] md:leading-[60px] text-[#000000]">
-                    We'd love to hear from you
+                    We&apos;d love to hear from you
                 </h2>
                 <h3 className="text-[16px] md:text-[20px] font-normal text-center mb-[32px] font-inter leading-[24px] md:leading-[30px] text-[#475467]">
                     Our friendly team is always here to chat.
@@ -418,7 +418,7 @@ export default function ContactUs() {
                             />
                         </div>
                         <h4 className="text-[20px] font-semibold mb-[20px] font-inter leading-[30px]">Chat to support</h4>
-                        <p className="text-[16px] font-normal text-[#475467] mb-[16px] font-inter leading-[24px]">We're here to help.</p>
+                        <p className="text-[16px] font-normal text-[#475467] mb-[16px] font-inter leading-[24px]">We&apos;re here to help.</p>
                         <a href="mailto:info@steadyformation.com" className="text-[16px] text-[#7856FC] font-semibold font-inter leading-[24px] overflow-auto break-all">
                             info@steadyformation.com
                         </a>

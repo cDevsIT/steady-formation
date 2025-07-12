@@ -131,7 +131,7 @@ export default function BlogPost() {
           />
           <div className="mb-12 pl-6 border-l-2 border-[#7856FC]">
             <p className="font-inter text-[24px] leading-[32px] font-medium italic text-black mb-4">
-              "In a world older and more complete than ours they move finished and complete, gifted with extensions of the senses we have lost or never attained, living by voices we shall never hear."
+              &quot;In a world older and more complete than ours they move finished and complete, gifted with extensions of the senses we have lost or never attained, living by voices we shall never hear.&quot;
             </p>
             <div className="flex items-center gap-3">
               <img
@@ -316,7 +316,7 @@ export default function BlogPost() {
               <div className="w-full md:w-[80%] mb-9">
                 <h2 className="font-inter font-bold text-[36px] leading-[44px] tracking-[-0.02em] mb-9">Get expert advice and a custom strategy session worth $799 at no cost.</h2>
                 <button className="w-full md:w-auto bg-white text-[#6C3EF5] font-medium rounded-md px-6 py-3 mb-10 shadow hover:bg-[#f3f0ff] transition">Book A Free Call</button>
-                <p className="font-inter font-bold text-[24px] leading-[32px] mb-5 md:mb-6">"Our sales growth has increased by 150% in last month after usign Dopler."</p>
+                <p className="font-inter font-bold text-[24px] leading-[32px] mb-5 md:mb-6">&quot;Our sales growth has increased by 150% in last month after usign Dopler.&quot;</p>
               </div>
               <div className="flex items-center gap-4">
                 <img src="/blog/steady-formation-employee.png" alt="Andrew Pearson" className="w-12 h-12 rounded-full object-cover border-2 border-white" />
