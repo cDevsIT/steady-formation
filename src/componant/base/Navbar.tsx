@@ -11,6 +11,7 @@ interface NavbarProps { }
 const Navbar: React.FC<NavbarProps> = ({ }) => {
   const pathname = usePathname();
   const isClientRoute = pathname.startsWith('/client');
+  const hideHeaderFooter = pathname.startsWith('/login') || pathname.startsWith('/sign-up');
 
   return (
     <nav
@@ -32,7 +33,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
           </div>
 
           {/* Desktop Navigation - Only show on main site */}
-          {!isClientRoute && <NavLinks />}
+          {!isClientRoute || !hideHeaderFooter && <NavLinks />}
 
           {/* Desktop Login Button */}
           <div className="hidden md:block ">
@@ -66,12 +67,15 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                 </button>
               </div>
             ) : (
-              <Link
+              <>
+              
+              {!hideHeaderFooter && <Link
                 href="/login"
                 className="bg-primary hover:bg-primary-hover text-white px-6 py-3  h-11 rounded-lg text-[16px] font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
               >
                 Login
-              </Link>
+              </Link>}
+              </>
             )}
           </div>
         </div>

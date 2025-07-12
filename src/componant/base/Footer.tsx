@@ -1,9 +1,14 @@
+"use client";
 import Link from 'next/link';
 import Image from '../ui/Image';
 import Button from '../ui/Button';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
+    const pathname = usePathname();
+    const isClientRoute = pathname.startsWith('/client');
+    const hideHeaderFooter = pathname.startsWith('/login') || pathname.startsWith('/sign-up');
 
     const links = [
         { name: 'About Us', href: '/about' },
@@ -20,6 +25,8 @@ export default function Footer() {
         { name: 'Twitter', icon: '/icons/twitter.svg', href: 'https://linkedin.com/company/steadyformation' },
         { name: 'Linkedin', icon: '/icons/linkedin.svg', href: 'https://instagram.com/steadyformation' },
     ];
+
+    if(isClientRoute || hideHeaderFooter) return null;
 
     return (
         <footer className="bg-gray-50 border-t border-gray-200 px-4 sm:px-6 lg:px-4 lg:pt-10">
