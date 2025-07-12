@@ -4,6 +4,19 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from '@/componant/ui/Image';
 import NextImage from 'next/image';
+import { useRouter } from 'next/navigation';
+import { API_CONFIG } from '@/config/api';
+
+interface User {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    role: number;
+    active: boolean;
+    full_name: string;
+}
 
 const menu = [
     { name: 'Dashboard', path: '/client', icon: '/client/dashboard-icon.svg' },
@@ -45,6 +58,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     const [selectedCompany, setSelectedCompany] = useState(companies[0]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     // Prevent background scroll when mobile menu is open
     useEffect(() => {
@@ -58,6 +74,70 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         };
     }, [mobileMenuOpen]);
 
+    // Authentication check
+    useEffect(() => {
+        const checkAuth = async () => {
+            const token = localStorage.getItem('auth_token');
+            
+            if (!token) {
+                router.push('/login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.USER}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    localStorage.removeItem('auth_token');
+                    router.push('/login');
+                    return;
+                }
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    setUser(result.data);
+                } else {
+                    localStorage.removeItem('auth_token');
+                    router.push('/login');
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                localStorage.removeItem('auth_token');
+                router.push('/login');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAuth();
+    }, [router]);
+
+    const handleLogout = async () => {
+        const token = localStorage.getItem('auth_token');
+        
+        if (token) {
+            try {
+                await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGOUT}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+        
+        localStorage.removeItem('auth_token');
+        router.push('/login');
+    };
+
     // Get current path for active menu highlight
     let currentPath = '';
     if (typeof window !== 'undefined') {
@@ -65,6 +145,21 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     }
 
     const pathname = usePathname();
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return null;
+    }
 
     return (
         <div className="w-full flex justify-center bg-white mb-3 pt-[70px] min-h-screen">
@@ -155,7 +250,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                         </div>
                         {/* Log Out */}
                         <div className="border-t border-[#ececec] px-6 py-4">
-                            <button className="flex items-center gap-3 text-[#344054] text-base font-medium hover:text-[#7856FC] w-full">
+                            <button 
+                                onClick={handleLogout}
+                                className="flex items-center gap-3 text-[#344054] text-base font-medium hover:text-[#7856FC] w-full"
+                            >
                                 <Image url="/client/log-out-icon.svg" alt="Log Out Icon" className="w-5 h-5" width={20} height={20} />
                                 Log Out
                             </button>
@@ -244,7 +342,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     </div>
                     {/* Log Out */}
                     <div className="border-t border-[#ececec] px-6 py-4">
-                        <button className="flex items-center gap-3 text-[#344054] text-base font-semibold hover:text-[#7856FC] w-full">
+                        <button 
+                            onClick={handleLogout}
+                            className="flex items-center gap-3 text-[#344054] text-base font-semibold hover:text-[#7856FC] w-full"
+                        >
                             <Image url="/client/log-out-icon.svg" alt="Log Out Icon" className="w-5 h-5" width={20} height={20} />
                             Log Out
                         </button>
@@ -271,7 +372,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                             ></div>
                             <div className="relative z-10">
                                 <h1 className="font-inter font-medium text-2xl md:text-[36px] leading-tight md:leading-[44px] mb-[5px]">
-                                    Hi, Nasir!
+                                    Hi, {user?.first_name || 'User'}!
                                 </h1>
                                 <p className="font-normal text-base md:text-[18px] leading-relaxed md:leading-[28px]">Here's your company status & quick actions.</p>
                             </div>
