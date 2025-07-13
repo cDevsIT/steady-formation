@@ -89,7 +89,7 @@ export default function BlogPost() {
       <div className='hidden'>
         <LaunchCompanyPopup />
       </div>
-      <div className="max-w-[980px] xl:max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row gap-8">
+      <div className="max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row gap-8">
         {/* Table of Content (Left) - 21.6% */}
         <aside className="w-full md:w-[21.6%] bg-[#fafbfc] rounded-xl p-5 h-fit border border-[#ececec]">
           <h2 className="font-inter font-semibold text-[24px] leading-[32px] text-black mb-5">Table Of Content</h2>
@@ -287,7 +287,7 @@ export default function BlogPost() {
       </div>
 
       {/* New Section Outside 3-Column Layout */}
-      <section className="w-full max-w-[980px] xl:max-w-[1280px] mx-auto mt-24 md:mt-28 mb-36 px-4 md:px-0">
+      <section className="w-full max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto mt-24 md:mt-28 mb-36 px-4 md:px-0">
         <h2 className="font-inter font-semibold text-[36px] leading-[44px] mb-[36px] tracking-[-0.02em] text-black">Read our latest posted blog</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 md:gap-y-8">
           {latestBlogsData.map((blog, idx) => (
@@ -308,7 +308,7 @@ export default function BlogPost() {
         </div>
       </section>
 
-      <section className="w-full max-w-[980px] xl:max-w-[1280px] mx-auto mt-[96px] px-4 md:px-0 pb-36">
+      <section className="w-full max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto mt-[96px] px-4 md:px-0 pb-36">
         <div className="flex flex-col md:flex-row gap-[21px]">
           {/* Left Column */}
           <div className="w-full md:w-[66%]">

@@ -11,12 +11,13 @@ interface NavbarProps { }
 const Navbar: React.FC<NavbarProps> = ({ }) => {
   const pathname = usePathname();
   const isClientRoute = pathname.startsWith('/client');
+  const hideHeaderFooter = pathname.startsWith('/login') || pathname.startsWith('/sign-up');
 
   return (
     <nav
       className={`bg-transparent sticky top-0 z-50 backdrop-blur-lg  px-4 sm:px-6 lg:px-4`}
     >
-      <div className="max-w-[980px] xl:max-w-[1280px] mx-auto hidden md:block">
+      <div className="max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto pt-[28px] hidden md:block">
         <div className="flex justify-between items-center h-17">
           {/* Logo */}
           <div className="flex items-center">
@@ -32,7 +33,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
           </div>
 
           {/* Desktop Navigation - Only show on main site */}
-          {!isClientRoute && <NavLinks />}
+          {!isClientRoute && !hideHeaderFooter && <NavLinks />}
 
           {/* Desktop Login Button */}
           <div className="hidden md:block ">
@@ -66,12 +67,15 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                 </button>
               </div>
             ) : (
-              <Link
+              <>
+              
+              {!hideHeaderFooter && <Link
                 href="/login"
                 className="bg-primary hover:bg-primary-hover text-white px-6 py-3  h-11 rounded-lg text-[16px] font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
               >
                 Login
-              </Link>
+              </Link>}
+              </>
             )}
           </div>
         </div>

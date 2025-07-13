@@ -64,7 +64,7 @@ const EasyStepsSection: React.FC = () => {
 
     return (
         <section className='pt-20 mb-4 px-4 bg-white'>
-            <div className='max-w-[980px] xl:max-w-[1280px] mx-auto'>
+            <div className='max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto'>
                 <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6  text-center max-w-[600px] mx-auto">
                     Start Your U.S. Company in 4 Easy Steps
                 </h2>
@@ -86,11 +86,11 @@ const EasyStepsSection: React.FC = () => {
                                     key={card.id}
                                     onClick={() => handleCardClick(card.id)}
                                     className={`
-                            absolute w-[414px] h-[252px] rounded-4xl p-10 cursor-pointer
+                            absolute w-[350px] 2xl:w-[414px] h-[252px] rounded-4xl p-10 cursor-pointer
                             transition-all duration-700 ease-out transform-gpu
                             shadow-xl text-white
                             ${activeCard === card.id
-                                            ? 'bg-[#7856FC] scale-110 z-10 shadow-2xl'
+                                            ? 'bg-[#7856FC] scale-105 2xl:scale-110 z-10 shadow-2xl'
                                             : 'bg-gradient-to-b from-[#ECE2FF] to-[#FFFFFF] z-auto'
                                         }
                             `}

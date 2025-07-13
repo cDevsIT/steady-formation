@@ -1,5 +1,6 @@
+import SupportHelp from '@/componant/client/support-help/SupportHelp';
 import React from 'react';
 
-export default function SupportHelp() {
-    return <div>Support / Help Page</div>;
+export default function page() {
+    return <SupportHelp />
 } 
