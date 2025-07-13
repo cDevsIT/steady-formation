@@ -7,7 +7,7 @@ import HowWeThinkSection from "./HowWeThinkSection";
 
 const AboutPage = () => {
     return (
-        <div className="max-w-[1020px] xl:max-w-[1150px] 2xl:max-w-[1392px] mx-auto px-3">
+        <div className="max-w-[1020px] lg:max-w-[1150px] xl:max-w-[1392px] mx-auto px-3">
             <AboutHelpSection />
             <HowWeThinkSection />
             <BrandSection/>

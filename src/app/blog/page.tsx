@@ -153,7 +153,7 @@ export default function BlogPage() {
 
       {/* Blog Cards Section - New Design */}
       {/* Desktop/Tablet Only */}
-      <section className="w-full max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto mt-24 mb-[80px] grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 hidden md:grid">
+      <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mt-24 mb-[80px] grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 hidden md:grid">
         {/* Featured Post (Left) */}
         <Link href={`/blog/${mainBlogCards[0].slug}`} className="bg-white rounded-xl p-0 flex flex-col cursor-pointer hover:shadow-lg transition-shadow">
           <Image
@@ -263,7 +263,7 @@ export default function BlogPage() {
       {/* Business Ideas and Tips Section */}
 
       {/* Desktop/Tablet Only */}
-      <section className="w-full max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto mb-[60px] px-4 md:px-0 hidden md:block">
+      <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mb-[60px] px-4 md:px-0 hidden md:block">
         <h2 className="text-[28px] font-bold mb-6 ml-2">Business Ideas and Tips</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
           {businessIdeas.map((card, idx) => (
@@ -371,7 +371,7 @@ export default function BlogPage() {
         </nav>
       </div>
 
-      <section className="w-full max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto mt-[96px] mb-[130px] md:px-0">
+      <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mt-[96px] mb-[130px] md:px-0">
         <div className="flex flex-col md:flex-row gap-[21px]">
           {/* Left Column */}
           <div className="w-full md:w-[66%]">

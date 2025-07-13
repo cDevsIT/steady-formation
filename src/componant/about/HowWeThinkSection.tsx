@@ -6,7 +6,7 @@ export default function HowWeThinkSection() {
 
     return (
         <section className="pb-20 px-4 bg-white">
-            <div className="max-w-[980px] xl:max-w-[1150px] 2xl:max-w-[1392px] mx-auto px-3 py-5 lg:py-15 bg-[#F9FAFB] rounded-3xl">
+            <div className="max-w-[980px] lg:max-w-[1150px] xl:max-w-[1392px] mx-auto px-3 py-5 lg:py-15 bg-[#F9FAFB] rounded-3xl">
                 {/* Section Title */}
                 <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6  text-center max-w-[562px] mx-auto">
                     How We Think, Build, and Empower.
