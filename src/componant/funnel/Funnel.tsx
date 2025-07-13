@@ -93,7 +93,7 @@ const Funnel = () => {
 
     if (data?.isOwnersInfoComplete) {
         return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
-            <div className="max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto">
+            <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto">
                 <OwnersInfoComplete />
             </div>
         </section>;
@@ -101,7 +101,7 @@ const Funnel = () => {
 
     if (data?.registrationConfrim) {
         return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
-            <div className="max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto">
+            <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto">
                 <OwnersInfo handleFormSubmit={handleFormSubmit} />
             </div>
         </section>;
@@ -109,7 +109,7 @@ const Funnel = () => {
 
     if (data?.isPaymentComplete) {
         return <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
-            <div className="max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto">
+            <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto">
                 <RegisterConfirm handleFormSubmit={handleFormSubmit} />
             </div>
         </section>;
@@ -117,7 +117,7 @@ const Funnel = () => {
 
     return (
         <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
-            <div className="max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto">
+            <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto">
 
                 {data?.currentStep < 9 &&
                     <ProgressBar
