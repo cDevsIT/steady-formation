@@ -281,7 +281,7 @@ function RetryPaymentModal({ open, onClose }: { open: boolean; onClose: () => vo
                 <div className="w-full px-16 pt-4 pb-2">
                     <div className="bg-[#F9FAFB] rounded-xl border border-[#E4E7EC] p-7 mb-4 flex flex-col items-center">
                         <Image url="/client/not-processed-icon.svg" alt="Not Processed" width={48} height={48} className="mb-3" />
-                        <div className="text-[20px] font-bold text-center mb-1">We're sorry, your payment could not be processed.</div>
+                        <div className="text-[20px] font-bold text-center mb-1">We&apos;re sorry, your payment could not be processed.</div>
                         <div className="text-[14px] text-[#667085] text-center leading-5 mb-2">Here are some possible reasons:</div>
                         <div className="flex flex-wrap justify-center gap-x-8 gap-y-1 text-[14px] text-[#667085]">
                             <ul className="list-disc ml-5">

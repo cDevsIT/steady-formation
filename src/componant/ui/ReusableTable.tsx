@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, ReactNode } from 'react';
+import Image from '@/componant/ui/Image';
 
 // Type for a table row
 export interface SupportRow {
@@ -165,7 +166,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({ apiEndpoint, data }) => {
               tableData.map((row) => (
                 <tr key={row.id} className="border-b hover:bg-gray-50 transition">
                   <td className="p-3 flex items-center gap-2">
-                    <img src={row.avatar} alt={row.name} className="w-8 h-8 rounded-full object-cover" />
+                    <Image url={row.avatar} alt={row.name} className="w-8 h-8 rounded-full object-cover" />
                     <span>{row.user}</span>
                   </td>
                   <td className="p-3 whitespace-nowrap">{row.subject}</td>
@@ -236,7 +237,7 @@ const ReusableTable: React.FC<ReusableTableProps> = ({ apiEndpoint, data }) => {
           <div>
             <h3 className="text-lg font-semibold mb-2">Support Ticket Details</h3>
             <div className="flex items-center gap-3 mb-4">
-              <img src={modalData.avatar} alt={modalData.name} className="w-12 h-12 rounded-full object-cover" />
+              <Image url={modalData.avatar} alt={modalData.name} className="w-12 h-12 rounded-full object-cover" />
               <div>
                 <div className="font-medium">{modalData.name} <span className="text-gray-400 text-xs">({modalData.user})</span></div>
                 <div className="text-xs text-gray-500">Assignee: {modalData.assignee}</div>

@@ -393,12 +393,7 @@ export default function ContactUs() {
                     {/* Chat to sales Card */}
                     <div className="p-6 rounded-lg border border-gray-200 flex flex-col items-start text-left">
                         <div className="mb-8">
-                            <img
-                                src="/steady-formation-smile-icon.svg"
-                                alt="Support icon"
-                                width={48}
-                                height={48}
-                            />
+                            <Image url="/steady-formation-smile-icon.svg" alt="Support icon" width={48} height={48} />
                         </div>
                         <h4 className="text-[20px] font-semibold mb-[20px] font-inter leading-[30px]">Chat to sales</h4>
                         <p className="text-[16px] font-normal text-[#475467] mb-[16px] font-inter leading-[24px]">Speak to our friendly team.</p>
@@ -410,12 +405,7 @@ export default function ContactUs() {
                     {/* Chat to support Card */}
                     <div className="p-6 rounded-lg border border-gray-200 flex flex-col items-start text-left">
                         <div className="mb-8">
-                            <img
-                                src="/steady-formation-chat-icon.svg"
-                                alt="Chat icon"
-                                width={48}
-                                height={48}
-                            />
+                            <Image url="/steady-formation-chat-icon.svg" alt="Chat icon" width={48} height={48} />
                         </div>
                         <h4 className="text-[20px] font-semibold mb-[20px] font-inter leading-[30px]">Chat to support</h4>
                         <p className="text-[16px] font-normal text-[#475467] mb-[16px] font-inter leading-[24px]">We&apos;re here to help.</p>
@@ -427,12 +417,7 @@ export default function ContactUs() {
                     {/* Visit us Card */}
                     <div className="p-6 rounded-lg border border-gray-200 flex flex-col items-start text-left">
                         <div className="mb-8">
-                            <img
-                                src="/steady-formation-visit-us-icon.svg"
-                                alt="Location icon"
-                                width={48}
-                                height={48}
-                            />
+                            <Image url="/steady-formation-visit-us-icon.svg" alt="Location icon" width={48} height={48} />
                         </div>
                         <h4 className="text-[20px] font-semibold mb-[20px] font-inter leading-[30px]">Visit us</h4>
                         <p className="text-[16px] font-normal text-[#475467] mb-[16px] font-inter leading-[24px]">Visit our office HQ.</p>
@@ -445,12 +430,7 @@ export default function ContactUs() {
                     {/* Call us Card */}
                     <div className="p-6 rounded-lg border border-gray-200 flex flex-col items-start text-left">
                         <div className="mb-8">
-                            <img
-                                src="/steady-formation-phone-icon.svg"
-                                alt="Phone icon"
-                                width={48}
-                                height={48}
-                            />
+                            <Image url="/steady-formation-phone-icon.svg" alt="Phone icon" width={48} height={48} />
                         </div>
                         <h4 className="text-[20px] font-semibold mb-[20px] font-inter leading-[30px]">Call us</h4>
                         <p className="text-[16px] font-normal text-[#475467] mb-[16px] font-inter leading-[24px]">Mon-Fri from 8am to 5pm.</p>

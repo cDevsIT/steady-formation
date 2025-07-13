@@ -170,7 +170,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     onClick={() => setMobileMenuOpen(true)}
                     aria-label="Open menu"
                 >
-                    <img src="/client/menu-button-icon.svg" alt="Open Menu" className="w-7 h-7" />
+                    <Image url="/client/menu-button-icon.svg" alt="Open Menu" className="w-7 h-7" />
                 </button>
             )}
             {/* Floating Sidebar for Mobile */}

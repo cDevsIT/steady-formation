@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import Accordion from '@/componant/ui/Accordion';
+import Image from '@/componant/ui/Image';
 
 const faqData = [
     {
@@ -102,7 +103,7 @@ export default function AffiliatePage() {
                             ].map((step, index) => (
                                 <div key={index} className="flex flex-col items-center gap-4 w-full md:w-1/4">
                                     <div className={`relative ${step.color} rounded-full w-24 h-24 md:w-28 md:h-28 flex items-center justify-center`}>
-                                        <img src={`/affiliate/${step.icon}`} alt={step.label} className="w-10 h-10 md:w-12 md:h-12" />
+                                        <Image url={`/affiliate/${step.icon}`} alt={step.label} className="w-10 h-10 md:w-12 md:h-12" />
                                         <div className="absolute -bottom-2 -right-1 bg-white border border-gray-200 rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold text-gray-600">
                                             {index + 1}
                                         </div>
