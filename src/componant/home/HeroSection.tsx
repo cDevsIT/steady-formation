@@ -8,7 +8,7 @@ export default function HeroSection() {
 
   return (
     <section className="bg-[#f4f3ff] pt-[70px] px-4">
-      <div className="max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto flex flex-col justify-center gap-3">
+      <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto flex flex-col justify-center gap-3">
         {/* Desktop Grid Layout */}
         <div className="flex flex-col lg:flex-row gap-[50px] justify-between items-center lg:pt-16">
           {/* Top Left - Heading and Form */}

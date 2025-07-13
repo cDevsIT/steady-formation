@@ -30,7 +30,7 @@ export default function Footer() {
 
     return (
         <footer className="bg-gray-50 border-t border-gray-200 px-4 sm:px-6 lg:px-4 lg:pt-10">
-            <div className="max-w-[980px] xl:max-w-[1100px] 2xl:max-w-[1280px] mx-auto py-12">
+            <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto py-12">
                 <div className="flex flex-col lg:flex-row justify-between items-start gap-8">
                     {/* Company Info */}
                     <div className="space-y-4 max-w-[283px]">
