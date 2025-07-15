@@ -37,9 +37,9 @@ const TableComponent: React.FC<TableComponentProps> = ({
         <div className="flex flex-col">
             <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                    <div className="overflow-hidden shadow-md sm:rounded-lg">
+                    <div className="overflow-hidden">
                         <table className="min-w-full" {...getTableProps()}>
-                            <thead className="bg-gray-800 text-white">
+                            <thead className="bg-[#F9FAFB] border-b border-gray-200 text-gray-600">
                                 {headerGroups.map((headerGroup) => (
                                     <tr
                                         {...headerGroup.getHeaderGroupProps()}
@@ -50,7 +50,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
                                                 {...column.getHeaderProps()}
                                                 onClick={() => handleSort(column)}
                                                 scope="col"
-                                                className="text-sm font-medium text-white px-6 py-4 text-left"
+                                                className="text-xs font-medium pl-6 py-4 text-left"
                                                 key={column.id}
                                             >
                                                 {column.render('Header')}
@@ -71,7 +71,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
                                     prepareRow(row);
                                     return (
                                         <tr
-                                            className="odd:bg-gray-100 even:bg-white"
+                                            className="divide-y divide-gray-200 border-b border-gray-200 hover:bg-gray-50"
                                             {...row.getRowProps()}
                                             key={row.id}
                                         >

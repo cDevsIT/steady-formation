@@ -93,13 +93,13 @@ const CustomPaginationTable = <T extends { id?: string | number } = any>({
 
     // Memoize columns with serial and action columns
     const memoizedColumns = useMemo(() => {
-        const serialColumn: Column<T> = {
-            id: "serial",
-            Header: "",
-            Cell: ({ row }: { row: Row<T> }) => (
-                <span>{row.index + 1 + (paginationPage - 1) * limit}</span>
-            ),
-        };
+        // const serialColumn: Column<T> = {
+        //     id: "serial",
+        //     Header: "",
+        //     Cell: ({ row }: { row: Row<T> }) => (
+        //         <span>{row.index + 1 + (paginationPage - 1) * limit}</span>
+        //     ),
+        // };
         const actionColumn: Column<T> = {
             id: "actions",
             Header: "Actions",
@@ -139,7 +139,7 @@ const CustomPaginationTable = <T extends { id?: string | number } = any>({
             ),
         };
         return [
-            serialColumn,
+            // serialColumn,
             ...columns,
             ...(showViewAction || showEditAction || showDeleteAction ? [actionColumn] : []),
         ].filter(Boolean) as Column<T>[];
@@ -204,17 +204,18 @@ const CustomPaginationTable = <T extends { id?: string | number } = any>({
 
     return (
         <>
-            <h3 className="font-bold text-2xl">{path.toUpperCase()}</h3>
-            <div className="lg:flex justify-between items-center">
-                <GlobalFilter onSearch={handleSearch} />
-                <div className="md:flex gap-1 lg:gap-3 justify-center items-center">
-                    <div className="text-center">
-                        {addNewButton && (
-                            <Link href={`${pathname}/new`} className="ml-2 mt-2 lg:ml-3 bg-black hover:bg-green-700 text-white font-bold py-1 px-2 lg:px-4 rounded">
-                                {addNewLabel}
-                            </Link>
-                        )}
-                    </div>
+
+            <div className="grid grid-cols-2 justify-between items-center  px-3">
+                <div className="flex gap-3 items-center">
+                    <h3 className="font-semibold text-xl">{path}</h3>
+                    <GlobalFilter onSearch={handleSearch} />
+                </div>
+                <div className="text-center justify-self-end">
+                    {addNewButton && (
+                        <Link href={`${pathname}/new`} className="text-sm text-white bg-[#7856FC] hover:bg-[#6941C6] p-3 rounded-lg">
+                            {addNewLabel}
+                        </Link>
+                    )}
                 </div>
             </div>
             <TableComponent

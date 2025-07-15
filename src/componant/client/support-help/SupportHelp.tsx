@@ -18,22 +18,22 @@ export interface SupportRow {
   priority: string;
 }
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 2;
 
 const columns: Column<SupportRow>[] = [
   {
     Header: "User ID/Name",
-    accessor: "user",
-    Cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <img src={row.original.avatar} alt={row.original.name} className="w-8 h-8 rounded-full object-cover" />
-        <span>{row.original.user}</span>
-      </div>
-    ),
+    accessor: "user"
   },
   {
     Header: "Subject",
     accessor: "subject",
+    Cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <Image url={row.original.avatar} alt={row.original.name} className="w-8 h-8 rounded-full object-cover" />
+        <span>{row.original.subject}</span>
+      </div>
+    ),
   },
   {
     Header: "Submitted On",
@@ -51,14 +51,10 @@ const columns: Column<SupportRow>[] = [
     Header: "Status",
     accessor: "status",
     Cell: ({ row }) => (
-      <span className={`inline-block px-2 py-1 rounded text-xs font-medium mr-1 ${row.original.status === 'In Progress' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>{row.original.status}</span>
-    ),
-  },
-  {
-    Header: "Priority",
-    accessor: "priority",
-    Cell: ({ row }) => (
-      <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${row.original.priority === 'High' ? 'bg-red-100 text-red-700' : row.original.priority === 'Medium' ? 'bg-orange-100 text-orange-700' : 'bg-blue-50 text-blue-500'}`}>{row.original.priority}</span>
+      <div className="flex flex-col justify-center items-center gap-2">
+        <span className={`inline-block px-2 py-1 rounded text-xs font-medium mr-1 ${row.original.status === 'In Progress' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>{row.original.status}</span>
+        <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${row.original.priority === 'High' ? 'bg-red-100 text-red-700' : row.original.priority === 'Medium' ? 'bg-orange-100 text-orange-700' : 'bg-blue-50 text-blue-500'}`}>{row.original.priority}</span>
+      </div>
     ),
   },
 ];
@@ -107,11 +103,11 @@ const SupportHelp = () => {
         // Filter by search
         const filtered = search
           ? mapped.filter(
-              (row) =>
-                row.user.toLowerCase().includes(search.toLowerCase()) ||
-                row.name.toLowerCase().includes(search.toLowerCase()) ||
-                row.subject.toLowerCase().includes(search.toLowerCase())
-            )
+            (row) =>
+              row.user.toLowerCase().includes(search.toLowerCase()) ||
+              row.name.toLowerCase().includes(search.toLowerCase()) ||
+              row.subject.toLowerCase().includes(search.toLowerCase())
+          )
           : mapped;
         setData(filtered);
         setPageCount(res.total_pages);
@@ -150,7 +146,7 @@ const SupportHelp = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-8">
+    <div className="max-w-[975px] mx-auto border border-gray-200 overflow-hidden rounded-3xl py-3">
       <CustomPaginationTable
         paginationPage={paginationPage}
         pageCount={pageCount}

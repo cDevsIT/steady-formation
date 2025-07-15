@@ -11,9 +11,9 @@ type PaginationBarProps = {
     pageIndex: number;
     pageSize: number;
     handleChangePagePerView: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  };
+};
 
-const PaginationBar: React.FC<PaginationBarProps> =({
+const PaginationBar: React.FC<PaginationBarProps> = ({
     gotoPage,
     previousPage,
     nextPage,
@@ -29,32 +29,51 @@ const PaginationBar: React.FC<PaginationBarProps> =({
         const buttons = [];
         const currentPage = pageIndex + 1 || 1;
 
+        let surroundingCount = 2;
+        if (pageCount > 40) {
+            surroundingCount = 4;
+        } else if (pageCount > 20) {
+            surroundingCount = 3;
+        }
+
+        const shouldShow = (i: number) => {
+            return (
+                i <= 2 || // first two pages
+                i > pageCount - 2 || // last two pages
+                (i >= currentPage - surroundingCount && i <= currentPage + surroundingCount)
+            );
+        };
+
+        let prevWasEllipsis = false;
+
         for (let i = 1; i <= pageCount; i++) {
-            if (
-                i === 1 ||
-                i === pageCount ||
-                (i >= currentPage - 1 && i <= currentPage + 1)
-            ) {
+            if (shouldShow(i)) {
                 buttons.push(
                     <button
                         key={i}
                         onClick={() => gotoPage(i - 1)}
-                        className={`w-8 h-8 flex items-center justify-center rounded-full ${i === currentPage
-                                ? "bg-blue-600 text-white"
-                                : "text-gray-600 hover:bg-gray-100"
+                        className={`w-8 h-8 flex items-center justify-center ${i === currentPage
+                            ? "bg-[#7856FC] text-white"
+                            : "text-gray-600 hover:bg-gray-100"
                             }`}
                     >
                         {i}
                     </button>
                 );
-            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                prevWasEllipsis = false;
+            } else if (!prevWasEllipsis) {
                 buttons.push(
-                    <span key={i} className="text-gray-400">
+                    <span
+                        key={`ellipsis-${i}`}
+                        className="text-gray-400 h-8 w-7 flex items-center justify-center"
+                    >
                         ...
                     </span>
                 );
+                prevWasEllipsis = true;
             }
         }
+
         return buttons;
     };
 
@@ -68,27 +87,30 @@ const PaginationBar: React.FC<PaginationBarProps> =({
     };
 
     return (
-        <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 mt-4">
-            <div className="flex items-center space-x-2">
-                <button
-                    onClick={() => previousPage()}
-                    disabled={!canPreviousPage}
-                    className={`p-2 rounded-full flex items-center justify-center ${canPreviousPage
-                            ? "text-gray-600 hover:bg-gray-100"
+        <div className="flex justify-center">
+            <div className="inline-flex flex-col sm:flex-row items-center justify-center  mt-4 border border-gray-200 rounded-lg">
+                <div className="flex items-center border-r border-gray-200 h-full">
+                    <button
+                        onClick={() => previousPage()}
+                        disabled={!canPreviousPage}
+                        className={`px-2 rounded-full flex gap-2 items-center justify-center ${canPreviousPage
+                            ? "text-gray-600"
                             : "text-gray-300 cursor-not-allowed"
-                        }`}
-                >
-                    <Image
-                    className="w-5"
-                        url='/icons/arrow-left.svg'
-                        alt='Arrow Left'
-                        width={20}
-                        height={20}
-                    />
-                    <span className="mb-1">Previous</span>
-                </button>
-            </div>
-            <div className="flex items-center space-x-2">
+                            }`}
+                    >
+                        <Image
+                            className="w-5"
+                            url='/icons/arrow-left.svg'
+                            alt='Arrow Left'
+                            width={20}
+                            height={20}
+                        />
+                        <span className="text-sm">Previous</span>
+                    </button>
+                </div>
+
+                {/* go field  */}
+                {/* <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">Go:</span>
                 <form onSubmit={handleGotoPage} className="flex items-center space-x-2">
                     <input
@@ -100,9 +122,11 @@ const PaginationBar: React.FC<PaginationBarProps> =({
                         className="w-16 px-2 py-1 border border-gray-500 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </form>
-            </div>
-            <div className="flex items-center space-x-2">{renderPageButtons()}</div>
-            <div className="flex items-center space-x-2">
+            </div> */}
+                <div className="flex items-center divide-x divide-gray-200">{renderPageButtons()}</div>
+
+                {/* total item selector  */}
+                {/* <div className="flex items-center space-x-2">
                 <select
                     value={pageSize}
                     onChange={(e) => handleChangePagePerView(e)}
@@ -114,24 +138,25 @@ const PaginationBar: React.FC<PaginationBarProps> =({
                         </option>
                     ))}
                 </select>
-            </div>
-            <div className="flex items-center space-x-2">
-                <button
-                    onClick={() => nextPage()}
-                    disabled={!canNextPage}
-                    className={`p-2 rounded-full flex items-center justify-center ${canNextPage
-                            ? "text-gray-600 hover:bg-gray-100"
+            </div> */}
+                <div className="flex items-center border-l border-gray-200 h-full">
+                    <button
+                        onClick={() => nextPage()}
+                        disabled={!canNextPage}
+                        className={`px-2 rounded-full flex gap-2 items-center justify-center ${canNextPage
+                            ? "text-gray-600"
                             : "text-gray-300 cursor-not-allowed"
-                        }`}
-                >
-                    <span className="mb-1">Next</span> <Image
-                        className="w-5"
-                        url='/icons/arrow-right.svg'
-                        alt='Arrow right'
-                        width={20}
-                        height={20}
-                    />
-                </button>
+                            }`}
+                    >
+                        <span className="">Next</span> <Image
+                            className="w-5"
+                            url='/icons/arrow-right.svg'
+                            alt='Arrow right'
+                            width={20}
+                            height={20}
+                        />
+                    </button>
+                </div>
             </div>
         </div>
     );
