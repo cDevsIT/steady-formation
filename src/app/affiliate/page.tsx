@@ -53,7 +53,7 @@ const faqData = [
 
 export default function AffiliatePage() {
     return (
-        <div className="w-full min-h-screen bg-white pt-[120px]">
+        <div className="w-full min-h-screen bg-white pt-[100px]">
             <div className="max-w-[975px] mx-auto px-4 py-8">
                 
                 <div
