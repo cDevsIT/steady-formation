@@ -79,7 +79,7 @@ export default function AffiliatePage() {
                                 <Image url="/client/approved-icon.svg" alt="Approved" width={56} height={56} className="w-14 h-14" />
                             </div>
                             <h2 className="text-[22px] font-bold text-center mb-1">Affiliate Program Approved</h2>
-                            <div className="text-center text-[#475467] text-[15px] mb-2 leading-[22px]">Welcome, Nasir Uddin ! You're now an official<br />Steady Formation Affiliate</div>
+                            <div className="text-center text-[#475467] text-[15px] mb-2 leading-[22px]">Welcome, Nasir Uddin ! You&apos;re now an official<br />Steady Formation Affiliate</div>
                             <div className="w-full mt-4">
                                 <div className="text-[15px] font-semibold mb-2">Here’s what’s next:</div>
                                 <div className="text-[13px] text-[#667085] mb-1">Your Unique Referral link</div>
@@ -169,7 +169,7 @@ export default function AffiliatePage() {
                             ].map((step, index) => (
                                 <div key={index} className="flex flex-col items-center gap-4">
                                     <div className={`relative ${step.color} rounded-full w-24 h-24 flex items-center justify-center`}>
-                                        <img src={`/affiliate/${step.icon}`} alt={step.label} className="w-10 h-10" />
+                                        <Image url={`/affiliate/${step.icon}`} alt={step.label} className="w-10 h-10" />
                                         <div className="absolute -bottom-2 -right-1 bg-white border border-gray-200 rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold text-gray-600">
                                             {index + 1}
                                         </div>
@@ -192,7 +192,7 @@ export default function AffiliatePage() {
                 <div className="bg-[#F9FAFB] rounded-2xl p-6 mt-5 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4 mb-28">
                     <div>
                         <h3 className="text-lg md:text-xl font-semibold text-gray-900">Still have questions?</h3>
-                        <p className="text-gray-600 mt-1 text-sm md:text-base">Can't find the answer you're looking for? Please chat to our friendly team.</p>
+                        <p className="text-gray-600 mt-1 text-sm md:text-base">Can&apos;t find the answer you&apos;re looking for? Please chat to our friendly team.</p>
                     </div>
                     <button className="bg-[#7856FC] text-white font-semibold rounded-lg px-5 py-3 hover:bg-[#6C3EF5] transition cursor-pointer w-full sm:w-auto">
                         Get in touch

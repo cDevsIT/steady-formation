@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import Accordion from '@/componant/ui/Accordion';
+import Image from '@/componant/ui/Image';
 
 const faqData = [
     {
@@ -52,7 +53,7 @@ const faqData = [
 
 export default function AffiliatePage() {
     return (
-        <div className="w-full min-h-screen bg-white pt-[120px]">
+        <div className="w-full min-h-screen bg-white pt-[100px]">
             <div className="max-w-[975px] mx-auto px-4 py-8">
                 
                 <div
@@ -102,7 +103,7 @@ export default function AffiliatePage() {
                             ].map((step, index) => (
                                 <div key={index} className="flex flex-col items-center gap-4 w-full md:w-1/4">
                                     <div className={`relative ${step.color} rounded-full w-24 h-24 md:w-28 md:h-28 flex items-center justify-center`}>
-                                        <img src={`/affiliate/${step.icon}`} alt={step.label} className="w-10 h-10 md:w-12 md:h-12" />
+                                        <Image url={`/affiliate/${step.icon}`} alt={step.label} className="w-10 h-10 md:w-12 md:h-12" />
                                         <div className="absolute -bottom-2 -right-1 bg-white border border-gray-200 rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold text-gray-600">
                                             {index + 1}
                                         </div>
@@ -125,7 +126,7 @@ export default function AffiliatePage() {
                 <div className="bg-[#F9FAFB] rounded-2xl p-6 mt-5 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4 mb-28">
                     <div>
                         <h3 className="text-lg md:text-xl font-semibold text-gray-900">Still have questions?</h3>
-                        <p className="text-gray-600 mt-1 text-sm md:text-base">Can't find the answer you're looking for? Please chat to our friendly team.</p>
+                        <p className="text-gray-600 mt-1 text-sm md:text-base">Can&apos;t find the answer you&apos;re looking for? Please chat to our friendly team.</p>
                     </div>
                     <button className="bg-[#7856FC] text-white font-semibold rounded-lg px-5 py-3 hover:bg-[#6C3EF5] transition cursor-pointer w-full sm:w-auto">
                         Get in touch

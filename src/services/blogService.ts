@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, fetchApi } from '@/config/api';
+import { API_CONFIG } from '@/config/api';
 
 export interface Blog {
   id: number;
@@ -34,20 +34,32 @@ export interface SingleBlogResponse {
   data: Blog;
 }
 
+const fetchApi = async <T>(url: string, options?: RequestInit): Promise<T> => {
+  const token = localStorage.getItem('auth_token');
+  const response = await fetch(`${API_CONFIG.BASE_URL}${url}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` }),
+    },
+    ...options,
+  });
+  return response.json();
+};
+
 export const blogService = {
   // Get all blogs
   getAllBlogs: async (page: number = 1): Promise<BlogResponse> => {
-    return fetchApi<BlogResponse>(`${API_ENDPOINTS.BLOG.LIST}?page=${page}`);
+    return fetchApi<BlogResponse>(`${API_CONFIG.ENDPOINTS.BLOGS.LIST}?page=${page}`);
   },
 
   // Get single blog by slug
   getBlogBySlug: async (slug: string): Promise<SingleBlogResponse> => {
-    return fetchApi<SingleBlogResponse>(API_ENDPOINTS.BLOG.DETAIL(slug));
+    return fetchApi<SingleBlogResponse>(API_CONFIG.ENDPOINTS.BLOGS.DETAIL(slug));
   },
 
   // Create new blog
   createBlog: async (blogData: Partial<Blog>): Promise<SingleBlogResponse> => {
-    return fetchApi<SingleBlogResponse>(API_ENDPOINTS.BLOG.CREATE, {
+    return fetchApi<SingleBlogResponse>(API_CONFIG.ENDPOINTS.BLOGS.LIST, {
       method: 'POST',
       body: JSON.stringify(blogData),
     });
@@ -55,7 +67,7 @@ export const blogService = {
 
   // Update blog
   updateBlog: async (id: number, blogData: Partial<Blog>): Promise<SingleBlogResponse> => {
-    return fetchApi<SingleBlogResponse>(API_ENDPOINTS.BLOG.UPDATE(id), {
+    return fetchApi<SingleBlogResponse>(`/blogs/${id}`, {
       method: 'PUT',
       body: JSON.stringify(blogData),
     });
@@ -63,7 +75,7 @@ export const blogService = {
 
   // Delete blog
   deleteBlog: async (id: number): Promise<{ status: string; message: string }> => {
-    return fetchApi<{ status: string; message: string }>(API_ENDPOINTS.BLOG.DELETE(id), {
+    return fetchApi<{ status: string; message: string }>(`/blogs/${id}`, {
       method: 'DELETE',
     });
   },

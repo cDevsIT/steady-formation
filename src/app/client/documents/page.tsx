@@ -130,8 +130,8 @@ function FullScreenImageModal({ open, onClose, imageUrl, alt, document }: FullSc
                 </div>
                 {/* Image Preview (below) */}
                 <div className="flex-1 min-h-0 flex justify-center items-center w-full bg-[#F9FAFB] p-4 overflow-auto">
-                    <img
-                        src={imageUrl}
+                    <Image
+                        url={imageUrl}
                         alt={alt}
                         className="max-h-full max-w-full object-contain rounded shadow-lg"
                     />

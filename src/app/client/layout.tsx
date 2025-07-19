@@ -25,7 +25,7 @@ const menu = [
     { name: 'Company', path: '/client/company', icon: '/client/company-icon.svg' },
     { name: 'Documents', path: '/client/documents', icon: '/client/documents-icon.svg' },
     { name: 'Tax Filing', path: '/client/tax-filing', icon: '/client/tax-filing-icon.svg' },
-    { name: 'Services', path: '/services', icon: '/client/tax-filing-icon.svg' },
+    { name: 'Services', path: '/client/services', icon: '/client/tax-filing-icon.svg' },
     { name: 'Payment History', path: '/client/payment', icon: '/client/payment-icon.svg' },
     { name: 'Support / Help', path: '/client/support-help', icon: '/client/support-help-icon.svg' },
     { name: 'Affiliate', path: '/client/affiliate', icon: '/client/affiliate-icon.svg' },
@@ -162,7 +162,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     }
 
     return (
-        <div className="w-full flex justify-center bg-white mb-3 pt-[70px] min-h-screen">
+        <div className="w-full flex justify-center bg-white mb-3 pt-[40px] min-h-screen mt-[65px]">
             {/* Floating Menu Button - left edge, vertically centered, mobile only, always visible except when sidebar is open */}
             {(!mobileMenuOpen) && (
                 <button
@@ -170,7 +170,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     onClick={() => setMobileMenuOpen(true)}
                     aria-label="Open menu"
                 >
-                    <img src="/client/menu-button-icon.svg" alt="Open Menu" className="w-7 h-7" />
+                    <Image url="/client/menu-button-icon.svg" alt="Open Menu" className="w-7 h-7" />
                 </button>
             )}
             {/* Floating Sidebar for Mobile */}
@@ -271,7 +271,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             )}
             {/* Desktop Sidebar (unchanged) */}
             <div className="max-w-[1280px] w-full flex">
-                <aside className="w-[282px] bg-white border border-[#ececec] rounded-[16px] flex-col justify-between min-h-[calc(100vh-70px)] p-0 hidden md:flex">
+                <aside className="w-[282px] bg-white border border-[#ececec] rounded-[16px] flex-col justify-between h-[calc(100vh-140px)] p-0 hidden md:flex">
                     <div>
                         {/* User Info with Dropdown */}
                         <div className="pt-6 pb-4 border-b border-[#ececec] px-6">
@@ -281,7 +281,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                             </div>
                             {/* Info and dropdown row */}
                             <div className="relative">
-                                <button
+                                <button 
                                     className="flex items-center w-full focus:outline-none cursor-pointer justify-between"
                                     onClick={() => setDropdownOpen((open) => !open)}
                                 >
@@ -374,7 +374,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                                 <h1 className="font-inter font-medium text-2xl md:text-[36px] leading-tight md:leading-[44px] mb-[5px]">
                                     Hi, {user?.first_name || 'User'}!
                                 </h1>
-                                <p className="font-normal text-base md:text-[18px] leading-relaxed md:leading-[28px]">Here's your company status & quick actions.</p>
+                                <p className="font-normal text-base md:text-[18px] leading-relaxed md:leading-[28px]">
+                                    Here&apos;s your company status &amp; quick actions.
+                                </p>
                             </div>
                         </div>
                     )}
