@@ -6,6 +6,8 @@ import Image from "@/componant/ui/Image";
 import Modal from "@/componant/ui/Modal";
 import { InputField, ReusableForm } from "@/componant/ui/ReusableFormTwo";
 import { prioroty, serviceTypes } from "@/componant/funnel/funnel.type";
+import { useRouter } from "next/navigation";
+import SupportTicketChat from "./SupportTicketChat";
 
 // SupportRow type
 export interface SupportRow {
@@ -75,6 +77,8 @@ const SupportHelp = () => {
   const [modalData, setModalData] = useState<SupportRow | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [total, setTotal] = useState(0);
+  const router = useRouter();
+  const [selectedTicketId, setSelectedTicketId] = useState<string | number | null>(null);
 
   // Fetch paginated demo data from reqres.in
   useEffect(() => {
@@ -127,8 +131,7 @@ const SupportHelp = () => {
 
   // Handlers
   const handleView = (row: SupportRow) => {
-    setModalData(row);
-    setModalOpen(true);
+    router.push(`/client/support-help/${row.id}`);
   };
   const handleDelete = (id: string | number) => {
     setData((prev) => prev.filter((r) => r.id !== id));
@@ -189,7 +192,6 @@ const SupportHelp = () => {
         onSearch={handleSearch}
         path="Support"
       />
-
       {/* Create New Ticket */}
 
       {createTicket && (
