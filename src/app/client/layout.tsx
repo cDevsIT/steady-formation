@@ -357,7 +357,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 <main className="flex-1 max-w-[975px] w-full bg-white rounded-[16px] min-h-[calc(100vh-70px)]">
 
                     {/* Hello Bar Section*/}
-                    {!(pathname?.includes('/client/tax-filing/step1') || pathname?.includes('/client/tax-filing/step2') || pathname?.includes('/client/affiliate')) && (
+                    {!(pathname?.includes('/client/tax-filing/step1') || pathname?.includes('/client/tax-filing/step2') || pathname?.includes('/client/affiliate')) || pathname?.includes('/client/services')  && (
                         <div
                             className="bg-[#240D68] rounded-2xl px-10 py-6 md:px-12 text-white relative overflow-hidden mb-5 mx-4 md:mx-0"
                         >

@@ -3,6 +3,9 @@ import React, { useEffect, useState } from "react";
 import CustomPaginationTable, { CustomPaginationTableProps } from "@/componant/ui/CustomPaginationTable";
 import { Column } from "react-table";
 import Image from "@/componant/ui/Image";
+import Modal from "@/componant/ui/Modal";
+import { InputField, ReusableForm } from "@/componant/ui/ReusableFormTwo";
+import { prioroty, serviceTypes } from "@/componant/funnel/funnel.type";
 
 // SupportRow type
 export interface SupportRow {
@@ -67,6 +70,8 @@ const SupportHelp = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [createTicket, setCreateTicket] = useState(false);
+  const [completeTicket, setCompleteTicket] = useState(false);
   const [modalData, setModalData] = useState<SupportRow | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [total, setTotal] = useState(0);
@@ -128,6 +133,7 @@ const SupportHelp = () => {
   const handleDelete = (id: string | number) => {
     setData((prev) => prev.filter((r) => r.id !== id));
   };
+
   const handleEdit = (row: SupportRow) => {
     alert(`Navigate to edit page for ID: ${row.id}`);
   };
@@ -145,6 +151,13 @@ const SupportHelp = () => {
     setPaginationPage(1);
   };
 
+
+  const handleNewTicketCreate = (data: any) => {
+    console.log('Form Data:', data);
+    setCreateTicket(false)
+    setCompleteTicket(true);
+  };
+
   return (
     <div className="max-w-[975px] mx-auto border border-gray-200 overflow-hidden rounded-3xl py-3">
       <CustomPaginationTable
@@ -157,32 +170,96 @@ const SupportHelp = () => {
         data={data}
         sortDirection={sortDirection}
         setSortDirection={setSortDirection}
-        addNewButton={{ label: "Create Support Ticket" }}
+        // addNewButton={{ label: "Create Support Ticket" }}
+        addNewButtonComponent={
+          <button
+            className="text-sm text-white bg-[#7856FC] hover:bg-[#6941C6] p-3 rounded-lg"
+            onClick={() => setCreateTicket(true)}
+          >
+            Create Support Ticket
+          </button>
+        }
         showViewAction={true}
         showEditAction={true}
         showDeleteAction={true}
         handleView={handleView}
         handleDelete={handleDelete}
+        handleEdit={handleEdit}
         editPath="/client/support-help/edit"
         onSearch={handleSearch}
         path="Support"
       />
+
+      {/* Create New Ticket */}
+
+      {createTicket && (
+        <Modal open={createTicket} onClose={() => setCreateTicket(false)}>
+          <ReusableForm onSubmit={handleNewTicketCreate} submitText="Create Support ticket" formTitle="Create ticket" isModal={true}>
+            <InputField
+              name="subject"
+              label="Subject"
+              type="text"
+              inputClasss=''
+              required
+              className="col-span-2! "
+            />
+            <InputField
+              name="department"
+              label="Department"
+              type="select"
+              required
+              placeholder="Select Department Name"
+              options={serviceTypes}
+              className="col-span-2! "
+            />
+
+            <InputField
+              name="priority"
+              label="Priority"
+              type="select"
+              required
+              placeholder="Select Priority"
+              options={prioroty}
+              className="col-span-2! "
+            />
+
+            <InputField
+              name="description"
+              label="Description"
+              type="text"
+              inputClasss='h-[120px]'
+              required
+              className="col-span-2! "
+            />
+
+            <InputField
+              name="upload_file"
+              label="Upload File"
+              type="file"
+              required
+              className="col-span-2! "
+              supportingText='SVG, PNG, JPG or GIF (max 4MB. 800x400px)'
+            />
+          </ReusableForm>
+        </Modal>
+      )}
+
+      {completeTicket && (
+        <Modal open={completeTicket} onClose={() => setCompleteTicket(false)}>
+          <div className="p-4">
+            <div className="flex flex-col items-center gap-3 max-w-[407px] mx-auto">
+              <Image className="w-[76px]" url="/icons/confirm.svg" width={76} height={76} alt="Confirm" />
+              <h2 className="text-[24px] lg:text-[30px] font-semibold text-center mb-2">Ticket Submitted</h2>
+              <p className="text-[#6B7280] text-center mb-4 text-base font-normal">We will review your application 2 or 3 business days after complete, we&apos;re will inform you</p>
+              <button onClick={() => setCompleteTicket(false)} className="bg-[#7856FC] hover:bg-[#6156fc] text-white font-medium rounded-md px-6 py-2 mb-6 transition">Check Details </button>
+            </div>
+          </div>
+        </Modal>
+      )}
       {/* Modal for View */}
       {modalOpen && modalData && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000d1]" // changed opacity to 30%
-          onClick={() => setModalOpen(false)} // close on outside click
-        >
-          <div
-            className="bg-white rounded-xl shadow-lg max-w-lg w-full p-6 relative"
-            onClick={e => e.stopPropagation()} // prevent closing when clicking inside modal
-          >
-            <button
-              className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
-              onClick={() => setModalOpen(false)}
-            >
-              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
+        <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+          <div className="p-4">
             <h3 className="text-lg font-semibold mb-2">Support Ticket Details</h3>
             <div className="flex items-center gap-3 mb-4">
               <Image url={modalData.avatar} alt={modalData.name} className="w-12 h-12 rounded-full object-cover" />
@@ -198,7 +275,7 @@ const SupportHelp = () => {
             <div className="mb-2"><span className="font-semibold">Priority:</span> {modalData.priority}</div>
             <button className="mt-4 bg-[#7856FC] hover:bg-[#5D3FC4] text-white px-4 py-2 rounded" onClick={() => setModalOpen(false)}>Close</button>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

@@ -33,7 +33,8 @@ interface InputFieldProps {
     className?: string;
     disabled?: boolean;
     belowText?: string;
-    inputClasss?:string
+    inputClasss?:string;
+    supportingText?:string
 }
 
 // Custom form data interface to avoid conflict with built-in FormData
@@ -85,7 +86,8 @@ export const InputField: React.FC<InputFieldProps> = ({
     className = '',
     disabled = false,
     belowText = '',
-    inputClasss = ''
+    inputClasss = '',
+    supportingText= ''
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
@@ -474,8 +476,9 @@ export const InputField: React.FC<InputFieldProps> = ({
                                     height={40}
                                 />
                             </span>
-                            <div className='flex justify-center items-center'>
+                            <div className='flex flex-col justify-center items-center'>
                                 <p className='text-gray-500 text-sm'><span className="text-[#7856FC] font-medium text-base gap-1">Click to upload</span> or drag and drop</p>
+                                <p className='text-xs font-normal text-gray-600'>{supportingText}</p>
                             </div>
                             {(fileName || (value && value.name)) && <span className="mt-2 text-gray-700 text-sm">{fileName || (value && value.name)}</span>}
                         </div>
@@ -538,7 +541,8 @@ interface ReusableFormProps {
     defaultValues?: CustomFormData;
     onFormStateChange?: (formMethods: any) => void;
     formTitle?: string;
-    isAgree?: boolean
+    isAgree?: boolean;
+    isModal?:boolean
 }
 
 export const ReusableForm: React.FC<ReusableFormProps> = ({
@@ -549,7 +553,8 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     defaultValues = {},
     onFormStateChange,
     formTitle,
-    isAgree = false
+    isAgree = false,
+    isModal=false
 }) => {
     // Collect defaultValue from each InputField child
     let mergedDefaultValues = { ...defaultValues };
@@ -626,9 +631,9 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     });
 
     return (
-        <div >
-            <div className='border border-gray-200 rounded-3xl'>
-                {formTitle && <h2 className='text-lg font-semibold text-black m-0 border-b border-gray-200 py-3 pl-4'>{formTitle}</h2>} 
+        <div className='w-full'>
+            <div className={`${isModal ?'': 'border border-gray-200 rounded-3xl'} `}>
+                {formTitle && <h2 className={`text-lg font-semibold text-black m-0 border-b border-gray-200 py-3 pl-4`}>{formTitle}</h2>} 
                 <div className={`space-y-4 grid gap-4 grid-cols-1 lg:grid-cols-2 ${className}  py-3 px-4`}>
                     {enhancedChildren}
                     {isAgree && (
@@ -643,7 +648,7 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
                 <button
                     onClick={handleSubmit(onFormSubmit)}
                     disabled={isSubmitting}
-                    className="bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-2 px-3 rounded-md shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-2 px-3 rounded-md shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${isModal ? 'mr-4' : ''}`}
                 >
                     {isSubmitting ? 'Submitting...' : submitText}
                 </button>
