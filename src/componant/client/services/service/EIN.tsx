@@ -54,7 +54,7 @@ const EIN = () => {
                     name="business_description"
                     label="Business Description"
                     type="text"
-                    inputClasss='h-[83%] rounded-xl'
+                    inputClasss='h-[120px] rounded-xl'
                 />
                 <InputField
                     name="digital_signature"

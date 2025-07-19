@@ -16,6 +16,12 @@ export const companyTypes = [
     { label: 'Private Limited Company', value: 'pvt',}
 ];
 
+export const prioroty = [
+    { label: 'High', value: 'high', },
+    { label: 'Medium', value: 'medium', },
+    { label: 'Low', value: 'low', }
+];
+
 export const serviceTypes = [
     { label: 'Consulting', value: 'consulting' },
     { label: 'Software Development', value: 'software_development' },
