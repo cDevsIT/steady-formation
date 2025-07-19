@@ -14,13 +14,15 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.58.1",
     "react-hot-toast": "^2.5.2",
-    "react-responsive-carousel": "^3.2.23"
+    "react-responsive-carousel": "^3.2.23",
+    "react-table": "^7.8.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "22.15.30",
     "@types/react": "19.1.6",
+    "@types/react-table": "^7.7.20",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "tailwindcss": "^4"

@@ -151,54 +151,79 @@ function PaymentDetailsModal({ open, onClose }: { open: boolean; onClose: () => 
     if (!open) return null;
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            {/* Responsive border radius and width/height: full viewport for mobile, maxWidth for desktop */}
+            <style>{`
+                @media (max-width: 768px) {
+                    .payment-modal-mobile {
+                        border-radius: 0 !important;
+                        max-width: 100vw !important;
+                        min-width: 100vw !important;
+                        min-height: 100vh !important;
+                        height: 100vh !important;
+                        width: 100vw !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        position: fixed !important;
+                    }
+                }
+            `}</style>
             <div
-                className="bg-white mx-auto p-0 relative flex flex-col items-center w-full overflow-y-auto"
+                className="bg-white mx-auto p-0 relative flex flex-col items-center w-full payment-modal-mobile overflow-y-auto"
                 style={{
                     maxWidth: 570,
                     borderRadius: '16px',
                     boxShadow: '0 10px 40px 0 rgba(16, 24, 40, 0.12)',
                 }}
             >
-                {/* Top: Payment Details and close at top right */}
+                {/* Top: Payment Details headline centered, Paid tag right, Back button left */}
                 <div className="w-full flex items-center justify-between pt-5 pb-0 px-5 relative">
-                    <div className="flex items-center gap-2">
-                        <span className="text-[16px] leading-6 font-semibold text-[#101828]">Payment Details</span>
-                        <span className='px-2 py-1 bg-[#ECFDF3] text-[#12B76A] text-xs rounded font-medium'>Paid</span>
+                    {/* Back button (mobile/always visible) */}
+                    <button
+                        onClick={onClose}
+                        className="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 focus:outline-none absolute left-2 top-1/2 -translate-y-1/2 md:static md:translate-y-0"
+                        aria-label="Back"
+                    >
+                        <Image url="/icons/arrow-left.svg" alt="Back" width={24} height={24} />
+                    </button>
+                    {/* Headline centered */}
+                    <div className="flex-1 flex justify-center items-center">
+                        <span className="text-[16px] leading-6 font-semibold text-[#101828] text-center">Payment Details</span>
                     </div>
-                    <div className="flex items-center gap-2 relative">
-                        <button className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2">Download PDF</button>
-                        <button onClick={onClose} className="absolute -top-4 -right-4 text-[#667085] hover:bg-gray-100 rounded-full p-1" aria-label="Close">
-                            <Image url="/client/cross-icon.svg" alt="Close" width={20} height={20} />
-                        </button>
-                    </div>
+                    {/* Paid tag right */}
+                    <span className="px-2 py-1 bg-[#ECFDF3] text-[#12B76A] text-xs rounded font-medium ml-auto">Paid</span>
                 </div>
                 {/* Payment Summary Card */}
                 <div className="w-full px-5 pt-4 pb-2">
-
                     <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
                         <div className="text-[18px] leading-7 font-bold mb-2">Payment Summary Card</div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Transaction ID:</span> <span>#TXN-20250415-01</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Date & Time:</span> <span>April 15, 2025 at 11:30 AM</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Amount Paid:</span> <span>$10.00</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Payment Method:</span> <span>Visa ending in 2345</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Payment Gateway:</span> <span>Stripe</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Transaction ID:</span> <span>#TXN-20250415-01</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Date & Time:</span> <span>April 15, 2025 at 11:30 AM</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Amount Paid:</span> <span>$10.00</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Payment Method:</span> <span>Visa ending in 2345</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Payment Gateway:</span> <span>Stripe</span></div>
                     </div>
-
                     <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
                         <div className="text-[18px] leading-7 font-bold mb-2">Company Details</div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Company Name:</span> <span>Fission</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Entity Type:</span> <span>LLC - Delaware</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>User Email:</span> <span>fassionstorage@gmail.com</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>User ID:</span> <span>#11554882</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Company Name:</span> <span>Fission</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Entity Type:</span> <span>LLC - Delaware</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>User Email:</span> <span>fassionstorage@gmail.com</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>User ID:</span> <span>#11554882</span></div>
                     </div>
-
-                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
+                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-18 md:mb-4">
                         <div className="text-[18px] leading-7 font-bold mb-2">Billing Address</div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Name:</span> <span>Steady Formation</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Location:</span> <span>2218 Baker Street, Suite 400</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>City, State ZIP:</span> <span>San Francisco, CA 94115</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Country:</span> <span>United States</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Name:</span> <span>Steady Formation</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Location:</span> <span>2218 Baker Street, Suite 400</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>City, State ZIP:</span> <span>San Francisco, CA 94115</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Country:</span> <span>United States</span></div>
                     </div>
+                </div>
+                {/* Download PDF button at bottom for mobile */}
+                <div className="block md:hidden w-full px-5 pb-5 fixed left-0 right-0 bottom-0 z-50" style={{ maxWidth: 570, margin: '0 auto' }}>
+                    <button className="w-full bg-[#7856FC] text-white text-[16px] leading-6 font-semibold rounded-lg py-3 hover:bg-[#6840e0] transition cursor-pointer">Download PDF</button>
+                </div>
+                {/* Download PDF button for desktop (top right, hidden on mobile) */}
+                <div className="hidden md:flex absolute right-5 top-5">
+                    <button className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2">Download PDF</button>
                 </div>
             </div>
         </div>
@@ -210,41 +235,69 @@ function PayNowProcessingModal({ open, onClose }: { open: boolean; onClose: () =
     if (!open) return null;
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            {/* Responsive border radius and width/height: full viewport for mobile, maxWidth for desktop */}
+            <style>{`
+                @media (max-width: 768px) {
+                    .paynow-modal-mobile {
+                        border-radius: 0 !important;
+                        max-width: 100vw !important;
+                        min-width: 100vw !important;
+                        min-height: 100vh !important;
+                        height: 100vh !important;
+                        width: 100vw !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        position: fixed !important;
+                    }
+                }
+            `}</style>
             <div
-                className="bg-white mx-auto p-0 relative flex flex-col items-center w-full overflow-y-auto"
+                className="bg-white mx-auto p-0 relative flex flex-col items-center w-full paynow-modal-mobile overflow-y-auto"
                 style={{
                     maxWidth: 570,
                     borderRadius: '16px',
                     boxShadow: '0 10px 40px 0 rgba(16, 24, 40, 0.12)'
                 }}
             >
-                {/* Top: Payment Details, Pending badge, Contact Support, and close at top right */}
+                {/* Top: Back button, headline centered, Pending tag right */}
                 <div className="w-full flex items-center justify-between pt-5 pb-0 px-5 relative">
-                    <div className="flex items-center gap-2">
-                        <span className="text-[16px] leading-6 font-semibold text-[#101828]">Payment Details</span>
-                        <span className='px-2 py-1 bg-[#F2F4F7] text-[#667085] text-xs rounded font-medium'>Pending</span>
+                    {/* Back button (mobile/always visible) */}
+                    <button
+                        onClick={onClose}
+                        className="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 focus:outline-none absolute left-2 top-1/2 -translate-y-1/2 md:static md:translate-y-0"
+                        aria-label="Back"
+                    >
+                        <Image url="/icons/arrow-left.svg" alt="Back" width={24} height={24} />
+                    </button>
+                    {/* Headline centered */}
+                    <div className="flex-1 flex justify-center items-center">
+                        <span className="text-[16px] leading-6 font-semibold text-[#101828] text-center">Payment Details</span>
                     </div>
-                    <div className="flex items-center gap-2 relative">
-                        <button className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2">Contact Support</button>
-                        <button onClick={onClose} className="absolute -top-4 -right-4 text-[#667085] hover:bg-gray-100 rounded-full p-1" aria-label="Close">
-                            <Image url="/client/cross-icon.svg" alt="Close" width={20} height={20} />
-                        </button>
-                    </div>
+                    {/* Pending tag right */}
+                    <span className="px-2 py-1 bg-[#F2F4F7] text-[#667085] text-xs rounded font-medium ml-auto">Pending</span>
                 </div>
                 {/* Payment Processing Message */}
-                <div className="w-full px-16 pt-4 pb-2">
-                    <div className="bg-[#F9FAFB] rounded-xl border border-[#E4E7EC] p-7 mb-4 flex flex-col items-center">
+                <div className="w-full px-4 pt-4 pb-2 md:px-16">
+                    <div className="bg-[#F9FAFB] rounded-xl border border-[#E4E7EC] p-5 md:p-7 mb-4 flex flex-col items-center">
                         <Image url="/client/process-icon-payment.svg" alt="Processing" width={48} height={48} className="mb-3" />
-                        <div className="text-[20px] font-bold text-center mb-1">Your payment is currently being processed.</div>
+                        <div className="text-[17px] md:text-[20px] font-bold text-center mb-1">Your payment is currently being processed.</div>
                         <div className="text-[14px] text-[#667085] text-center leading-5">This may take a few moments to complete. Please do not refresh or close the page.</div>
                     </div>
-                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
-                        <div className="text-[18px] leading-7 font-bold mb-2">Transaction Details</div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Amount:</span> <span>$10.00</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Date:</span> <span>April 15, 2025</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Payment Method:</span> <span>Visa ending in 2345</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Transaction ID:</span> <span>TXN-20250415-02</span></div>
+                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-18 md:mb-4">
+                        <div className="text-[16px] md:text-[18px] leading-7 font-bold mb-2">Transaction Details</div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Amount:</span> <span>$10.00</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Date:</span> <span>April 15, 2025</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Payment Method:</span> <span>Visa ending in 2345</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Transaction ID:</span> <span>TXN-20250415-02</span></div>
                     </div>
+                </div>
+                {/* Contact Support button at bottom for mobile */}
+                <div className="block md:hidden w-full px-5 pb-5 fixed left-0 right-0 bottom-0 z-50" style={{ maxWidth: 570, margin: '0 auto' }}>
+                    <button className="w-full bg-[#7856FC] text-white text-[16px] leading-6 font-semibold rounded-lg py-3 hover:bg-[#6840e0] transition cursor-pointer">Contact Support</button>
+                </div>
+                {/* Contact Support button for desktop (top right, hidden on mobile) */}
+                <div className="hidden md:flex absolute right-5 top-5">
+                    <button className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2">Contact Support</button>
                 </div>
             </div>
         </div>
@@ -256,51 +309,77 @@ function RetryPaymentModal({ open, onClose }: { open: boolean; onClose: () => vo
     if (!open) return null;
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            {/* Responsive border radius and width/height: full viewport for mobile, maxWidth for desktop */}
+            <style>{`
+                @media (max-width: 768px) {
+                    .retry-modal-mobile {
+                        border-radius: 0 !important;
+                        max-width: 100vw !important;
+                        min-width: 100vw !important;
+                        min-height: 100vh !important;
+                        height: 100vh !important;
+                        width: 100vw !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        position: fixed !important;
+                    }
+                }
+            `}</style>
             <div
-                className="bg-white mx-auto p-0 relative flex flex-col items-center w-full overflow-y-auto"
+                className="bg-white mx-auto p-0 relative flex flex-col items-center w-full retry-modal-mobile overflow-y-auto"
                 style={{
                     maxWidth: 570,
                     borderRadius: '16px',
                     boxShadow: '0 10px 40px 0 rgba(16, 24, 40, 0.12)'
                 }}
             >
-                {/* Top: Payment Details, Fail badge, Retry Payment, and close at top right */}
+                {/* Top: Back button, headline centered, Fail tag right */}
                 <div className="w-full flex items-center justify-between pt-5 pb-0 px-5 relative">
-                    <div className="flex items-center gap-2">
-                        <span className="text-[16px] leading-6 font-semibold text-[#101828]">Payment Details</span>
-                        <span className='px-2 py-1 bg-[#FEF3F2] text-[#F04438] text-xs rounded font-medium'>Fail</span>
+                    {/* Back button (mobile/always visible) */}
+                    <button
+                        onClick={onClose}
+                        className="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 focus:outline-none absolute left-2 top-1/2 -translate-y-1/2 md:static md:translate-y-0"
+                        aria-label="Back"
+                    >
+                        <Image url="/icons/arrow-left.svg" alt="Back" width={24} height={24} />
+                    </button>
+                    {/* Headline centered */}
+                    <div className="flex-1 flex justify-center items-center">
+                        <span className="text-[16px] leading-6 font-semibold text-[#101828] text-center">Payment Details</span>
                     </div>
-                    <div className="flex items-center gap-2 relative">
-                        <button className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2">Retry Payment</button>
-                        <button onClick={onClose} className="absolute -top-4 -right-4 text-[#667085] hover:bg-gray-100 rounded-full p-1" aria-label="Close">
-                            <Image url="/client/cross-icon.svg" alt="Close" width={20} height={20} />
-                        </button>
-                    </div>
+                    {/* Fail tag right */}
+                    <span className="px-2 py-1 bg-[#FEF3F2] text-[#F04438] text-xs rounded font-medium ml-auto">Fail</span>
                 </div>
                 {/* Payment Failed Message */}
-                <div className="w-full px-16 pt-4 pb-2">
-                    <div className="bg-[#F9FAFB] rounded-xl border border-[#E4E7EC] p-7 mb-4 flex flex-col items-center">
+                <div className="w-full px-4 pt-4 pb-2 md:px-16">
+                    <div className="bg-[#F9FAFB] rounded-xl border border-[#E4E7EC] p-5 md:p-7 mb-4 flex flex-col items-center">
                         <Image url="/client/not-processed-icon.svg" alt="Not Processed" width={48} height={48} className="mb-3" />
-                        <div className="text-[20px] font-bold text-center mb-1">We&apos;re sorry, your payment could not be processed.</div>
+                        <div className="text-[17px] md:text-[20px] font-bold text-center mb-1">We&apos;re sorry, your payment could not be processed.</div>
                         <div className="text-[14px] text-[#667085] text-center leading-5 mb-2">Here are some possible reasons:</div>
-                        <div className="flex flex-wrap justify-center gap-x-8 gap-y-1 text-[14px] text-[#667085]">
-                            <ul className="list-disc ml-5">
+                        <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-[14px] text-[#667085] w-full">
+                            <ul className="list-disc list-inside flex flex-wrap justify-center gap-x-4 gap-y-1 w-full px-0 mb-0">
                                 <li>Insufficient funds</li>
-                                <li>Network timeout</li>
-                            </ul>
-                            <ul className="list-disc ml-5">
                                 <li>Incorrect card details</li>
+                                <li>Network timeout</li>
                                 <li>Payment gateway issue</li>
                             </ul>
                         </div>
                     </div>
-                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
-                        <div className="text-[18px] leading-7 font-bold mb-2">Transaction Details</div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Amount:</span> <span>$10.00</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Date:</span> <span>April 15, 2025</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Payment Method:</span> <span>Visa ending in 2345</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-3 flex justify-between"><span>Transaction ID:</span> <span>TXN-20250415-02</span></div>
+                    <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-18 md:mb-4">
+                        <div className="text-[16px] md:text-[18px] leading-7 font-bold mb-2">Transaction Details</div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Amount:</span> <span>$10.00</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Date:</span> <span>April 15, 2025</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Payment Method:</span> <span>Visa ending in 2345</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Transaction ID:</span> <span>TXN-20250415-02</span></div>
                     </div>
+                </div>
+                {/* Retry Payment button at bottom for mobile */}
+                <div className="block md:hidden w-full px-5 pb-5 fixed left-0 right-0 bottom-0 z-50" style={{ maxWidth: 570, margin: '0 auto' }}>
+                    <button className="w-full bg-[#7856FC] text-white text-[16px] leading-6 font-semibold rounded-lg py-3 hover:bg-[#6840e0] transition cursor-pointer">Retry Payment</button>
+                </div>
+                {/* Retry Payment button for desktop (top right, hidden on mobile) */}
+                <div className="hidden md:flex absolute right-5 top-5">
+                    <button className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2">Retry Payment</button>
                 </div>
             </div>
         </div>
