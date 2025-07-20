@@ -1,10 +1,10 @@
-
 "use client";
 import Link from "next/link";
 import Image from "../ui/Image";
 import NavbarMobile from "./NavbarMobile";
 import NavLinks from "./NavLinks";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 
 interface NavbarProps { }
 
@@ -12,12 +12,28 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
   const pathname = usePathname();
   const isClientRoute = pathname.startsWith('/client');
   const hideHeaderFooter = pathname.startsWith('/login') || pathname.startsWith('/sign-up');
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 0);
+    };
+
+    // Add scroll event listener
+    window.addEventListener('scroll', handleScroll);
+
+    // Cleanup function to remove event listener
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
     <nav
-      className={`bg-transparent sticky top-0 z-50 backdrop-blur-lg  px-4 sm:px-6 lg:px-4`}
+      className={`bg-transparent sticky top-0 z-50 backdrop-blur-lg px-4 sm:px-6 lg:px-4 transition-all duration-300`}
     >
-      <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto pt-[28px] hidden md:block">
+      <div className={`max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto ${isScrolled ? 'pt-0' : 'pt-[28px]'} hidden md:block transition-all duration-300`}>
         <div className="flex justify-between items-center h-17">
           {/* Logo */}
           <div className="flex items-center">
@@ -68,13 +84,13 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
               </div>
             ) : (
               <>
-              
-              {!hideHeaderFooter && <Link
-                href="/login"
-                className="bg-primary hover:bg-primary-hover text-white px-6 py-3  h-11 rounded-lg text-[16px] font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
-              >
-                Login
-              </Link>}
+
+                {!hideHeaderFooter && <Link
+                  href="/login"
+                  className="bg-primary hover:bg-primary-hover text-white px-6 py-3  h-11 rounded-lg text-[16px] font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
+                >
+                  Login
+                </Link>}
               </>
             )}
           </div>
