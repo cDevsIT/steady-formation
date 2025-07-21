@@ -132,7 +132,7 @@ const CustomPaginationTable = <T extends { id?: string | number } = any>({
             ...columns,
             ...(showViewAction || showEditAction || showDeleteAction ? [actionColumn] : []),
         ].filter(Boolean) as Column<T>[];
-    }, [columns, showViewAction, showEditAction, showDeleteAction, handleView, handleDelete, editPath, paginationPage, limit]);
+    }, [columns, showViewAction, showEditAction, showDeleteAction, handleView, handleDelete]);
 
     // Table instance
     const {
