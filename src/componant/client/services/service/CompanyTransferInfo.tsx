@@ -3,7 +3,7 @@ import React from 'react';
 import { ReusableForm, InputField } from '../../../ui/ReusableFormTwo';
 import { companyTypes, serviceTypes, usStates, YesNo } from '@/componant/funnel/funnel.type';
 
-const TransferRegisterAgent = () => {
+const CompanyTransferInfo = () => {
     const handleSubmit = (data: any) => {
         console.log('Form Data:', data);
     };
@@ -73,4 +73,4 @@ const TransferRegisterAgent = () => {
     );
 };
 
-export default TransferRegisterAgent;
+export default CompanyTransferInfo;

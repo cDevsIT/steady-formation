@@ -4,9 +4,9 @@ import { ReusableForm, InputField } from '../../../ui/ReusableFormTwo';
 import Link from 'next/link';
 import Image from '@/componant/ui/Image';
 import { useRouter } from 'next/navigation';
-import { serviceTypes } from '@/componant/funnel/funnel.type';
+import { companyTypes, serviceTypes } from '@/componant/funnel/funnel.type';
 
-const EIN = () => {
+const USBankAccount = () => {
     const router = useRouter();
 
 
@@ -35,7 +35,8 @@ const EIN = () => {
                 />
                 <span className='text-[16px] font-medium'>Back</span>
             </button>
-            <ReusableForm formTitle="Employer Identification Number" onSubmit={handleSubmit} submitText="Submit" isAgree={true}>
+            <ReusableForm formTitle="U.S. Business Bank Account" onSubmit={handleSubmit} submitText="Submit" isAgree={true}>
+
 
                 <InputField
                     name="company_document"
@@ -45,56 +46,57 @@ const EIN = () => {
                 />
 
                 <InputField
-                    name="proof_residentail_address"
-                    label="Proof of Residential Address"
+                    name="ein_official_letter"
+                    label="EIN Official Letter"
                     type="file"
                     required
                 />
 
                 <InputField
-                    name="business_description"
-                    label="Business Description"
+                    name="ein_number"
+                    label="EIN Number"
+                    type="text"
+                    required
+                />
+
+                <InputField
+                    name="proof_residential_address"
+                    label="Proof of Residential Address"
+                    type="text"
+                    required
+                />
+
+                <InputField
+                    name="complete_website_link"
+                    label="Complete Website Link"
+                    type="text"
+                    required
+                />
+
+                <InputField
+                    name="usa_phone_number"
+                    label="USA Phone Number"
+                    type="text"
+                    required
+                />
+
+                <InputField
+                    name="web_or_bus_mail_address"
+                    label="Webmail or Business Mail Address"
                     type="text"
                     inputClasss='h-[120px] rounded-xl'
                 />
-                <InputField
-                    name="digital_signature"
-                    label="Digital Signature"
-                    type="file"
-                    required
-                />
 
                 <InputField
-                    name="ssn_itin"
-                    label="SSN or ITIN (IF any)"
-                    type="file"
-                />
-
-                <InputField
-                    name="personal_identification"
+                    name="personal_identification_document"
                     label="Personal Identification Document"
                     type="file"
                     required
                 />
 
-                <InputField
-                    name="us_mailing_address"
-                    label="US Mailing Address"
-                    type="text"
-                    inputClasss=''
-                />
-
-                <InputField
-                    name="service_type"
-                    label="Service Type"
-                    type="select"
-                    required
-                    placeholder="Select Service Type"
-                    options={serviceTypes}
-                />
             </ReusableForm>
         </div>
     );
 };
 
-export default EIN;
+export default USBankAccount;

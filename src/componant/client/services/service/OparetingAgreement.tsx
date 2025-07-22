@@ -1,13 +1,13 @@
 'use client';
 import React from 'react';
 import { ReusableForm, InputField } from '../../../ui/ReusableFormTwo';
+import Link from 'next/link';
 import Image from '@/componant/ui/Image';
+import { useRouter } from 'next/navigation';
+import { companyTypes, serviceTypes } from '@/componant/funnel/funnel.type';
 
-type ITINProps = {
-    setIsSubmit: (value: boolean) => void;
-};
-
-const ITIN = ({ setIsSubmit }: ITINProps) => {
+const OparetingAgreement = () => {
+    const router = useRouter();
 
 
     const handleSubmit = (data: any) => {
@@ -15,7 +15,7 @@ const ITIN = ({ setIsSubmit }: ITINProps) => {
     };
 
     const handleBack = () => {
-        setIsSubmit(false)
+        router.back();
     };
 
     return (
@@ -35,46 +35,33 @@ const ITIN = ({ setIsSubmit }: ITINProps) => {
                 />
                 <span className='text-[16px] font-medium'>Back</span>
             </button>
-            <ReusableForm formTitle="Individual Taxpayer Identification Number" onSubmit={handleSubmit} submitText="Submit" isAgree={true}>
+            <ReusableForm formTitle="Operating Agreement" onSubmit={handleSubmit} submitText="Submit" isAgree={true}>
 
                 <InputField
-                    name="real_estate_sales_contract"
-                    label="Real estate sales contract OR Settlement Statement (HUD-1)"
+                    name="company_document"
+                    label="Company Document"
                     type="file"
                     required
                 />
 
                 <InputField
-                    name="form_8288"
-                    label="Completed Form 8288 or Form 8288-A or Form 8288-B"
+                    name="personal_identification_document"
+                    label="Personal Identification Document"
                     type="file"
                     required
                 />
 
                 <InputField
-                    name="passport_scan"
-                    label="Passport Scan PDF (Applicant)"
-                    type="file"
-                    required
-                />
-
-                <InputField
-                    name="home_country_address"
-                    label="Your Home Country Address (Bank Statement Or Utility Bill)"
-                    type="file"
-                    required
-                />
-
-                <InputField
-                    name="digital_signature"
-                    label="Digital Signature"
-                    type="file"
+                    name="proof_residential_address"
+                    label="Proof of Residential Address"
+                    type="text"
                     required
                     className='lg:col-span-2!'
                 />
+
             </ReusableForm>
         </div>
     );
 };
 
-export default ITIN;
+export default OparetingAgreement;

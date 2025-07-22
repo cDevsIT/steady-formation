@@ -639,7 +639,7 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
                     {isAgree && (
                         <div className="flex justify-start items-center gap-2 col-span-2">
                             <input type="checkbox" id="hireUs" name="hireUs" className="border-gray-300" />
-                            <label htmlFor="hireUs">I Agree Terms & Conditions Checkbox</label>
+                            <label htmlFor="hireUs" className='text-gray-600'>I Agree Terms & Conditions Checkbox</label>
                         </div>
                     )}
                 </div>
