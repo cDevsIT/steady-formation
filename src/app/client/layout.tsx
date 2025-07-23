@@ -270,8 +270,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 </>
             )}
             {/* Desktop Sidebar (unchanged) */}
-            <div className="max-w-[1280px] w-full flex">
-                <aside className="w-[282px] bg-white border border-[#ececec] rounded-[16px] flex-col justify-between h-[calc(100vh-140px)] p-0 hidden md:flex">
+
+            <div className="max-w-[1280px] w-full flex justify-center">
+                {(!pathname?.includes('/client/services/order-confirmed') && !pathname?.includes('/client/services/payment') && !pathname?.includes('/client/services/info-submitted')) && <aside className="w-[282px] bg-white border border-[#ececec] rounded-[16px] flex-col justify-between h-[calc(100vh-140px)] p-0 hidden md:flex">
                     <div>
                         {/* User Info with Dropdown */}
                         <div className="pt-6 pb-4 border-b border-[#ececec] px-6">
@@ -281,7 +282,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                             </div>
                             {/* Info and dropdown row */}
                             <div className="relative">
-                                <button 
+                                <button
                                     className="flex items-center w-full focus:outline-none cursor-pointer justify-between"
                                     onClick={() => setDropdownOpen((open) => !open)}
                                 >
@@ -350,14 +351,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                             Log Out
                         </button>
                     </div>
-                </aside>
+                </aside>}
+
                 {/* Gap between sidebar and content */}
                 <div className="w-[23px] hidden md:block" />
                 {/* Main Content */}
-                <main className="flex-1 max-w-[975px] w-full bg-white rounded-[16px] min-h-[calc(100vh-70px)]">
+                <main className={`flex-1 ${!pathname?.includes('/client/services/payment') && 'max-w-[975px]'} w-full bg-white rounded-[16px] min-h-[calc(100vh-70px)]`}>
 
                     {/* Hello Bar Section*/}
-                    {!(pathname?.includes('/client/tax-filing/step1') || pathname?.includes('/client/tax-filing/step2') || pathname?.includes('/client/affiliate')) || pathname?.includes('/client/services')  && (
+                    {!(pathname?.includes('/client/tax-filing/step1') || pathname?.includes('/client/tax-filing/step2') || pathname?.includes('/client/affiliate')) || pathname?.includes('/client/services') && (
                         <div
                             className="bg-[#240D68] rounded-2xl px-10 py-6 md:px-12 text-white relative overflow-hidden mb-5 mx-4 md:mx-0"
                         >
