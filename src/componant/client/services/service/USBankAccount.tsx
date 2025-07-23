@@ -1,10 +1,8 @@
 'use client';
 import React from 'react';
 import { ReusableForm, InputField } from '../../../ui/ReusableFormTwo';
-import Link from 'next/link';
 import Image from '@/componant/ui/Image';
 import { useRouter } from 'next/navigation';
-import { companyTypes, serviceTypes } from '@/componant/funnel/funnel.type';
 
 const USBankAccount = () => {
     const router = useRouter();
@@ -12,6 +10,7 @@ const USBankAccount = () => {
 
     const handleSubmit = (data: any) => {
         console.log('Form Data:', data);
+        router.push("/client/services/info-submitted");
     };
 
     const handleBack = () => {

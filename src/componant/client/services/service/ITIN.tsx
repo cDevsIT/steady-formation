@@ -2,16 +2,19 @@
 import React from 'react';
 import { ReusableForm, InputField } from '../../../ui/ReusableFormTwo';
 import Image from '@/componant/ui/Image';
+import { useRouter } from 'next/navigation';
 
 type ITINProps = {
     setIsSubmit: (value: boolean) => void;
 };
 
 const ITIN = ({ setIsSubmit }: ITINProps) => {
+    const router = useRouter();
 
 
     const handleSubmit = (data: any) => {
         console.log('Form Data:', data);
+        router.push("/client/services/info-submitted");
     };
 
     const handleBack = () => {

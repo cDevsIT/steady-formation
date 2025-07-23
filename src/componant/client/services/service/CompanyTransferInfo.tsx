@@ -2,10 +2,13 @@
 import React from 'react';
 import { ReusableForm, InputField } from '../../../ui/ReusableFormTwo';
 import { companyTypes, serviceTypes, usStates, YesNo } from '@/componant/funnel/funnel.type';
+import { useRouter } from 'next/navigation';
 
 const CompanyTransferInfo = () => {
+    const router = useRouter();
     const handleSubmit = (data: any) => {
         console.log('Form Data:', data);
+        router.push("payment");
     };
 
     return (

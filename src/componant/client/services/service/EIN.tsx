@@ -12,6 +12,7 @@ const EIN = () => {
 
     const handleSubmit = (data: any) => {
         console.log('Form Data:', data);
+        router.push("/client/services/info-submitted");
     };
 
     const handleBack = () => {
