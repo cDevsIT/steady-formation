@@ -1,9 +1,16 @@
 import { notFound } from 'next/navigation';
 import Image from '@/componant/ui/Image';
 import Link from 'next/link';
-import ITIN from '@/componant/client/services/service/ITIN';
-import TransferRegisterAgent from '@/componant/client/services/service/TransferRegisterAgent';
+import ApplyITIN from '@/componant/client/services/service/ApplyITIN';
+import CompanyTransferInfo from '@/componant/client/services/service/CompanyTransferInfo';
 import EIN from '@/componant/client/services/service/EIN';
+import RegisterAgentService from '@/componant/client/services/service/RegisterAgentService';
+import OparetingAgreement from '@/componant/client/services/service/OparetingAgreement';
+import USBankAccount from '@/componant/client/services/service/USBankAccount';
+import USBusinessAddress from '@/componant/client/services/service/USBusinessAddress';
+import GoodStanding from '@/componant/client/services/service/GoodStanding';
+import AnnualComplience from '@/componant/client/services/service/AnnualComplience';
+import VirtualOfficer from '@/componant/client/services/service/VirtualOfficer';
 // Example component imports (these would be real imports in a real app)
 // import NewRegisteredAgent from '@/componant/client/services/NewRegisteredAgent';
 // import TransferRegisterAgent from '@/componant/client/services/TransferRegisterAgent';
@@ -107,16 +114,16 @@ interface Props {
 }
 
 const serviceComponentMap: Record<string, React.ReactNode> = {
-    'new-registered-agent': <div>NewRegisteredAgent Component Rendered Here</div>,
-    'transfer-register-agent': <TransferRegisterAgent />,
-    'us-business-address': <div>USBusinessAddress Component Rendered Here</div>,
+    'new-registered-agent': <RegisterAgentService />,
+    'transfer-register-agent': <CompanyTransferInfo />,
+    'us-business-address': <USBusinessAddress />,
     'ein-application': <EIN />,
-    'operating-agreement': <div>OperatingAgreement Component Rendered Here</div>,
-    'itin': <ITIN />,
-    'annual-compliance': <div>AnnualCompliance Component Rendered Here</div>,
-    'good-standing': <div>GoodStanding Component Rendered Here</div>,
-    'banking-assistance': <div>BankingAssistance Component Rendered Here</div>,
-    'virtual-office': <div>VirtualOffice Component Rendered Here</div>,
+    'operating-agreement': <OparetingAgreement />,
+    'itin': <ApplyITIN />,
+    'annual-compliance': <AnnualComplience />,
+    'good-standing': <GoodStanding />,
+    'banking-assistance': <USBankAccount />,
+    'virtual-office': <VirtualOfficer />,
 };
 
 const Page = async ({ params }: Props) => {
@@ -130,7 +137,7 @@ const Page = async ({ params }: Props) => {
     const ServiceComponent = serviceComponentMap[service.slug] || <div>Component not found</div>;
     return (
         <div className="">
-            
+
             {ServiceComponent}
         </div>
     );

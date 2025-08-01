@@ -155,7 +155,6 @@ const Funnel = () => {
 
                         {data?.currentStep === 9 && <NinthFunnel handleFormSubmit={handleFormSubmit} />}
 
-
                         {data?.currentStep < 9 && <FunnelSidebar />}
 
                     </div>

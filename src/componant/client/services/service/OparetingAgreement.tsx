@@ -4,9 +4,9 @@ import { ReusableForm, InputField } from '../../../ui/ReusableFormTwo';
 import Link from 'next/link';
 import Image from '@/componant/ui/Image';
 import { useRouter } from 'next/navigation';
-import { serviceTypes } from '@/componant/funnel/funnel.type';
+import { companyTypes, serviceTypes } from '@/componant/funnel/funnel.type';
 
-const EIN = () => {
+const OparetingAgreement = () => {
     const router = useRouter();
 
 
@@ -36,7 +36,7 @@ const EIN = () => {
                 />
                 <span className='text-[16px] font-medium'>Back</span>
             </button>
-            <ReusableForm formTitle="Employer Identification Number" onSubmit={handleSubmit} submitText="Submit" isAgree={true}>
+            <ReusableForm formTitle="Operating Agreement" onSubmit={handleSubmit} submitText="Submit" isAgree={true}>
 
                 <InputField
                     name="company_document"
@@ -46,56 +46,23 @@ const EIN = () => {
                 />
 
                 <InputField
-                    name="proof_residentail_address"
-                    label="Proof of Residential Address"
-                    type="file"
-                    required
-                />
-
-                <InputField
-                    name="business_description"
-                    label="Business Description"
-                    type="text"
-                    inputClasss='h-[120px] rounded-xl'
-                />
-                <InputField
-                    name="digital_signature"
-                    label="Digital Signature"
-                    type="file"
-                    required
-                />
-
-                <InputField
-                    name="ssn_itin"
-                    label="SSN or ITIN (IF any)"
-                    type="file"
-                />
-
-                <InputField
-                    name="personal_identification"
+                    name="personal_identification_document"
                     label="Personal Identification Document"
                     type="file"
                     required
                 />
 
                 <InputField
-                    name="us_mailing_address"
-                    label="US Mailing Address"
+                    name="proof_residential_address"
+                    label="Proof of Residential Address"
                     type="text"
-                    inputClasss=''
+                    required
+                    className='lg:col-span-2!'
                 />
 
-                <InputField
-                    name="service_type"
-                    label="Service Type"
-                    type="select"
-                    required
-                    placeholder="Select Service Type"
-                    options={serviceTypes}
-                />
             </ReusableForm>
         </div>
     );
 };
 
-export default EIN;
+export default OparetingAgreement;
