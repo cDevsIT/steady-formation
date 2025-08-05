@@ -2,41 +2,41 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 interface InvoiceItem {
-    item: string;
-    price: string;
-    qty: string;
-    total: string;
+  item: string;
+  price: string;
+  qty: string;
+  total: string;
 }
 
 interface InvoiceData {
-    invoiceNumber: string;
-    date: string;
-    clientName: string;
-    clientEmail: string;
-    clientAddress: string;
-    companyName: string;
-    companyAddress: string;
-    status: 'Paid' | 'Pending' | 'Failed';
-    items: InvoiceItem[];
-    subtotal: string;
-    discount: string;
-    tax: string;
-    total: string;
-    transactionId?: string;
-    paymentMethod?: string;
-    paymentGateway?: string;
-    userEmail?: string;
-    userId?: string;
-    entityType?: string;
-    billingName?: string;
-    billingLocation?: string;
-    billingCityState?: string;
-    billingCountry?: string;
+  invoiceNumber: string;
+  date: string;
+  clientName: string;
+  clientEmail: string;
+  clientAddress: string;
+  companyName: string;
+  companyAddress: string;
+  status: 'Paid' | 'Pending' | 'Failed';
+  items: InvoiceItem[];
+  subtotal: string;
+  discount: string;
+  tax: string;
+  total: string;
+  transactionId?: string;
+  paymentMethod?: string;
+  paymentGateway?: string;
+  userEmail?: string;
+  userId?: string;
+  entityType?: string;
+  billingName?: string;
+  billingLocation?: string;
+  billingCityState?: string;
+  billingCountry?: string;
 }
 
 export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
-    // Create HTML content with proper CSS styling
-    const htmlContent = `
+  // Create HTML content with proper CSS styling
+  const htmlContent = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -70,7 +70,6 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
         /* Header image */
         .header-image {
           width: 100%;
-          height: 80px;
           display: block;
           object-fit: cover;
           background: linear-gradient(90deg, rgba(120, 86, 252, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
@@ -94,13 +93,13 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
         }
         
         .info-column {
-          flex: 1;
+          max-width:140px;
         }
         
         .info-label {
-          background: #DBEAFE;
-          color: #000;
-          padding: 4px 8px;
+          background: #E3EFFF;
+          color: #2388FF;
+          padding: 0px 8px 8px 8px;
           border-radius: 2px;
           font-size: 8px;
           font-weight: normal;
@@ -123,7 +122,7 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
         
         .status-badge {
           display: inline-block;
-          padding: 4px 8px;
+          padding: 0px 8px 12px 8px;
           border-radius: 4px;
           font-size: 12px;
           font-weight: bold;
@@ -147,27 +146,25 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
           color: #667085;
           font-size: 10px;
           font-weight: bold;
-          padding: 10px 8px;
+          padding: 0px 8px 10px 8px;
           text-align: left;
-          border-bottom: 1px solid #E4E7EC;
         }
         
         .items-table td {
-          padding: 10px 8px;
+          padding: 5px 8px 15px 8px;
           font-size: 10px;
           color: #344054;
-          border-bottom: 1px solid #E4E7EC;
+          border-bottom: 0.6px solid #F6F8FC;
         }
         
-        .items-table tr:nth-child(even) {
-          background: #F9FAFB;
+        .items-table thead tr {
+          background: #F6F8FC;
+        }
+        .items-table tbody tr {
+          background: #FFF;
         }
         
-        .items-table tr:nth-child(odd) {
-          background: white;
-        }
-        
-        .item-total {
+        .item-total, .item-title {
           font-weight: bold;
         }
         
@@ -250,7 +247,6 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
         /* Footer image */
         .footer-image {
           width: 100%;
-          height: 60px;
           display: block;
           position: absolute;
           bottom: 0;
@@ -268,7 +264,7 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
     <body>
       <div class="invoice-container">
         <!-- Header image -->
-        <img src="/print/print_header.png" alt="Header" class="header-image" onerror="this.style.display='none'">
+        <img src="/print/print_header.jpg" alt="Header" class="header-image" onerror="this.style.display='none'">
         
         <!-- Main content -->
         <div class="main-content">
@@ -308,7 +304,7 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
             <tbody>
               ${data.items.map(item => `
                 <tr>
-                  <td>${item.item}</td>
+                  <td class="item-title">${item.item}</td>
                   <td>${item.price}</td>
                   <td>${item.qty}</td>
                   <td class="item-total">${item.total}</td>
@@ -354,77 +350,77 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
         </div>
         
         <!-- Footer image -->
-        <img src="/print/print_footer.png" alt="Footer" class="footer-image" onerror="this.style.display='none'">
+        <img src="/print/print_footer.jpg" alt="Footer" class="footer-image" onerror="this.style.display='none'">
       </div>
     </body>
     </html>
   `;
 
-    // Create a temporary iframe to render the HTML
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.left = '-9999px';
-    iframe.style.top = '0';
-    iframe.style.width = '595px';
-    iframe.style.height = '842px';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
+  // Create a temporary iframe to render the HTML
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'absolute';
+  iframe.style.left = '-9999px';
+  iframe.style.top = '0';
+  iframe.style.width = '595px';
+  iframe.style.height = '842px';
+  iframe.style.border = 'none';
+  document.body.appendChild(iframe);
 
-    // Write HTML content to iframe
-    iframe.contentDocument!.write(htmlContent);
-    iframe.contentDocument!.close();
+  // Write HTML content to iframe
+  iframe.contentDocument!.write(htmlContent);
+  iframe.contentDocument!.close();
 
-    try {
-        // Wait for iframe to load
-        iframe.onload = async () => {
-            try {
-                // Convert iframe content to canvas
-                const canvas = await html2canvas(iframe.contentDocument!.body, {
-                    scale: 2,
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: '#ffffff',
-                    width: 595,
-                    height: 842,
-                    scrollX: 0,
-                    scrollY: 0
-                });
+  try {
+    // Wait for iframe to load
+    iframe.onload = async () => {
+      try {
+        // Convert iframe content to canvas
+        const canvas = await html2canvas(iframe.contentDocument!.body, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: 595,
+          height: 842,
+          scrollX: 0,
+          scrollY: 0
+        });
 
-                // Convert canvas to PDF
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'pt', [595, 842]); // Use points to match pixel dimensions
+        // Convert canvas to PDF
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'pt', [595, 842]); // Use points to match pixel dimensions
 
-                // Add the image to PDF (single page)
-                pdf.addImage(imgData, 'PNG', 0, 0, 595, 842);
+        // Add the image to PDF (single page)
+        pdf.addImage(imgData, 'PNG', 0, 0, 595, 842);
 
-                // Save the PDF directly
-                pdf.save(`invoice-${data.invoiceNumber}.pdf`);
-            } catch (error) {
-                console.error('Error generating PDF:', error);
-            } finally {
-                // Clean up
-                document.body.removeChild(iframe);
-            }
-        };
-    } catch (error) {
-        console.error('Error setting up iframe:', error);
+        // Save the PDF directly
+        pdf.save(`invoice-${data.invoiceNumber}.pdf`);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+      } finally {
+        // Clean up
         document.body.removeChild(iframe);
-    }
+      }
+    };
+  } catch (error) {
+    console.error('Error setting up iframe:', error);
+    document.body.removeChild(iframe);
+  }
 };
 
 // Helper function to format currency
 export const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(amount);
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
 };
 
 // Helper function to format date
 export const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 }; 
