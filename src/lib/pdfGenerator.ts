@@ -74,6 +74,13 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
           object-fit: cover;
           background: linear-gradient(90deg, rgba(120, 86, 252, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
         }
+
+        .header-logo {
+         position: absolute;
+         top: 100px;
+         left: 45px;
+         width: 100px;
+        }
         
         /* Main content */
         .main-content {
@@ -264,7 +271,8 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
     <body>
       <div class="invoice-container">
         <!-- Header image -->
-        <img src="/print/print_header.jpg" alt="Header" class="header-image" onerror="this.style.display='none'">
+        <img src="/print/print_header_u.jpg" alt="Header" class="header-image" onerror="this.style.display='none'">
+        <img src="/steady-formation-logo.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
         
         <!-- Main content -->
         <div class="main-content">
