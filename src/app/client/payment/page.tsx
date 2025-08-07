@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Button from "@/componant/ui/Button";
 import Image from "@/componant/ui/Image";
+import { generateInvoicePDF } from "@/lib/pdfGenerator";
 
 const paymentHistory = [
     {
@@ -84,6 +85,7 @@ const invoiceData = [
     { id: 5, invoiceId: "INV 2514", date: "Apr 15, 2025", description: "Company Formation (LLC - Delaware)", amount: "$10", status: "Paid", statusColor: "bg-green-100 text-green-600" },
 ];
 
+
 function RemoveCardModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     if (!open) return null;
     return (
@@ -147,7 +149,7 @@ function RemoveCardModal({ open, onClose }: { open: boolean; onClose: () => void
     );
 }
 
-function PaymentDetailsModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+function PaymentDetailsModal({ open, onClose, onDownloadPDF }: { open: boolean; onClose: () => void; onDownloadPDF: () => void }) {
     if (!open) return null;
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -219,11 +221,21 @@ function PaymentDetailsModal({ open, onClose }: { open: boolean; onClose: () => 
                 </div>
                 {/* Download PDF button at bottom for mobile */}
                 <div className="block md:hidden w-full px-5 pb-5 fixed left-0 right-0 bottom-0 z-50" style={{ maxWidth: 570, margin: '0 auto' }}>
-                    <button className="w-full bg-[#7856FC] text-white text-[16px] leading-6 font-semibold rounded-lg py-3 hover:bg-[#6840e0] transition cursor-pointer">Download PDF</button>
+                    <button
+                        className="w-full bg-[#7856FC] text-white text-[16px] leading-6 font-semibold rounded-lg py-3 hover:bg-[#6840e0] transition cursor-pointer"
+                        onClick={onDownloadPDF}
+                    >
+                        Download PDF
+                    </button>
                 </div>
                 {/* Download PDF button for desktop (top right, hidden on mobile) */}
                 <div className="hidden md:flex absolute right-5 top-5">
-                    <button className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2">Download PDF</button>
+                    <button
+                        className="bg-[#7856FC] text-white text-xs font-semibold rounded px-4 py-2"
+                        onClick={onDownloadPDF}
+                    >
+                        Download PDF
+                    </button>
                 </div>
             </div>
         </div>
@@ -392,6 +404,54 @@ export default function Payment() {
     const [showPaymentDetails, setShowPaymentDetails] = useState(false);
     const [showPayNowProcessing, setShowPayNowProcessing] = useState(false);
     const [showRetryPayment, setShowRetryPayment] = useState(false);
+    const [selectedPaymentData, setSelectedPaymentData] = useState<any>(null);
+
+    const generateInvoiceData = (item: any) => {
+        return {
+            invoiceNumber: item.invoiceId || `#${String(item.id).padStart(6, '0')}`,
+            date: item.date,
+            clientName: "Mauro Sicard",
+            clientEmail: "contact@maurosicard.com",
+            clientAddress: "Pablo Alto, San Francisco, CA 92102, United States of America",
+            companyName: "Steady Formation",
+            companyAddress: "1095 Sugar View Dr Ste 500, Sheridan, WY, United States, Wyoming",
+            status: item.status as 'Paid' | 'Pending' | 'Failed',
+            items: [
+                {
+                    item: item.description,
+                    price: item.amount,
+                    qty: "1",
+                    total: item.amount
+                }
+            ],
+            subtotal: item.amount,
+            discount: "$ 0.00",
+            tax: "$ 0.00",
+            total: item.amount,
+            transactionId: `#TXN-${item.date.replace(/\s/g, '').replace(',', '')}-${String(item.id).padStart(2, '0')}`,
+            paymentMethod: "Visa ending in 2345",
+            paymentGateway: "Stripe",
+            userEmail: "fassionstorage@gmail.com",
+            userId: "#11554882",
+            entityType: "LLC - Delaware",
+            billingName: "Steady Formation",
+            billingLocation: "2218 Baker Street, Suite 400",
+            billingCityState: "San Francisco, CA 94115",
+            billingCountry: "United States"
+        };
+    };
+
+    const handleOpenPaymentDetails = (item: any) => {
+        setSelectedPaymentData(generateInvoiceData(item));
+        setShowPaymentDetails(true);
+    };
+
+    const handleDownloadPDF = () => {
+        if (selectedPaymentData) {
+            generateInvoicePDF(selectedPaymentData);
+        }
+    };
+
     return (
         <div className="max-w-5xl mx-4 md:mx-auto">
             {/* Tabs Box */}
@@ -434,7 +494,11 @@ export default function Payment() {
                                         </td>
                                         <td className="py-3 px-6 text-center flex items-center justify-center gap-2">
                                             {item.actionType === 'download' ? (
-                                                <Button className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer" theme="secondary" onClick={() => setShowPaymentDetails(true)}>
+                                                <Button
+                                                    className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer"
+                                                    theme="secondary"
+                                                    onClick={() => handleOpenPaymentDetails(item)}
+                                                >
                                                     {item.action}
                                                 </Button>
                                             ) : item.actionType === 'pay' ? (
@@ -485,7 +549,11 @@ export default function Payment() {
                                             <span className={`px-3 py-1 rounded-lg text-xs leading-5 font-medium ${item.statusColor}`}>{item.status}</span>
                                         </td>
                                         <td className="py-3 px-6 text-center flex items-center justify-center gap-2">
-                                            <Button className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer" theme="secondary">
+                                            <Button
+                                                className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer"
+                                                theme="secondary"
+                                                onClick={() => handleOpenPaymentDetails(item)}
+                                            >
                                                 Download PDF
                                             </Button>
                                             <button className="ml-2 p-2 rounded-full hover:bg-gray-100 focus:outline-none cursor-pointer" aria-label="More options">
@@ -527,7 +595,7 @@ export default function Payment() {
             {paymentMethod && (
                 <RemoveCardModal open={showRemoveModal} onClose={() => setShowRemoveModal(false)} />
             )}
-            <PaymentDetailsModal open={showPaymentDetails} onClose={() => setShowPaymentDetails(false)} />
+            <PaymentDetailsModal open={showPaymentDetails} onClose={() => setShowPaymentDetails(false)} onDownloadPDF={handleDownloadPDF} />
             <PayNowProcessingModal open={showPayNowProcessing} onClose={() => setShowPayNowProcessing(false)} />
             <RetryPaymentModal open={showRetryPayment} onClose={() => setShowRetryPayment(false)} />
         </div>
