@@ -2,21 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { getCompanyData, CompanyData } from '@/services/companyService';
-import { useCompany } from '@/contexts/CompanyContext';
 
 export default function Company() {
-    const { selectedCompany } = useCompany();
     const [companyData, setCompanyData] = useState<CompanyData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchCompanyData = async () => {
-            if (!selectedCompany) return;
-            
             try {
                 setLoading(true);
-                const data = await getCompanyData(selectedCompany.id);
+                const data = await getCompanyData();
                 setCompanyData(data);
                 setError(null);
             } catch (err: any) {
@@ -28,7 +24,7 @@ export default function Company() {
         };
 
         fetchCompanyData();
-    }, [selectedCompany]);
+    }, []);
 
     if (loading) {
         return (
