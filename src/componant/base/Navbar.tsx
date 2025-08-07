@@ -5,6 +5,7 @@ import NavbarMobile from "./NavbarMobile";
 import NavLinks from "./NavLinks";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useLogout } from "@/lib/useLogout";
 
 interface NavbarProps { }
 
@@ -13,6 +14,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
   const isClientRoute = pathname.startsWith('/client');
   const hideHeaderFooter = pathname.startsWith('/login') || pathname.startsWith('/sign-up');
   const [isScrolled, setIsScrolled] = useState(false);
+  const { handleLogout } = useLogout();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,7 +74,10 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                 </button>
 
                 {/* Logout Button */}
-                <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                <button 
+                  onClick={handleLogout}
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                >
                   <Image
                     url="/client/log-out-icon.svg"
                     alt="Logout"
