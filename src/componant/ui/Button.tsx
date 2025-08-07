@@ -5,7 +5,8 @@ type CustomButtonProps = {
     className?: string;
     type?: 'button' | 'submit' | 'reset';
     children: React.ReactNode;
-    theme?: 'primary' | 'secondary'
+    theme?: 'primary' | 'secondary';
+    disabled?: boolean;
 };
 
 const Button: React.FC<CustomButtonProps> = ({
@@ -13,13 +14,15 @@ const Button: React.FC<CustomButtonProps> = ({
     className = '',
     type = 'button',
     children,
-    theme = 'primary'
+    theme = 'primary',
+    disabled = false
 }) => {
     return (
         <button
             type={type}
             onClick={onClick}
-            className={`h-11 px-8 my-2 lg:my-0 ${theme === 'primary' ?'text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500': 'bg-transparent border-1 border-gray-200 text-gray-600'}   text-xs xs:text-sm sm:text-[14px] font-semibold rounded-lg transition-all duration-200 transform  focus:ring-offset-2 whitespace-nowrap ${className}`}
+            disabled={disabled}
+            className={`h-11 px-8 my-2 lg:my-0 ${theme === 'primary' ?'text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500': 'bg-transparent border-1 border-gray-200 text-gray-600'}   text-xs xs:text-sm sm:text-[14px] font-semibold rounded-lg transition-all duration-200 transform  focus:ring-offset-2 whitespace-nowrap ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
         >
             {children}
         </button>

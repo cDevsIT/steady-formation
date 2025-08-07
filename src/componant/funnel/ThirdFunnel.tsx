@@ -6,6 +6,7 @@ import Image from "../ui/Image";
 import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
+import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 
 const plans = [
     {
@@ -58,16 +59,13 @@ const CheckIcon = () => (
 
 const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [selected, setSelected] = useState(0);
-    const [data, setData] = useState<dataState>({});
+    const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
     const [formMethods, setFormMethods] = useState<any>(null);
 
-    // Load initial data from localStorage
+    // Load initial data from localStorage using the new service
     useEffect(() => {
-        const localData = localStorage.getItem('companyData');
-        if (localData) {
-            const parsedData = JSON.parse(localData);
-            setData(parsedData);
-        }
+        const localData = companyFormationService.getFromLocalStorage();
+        setData(localData);
     }, []);
 
 
@@ -85,11 +83,27 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     }, [data, formMethods]);
 
     const handleSubmit = (data: CustomFormData) => {
+        const selectedPlan = plans[selected];
+        
+        // Save plan data to localStorage
+        companyFormationService.saveToLocalStorage({
+            ...data,
+            plan: {
+                plan_name: selectedPlan.name,
+                plan_price: selectedPlan.price,
+                free_plan_details: selectedPlan.name === 'Free' ? {
+                    street_address: data.streetAddress,
+                    step4_city: data.city,
+                    step4_state: data.state,
+                    step4_zip_code: data.zipCode,
+                    step4_country: data.country
+                } : undefined
+            },
+            currentStep: 4
+        });
 
-        const finalData = { ...data, selectedPlan: plans[selected]?.name }
-
-        handleFormSubmit({ stepThree: finalData })
-
+        const finalData = { ...data, selectedPlan: selectedPlan.name };
+        handleFormSubmit({ stepThree: finalData });
     };
 
     // Handle form state changes and set up watchers

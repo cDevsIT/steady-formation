@@ -19,6 +19,7 @@ import RegisterConfirm from "./RegisterConfirm";
 import OwnersInfo from "./OwnersInfo";
 import OwnersInfoComplete from "./OwnersInfoComplete";
 import FirstFunnelSidebar from "./Comp/FirstFunnelSidebar";
+import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 
 export interface dataState {
     businessType?: string;
@@ -43,8 +44,8 @@ export interface dataState {
 
 const Funnel = () => {
     const router = useRouter();
-    const [data, setData] = useState<dataState>({});
-    const [currentStep, setCurrentStep] = useState(2);
+    const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
+    const [currentStep, setCurrentStep] = useState(1);
     const [totalSteps] = useState(9);
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -54,26 +55,37 @@ const Funnel = () => {
 
     // Load initial data from localStorage
     useEffect(() => {
-        const localData = localStorage.getItem('companyData');
-        if (localData) {
-            const parsedData = JSON.parse(localData);
-            setData(parsedData);
-            setCurrentStep(parsedData.currentStep || 1);
+        const localData = companyFormationService.getFromLocalStorage();
+        
+        // If we have data but no currentStep, or if we're at step 1, reset to fresh state
+        if (localData && (!localData.currentStep || localData.currentStep === 1)) {
+            // Only load basic data for step 1, clear any completion flags
+            const freshData = {
+                businessType: localData.businessType,
+                companyName: localData.companyName,
+                currentStep: 1
+            };
+            setData(freshData);
+            setCurrentStep(1);
+            // Update localStorage with clean state
+            companyFormationService.saveToLocalStorage(freshData);
+        } else {
+            setData(localData);
+            setCurrentStep(localData.currentStep || 1);
         }
     }, []);
 
     // Custom setter: updates localStorage and state
-    const updateCompanyData = (newData: any) => {
+    const updateCompanyData = (newData: Partial<CompanyFormationData>) => {
         const updatedData = { ...data, ...newData };
         setData(updatedData);
-        localStorage.setItem('companyData', JSON.stringify(updatedData));
+        companyFormationService.saveToLocalStorage(updatedData);
     };
 
-    const handleFormSubmit = (data: CustomFormData) => {
-        updateCompanyData({ ...data, currentStep: currentStep + 1 })
-        setCurrentStep(currentStep + 1)
+    const handleFormSubmit = (formData: CustomFormData) => {
+        updateCompanyData({ ...formData, currentStep: currentStep + 1 });
+        setCurrentStep(currentStep + 1);
         handleChildSubmitSuccess();
-
     };
 
     const handleBack = () => {
@@ -84,6 +96,12 @@ const Funnel = () => {
         } else {
             router.back();
         }
+    };
+
+    const handleStartOver = () => {
+        // Clear all data and redirect to home
+        companyFormationService.clearLocalStorage();
+        router.push('/');
     };
 
 
@@ -124,6 +142,7 @@ const Funnel = () => {
                         totalSteps={totalSteps}
                         currentStep={currentStep}
                         onBack={handleBack}
+                        onStartOver={handleStartOver}
                         className="mt-2 mb-6"
                     />}
 
