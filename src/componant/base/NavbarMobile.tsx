@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "../ui/Image";
 import { usePathname } from "next/navigation";
+import { useLogout } from "@/lib/useLogout";
 
 interface NavbarProps { }
 
@@ -11,6 +12,7 @@ const NavbarMobile: React.FC<NavbarProps> = ({ }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const pathname = usePathname();
     const isClientRoute = pathname.startsWith('/client');
+    const { handleLogout } = useLogout();
 
     const navItems = [
         { name: "Home", href: "/" },
@@ -83,7 +85,10 @@ const NavbarMobile: React.FC<NavbarProps> = ({ }) => {
                             </button>
 
                             {/* Logout Button */}
-                            <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <button 
+                                onClick={handleLogout}
+                                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                            >
                                 <Image
                                     url="/client/log-out-icon.svg"
                                     alt="Logout"

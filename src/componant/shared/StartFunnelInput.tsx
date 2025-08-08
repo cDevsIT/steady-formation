@@ -2,7 +2,8 @@
 import { useState } from "react";
 import Image from "../ui/Image";
 import Button from "../ui/Button";
-import { useCustomNavigation } from "@/lib/StartFunnelFunction";
+import { useRouter } from "next/navigation";
+import companyFormationService from "@/lib/companyFormationService";
 
 type CustomStartFunnelInputProps = {
     className?: string;
@@ -18,7 +19,7 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = (
     const [businessLabel, setBusinessLabel] = useState("LLC");
     const [companyName, setCompanyName] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const navigate = useCustomNavigation();
+    const router = useRouter();
 
     const businessTypes = [
         { value: "llc", label: "LLC" },
@@ -28,8 +29,27 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = (
         { value: "partnership", label: "Partnership" },
     ];
 
+        const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!companyName.trim()) {
+            return;
+        }
+
+        // Clear any existing data and start fresh
+        companyFormationService.clearLocalStorage();
+
+        // Save initial data to localStorage
+        companyFormationService.saveToLocalStorage({
+            businessType,
+            companyName,
+            currentStep: 1
+        });
+
+        router.push('/setup-company');
+    };
+
     return (
-        <form onSubmit={(e) => navigate(e, businessType, companyName)} className={`flex flex-col gap-3 justify-center ${className}`}>
+        <form onSubmit={handleSubmit} className={`flex flex-col gap-3 justify-center ${className}`}>
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch w-full">
                 {/* Custom Dropdown and Input Container */}
                 <div className="flex justify-center items-center w-full max-w-md mx-auto sm:mx-0">

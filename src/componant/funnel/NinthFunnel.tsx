@@ -6,6 +6,8 @@ import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
 import { countries } from "./funnel.type";
+import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
+import { useRouter } from "next/navigation";
 
 // Custom Check Icon Component
 const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => {
@@ -20,17 +22,16 @@ const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => {
 
 const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [paymentOption, setPaymentOption] = useState<string>("");
-    const [data, setData] = useState<dataState>({});
+    const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
     const [formMethods, setFormMethods] = useState<any>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter();
     const isWithLink = paymentOption
 
-    // Load initial data from localStorage
+    // Load initial data from localStorage using the new service
     useEffect(() => {
-        const localData = localStorage.getItem('companyData');
-        if (localData) {
-            const parsedData = JSON.parse(localData);
-            setData(parsedData);
-        }
+        const localData = companyFormationService.getFromLocalStorage();
+        setData(localData);
     }, []);
 
     useEffect(() => {
@@ -40,8 +41,51 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         }
     }, [data, formMethods]);
 
-    const handleSubmit = (data: CustomFormData) => {
-        handleFormSubmit({ stepPayment: { paymentOption, data }, isPaymentComplete: true })
+    const handleSubmit = async (formData: CustomFormData) => {
+        if (!paymentOption) {
+            alert("Please select a payment option.");
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            // Save payment method to localStorage
+            companyFormationService.saveToLocalStorage({
+                ...data,
+                payment: {
+                    method: paymentOption as 'paypal' | 'stripe',
+                    amount: 0, // This will be calculated based on the plan
+                    status: 'pending'
+                },
+                currentStep: 9
+            });
+
+            // Submit data to API BEFORE payment
+            const result = await companyFormationService.submitToAPI();
+
+            if (result.success) {
+                // Redirect to payment page based on selected method
+                if (paymentOption === 'paypal') {
+                    router.push('/payment?method=paypal');
+                } else if (paymentOption === 'card') {
+                    router.push('/payment?method=stripe');
+                } else {
+                    router.push('/payment');
+                }
+            } else {
+                if (result.error?.includes('Missing required data')) {
+                    alert('Please complete all required steps before proceeding to payment. Missing: ' + result.error.replace('Missing required data: ', ''));
+                } else {
+                    alert('Failed to submit company formation data: ' + result.error);
+                }
+            }
+        } catch (error) {
+            console.error('Error submitting data:', error);
+            alert('An error occurred while submitting your data.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     // Handle form state changes and set up watchers
@@ -49,7 +93,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         setFormMethods(methods);
     };
 
-    const handleContinueWithLink = (isWithLink: boolean) => {
+    const handleContinueWithLink = async (isWithLink: boolean) => {
         if (!paymentOption) {
             alert("Please select a payment option.");
             return;
@@ -58,7 +102,9 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             window.open("https://dashboard.stripe.com/register/payment_links", "_blank");
             return;
         }
-        if (handleFormSubmit) handleFormSubmit({ stepPayment: { paymentOption }, isPaymentComplete: true });
+        
+        // Call the same submit function
+        await handleSubmit({} as CustomFormData);
     };
     return (
         <div className="lg:max-w-[730px] w-full">
@@ -102,9 +148,10 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             <button
                 type="button"
                 onClick={() => handleContinueWithLink(paymentOption === "card")}
-                className="mt-6 w-full bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-xl shadow transition-all text-lg"
+                disabled={isSubmitting}
+                className="mt-6 w-full bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-xl shadow transition-all text-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                {isWithLink ? 'Pay With Link' : 'Continue'}
+                {isSubmitting ? 'Submitting...' : (isWithLink ? 'Pay With Link' : 'Continue')}
             </button>
             {/* SSN input only if Yes is selected */}
             {paymentOption === "card" && (

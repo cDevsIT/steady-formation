@@ -6,6 +6,7 @@ import Image from '@/componant/ui/Image';
 import NextImage from 'next/image';
 import { useRouter } from 'next/navigation';
 import { API_CONFIG } from '@/config/api';
+import { CompanyProvider, useCompany } from '@/contexts/CompanyContext';
 
 interface User {
     id: number;
@@ -31,31 +32,8 @@ const menu = [
     { name: 'Affiliate', path: '/client/affiliate', icon: '/client/affiliate-icon.svg' },
 ];
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
-    // Example companies
-    const companies = [
-        {
-            name: 'Fission',
-            address: 'wyoming, Cheyenne, 82007',
-            icon: '/client/dropdown-icon1.svg',
-        },
-        {
-            name: 'Propovoice',
-            address: 'wyoming, Cheyenne, 82007',
-            icon: '/client/dropdown-icon2.svg',
-        },
-        {
-            name: 'Kidency',
-            address: 'wyoming, Cheyenne, 82007',
-            icon: '/client/dropdown-icon3.svg',
-        },
-        {
-            name: 'Decorative',
-            address: 'wyoming, Cheyenne, 82007',
-            icon: '/client/dropdown-icon4.svg',
-        },
-    ];
-    const [selectedCompany, setSelectedCompany] = useState(companies[0]);
+function ClientLayoutContent({ children }: { children: React.ReactNode }) {
+    const { companies, selectedCompany, setSelectedCompany, loading: companiesLoading } = useCompany();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [user, setUser] = useState<User | null>(null);
@@ -146,7 +124,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
     const pathname = usePathname();
 
-    if (loading) {
+    if (loading || companiesLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
@@ -157,7 +135,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         );
     }
 
-    if (!user) {
+    if (!user || !selectedCompany) {
         return null;
     }
 
@@ -187,15 +165,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                             {/* Logo and Company Info */}
                             <div className="flex flex-col pt-6 pb-4 border-b border-[#ececec] px-6">
                                 <div className="flex mb-2">
-                                    <NextImage src={selectedCompany.icon} alt="Company Logo" width={56} height={56} className="w-14 h-14 rounded-full bg-[#240D68] object-cover" />
+                                    <NextImage src={selectedCompany?.icon || '/client/dropdown-icon1.svg'} alt="Company Logo" width={56} height={56} className="w-14 h-14 rounded-full bg-[#240D68] object-cover" />
                                 </div>
                                 <button
                                     className="flex items-center w-full focus:outline-none cursor-pointer justify-between"
                                     onClick={() => setDropdownOpen((open) => !open)}
                                 >
                                     <div className="flex flex-col text-left">
-                                        <span className="font-semibold text-lg text-black leading-7">{selectedCompany.name}</span>
-                                        <span className="text-[#7C8493] font-normal text-xs leading-4">{selectedCompany.address}</span>
+                                        <span className="font-semibold text-lg text-black leading-7">{selectedCompany?.name || 'Loading...'}</span>
+                                        <span className="text-[#7C8493] font-normal text-xs leading-4">{selectedCompany?.address || 'Loading...'}</span>
                                     </div>
                                     <div className="flex-shrink-0 ml-2">
                                         <NextImage
@@ -387,5 +365,13 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 </main>
             </div>
         </div>
+    );
+}
+
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <CompanyProvider>
+            <ClientLayoutContent>{children}</ClientLayoutContent>
+        </CompanyProvider>
     );
 } 

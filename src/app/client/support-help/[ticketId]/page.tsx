@@ -22,14 +22,17 @@ const fetchTickets = async (page = 1, limit = 100): Promise<SupportRow[]> => {
   }));
 };
 
-const SupportTicketChatPage = ({ params }: { params: { ticketId: string } }) => {
+const SupportTicketChatPage = ({ params }: { params: Promise<{ ticketId: string }> }) => {
   const [tickets, setTickets] = useState<SupportRow[]>([]);
+  const [ticketId, setTicketId] = useState<string>('');
+  
   useEffect(() => {
+    params.then(({ ticketId }) => setTicketId(ticketId));
     fetchTickets().then(setTickets);
-  }, []);
+  }, [params]);
 
   return (
-    <SupportTicketChat tickets={tickets} initialTicketId={params.ticketId} />
+    <SupportTicketChat tickets={tickets} initialTicketId={ticketId} />
   );
 };
 

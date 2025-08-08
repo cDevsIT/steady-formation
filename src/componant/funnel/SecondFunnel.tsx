@@ -5,12 +5,13 @@ import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
 import { industries, llcTypes, numOfOwnerShip, usStates } from "./funnel.type";
+import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 export interface ChildComponentProps {
     handleFormSubmit: (data: CustomFormData) => void;
 }
 
 const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-    const [data, setData] = useState<dataState>({});
+    const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
     const [selected, setSelected] = useState(data?.businessType || 'llc');
     const [formMethods, setFormMethods] = useState<any>(null);
 
@@ -18,14 +19,11 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
     const companyType = selected === 'llc' || selected === 'multiLLC' ? llcTypes : selected === 's_corp' ? [{ label: 'S Corporation (Owners must be U.S Resident)', value: 's_corp' }] : selected === 'c_corp' ? [{ label: 'C Corporation', value: 'c_corp' }] : selected === 'partnership' ? [{ label: 'Partnership', value: 'partnership' }] : [];
 
-    // Load initial data from localStorage
+    // Load initial data from localStorage using the new service
     useEffect(() => {
-        const localData = localStorage.getItem('companyData');
-        if (localData) {
-            const parsedData = JSON.parse(localData);
-            setData(parsedData);
-            setSelected(parsedData?.businessType)
-        }
+        const localData = companyFormationService.getFromLocalStorage();
+        setData(localData);
+        setSelected(localData?.businessType || 'llc');
     }, []);
 
 
@@ -42,8 +40,21 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     }, [data, formMethods]);
 
     const handleSubmit = (data: CustomFormData) => {
+        // Save the business details to localStorage
+        companyFormationService.saveToLocalStorage({
+            ...data,
+            businessType: selected,
+            businessDetails: {
+                industryType: data.industryType,
+                llcType: data.llcType,
+                stateName: data.stateName,
+                number_of_ownership: data.numOfOwnerShip,
+                multi_member_info: []
+            },
+            currentStep: 3
+        });
+        
         handleFormSubmit({ stepTwo: data, businessType: selected });
-
     };
 
     // Handle form state changes and set up watchers

@@ -1,8 +1,46 @@
 <<<<<<< HEAD
-# steady-formation
+# Steady Formation
 LLC company setup system
-=======
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+## Environment Setup
+
+This project requires environment variables to be configured. Copy the example environment file and update it with your settings:
+
+```bash
+cp .env.example .env.local
+```
+
+### Environment Variables
+
+- `NEXT_PUBLIC_API_URL`: The base URL for the Laravel API
+- `NODE_ENV`: Environment mode (development/production)
+- `NEXT_PUBLIC_APP_NAME`: Application name
+
+### Development Environment (.env.local)
+
+```env
+# API Configuration
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+
+# Environment
+NODE_ENV=development
+
+# Next.js Configuration
+NEXT_PUBLIC_APP_NAME=Steady Formation
+```
+
+### Production Environment (.env.production)
+
+```env
+# API Configuration
+NEXT_PUBLIC_API_URL=https://api.cdevs.com.bd/api
+
+# Environment
+NODE_ENV=production
+
+# Next.js Configuration
+NEXT_PUBLIC_APP_NAME=Steady Formation
+```
 
 ## Getting Started
 
