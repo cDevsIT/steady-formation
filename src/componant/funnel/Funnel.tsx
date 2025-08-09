@@ -137,7 +137,7 @@ const Funnel = () => {
         <section className=" bg-white pt-[70px] px-4" key={refreshKey}>
             <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto">
 
-                {data?.currentStep < 9 &&
+                {data?.currentStep < 10 &&
                     <ProgressBar
                         totalSteps={totalSteps}
                         currentStep={currentStep}
@@ -174,7 +174,7 @@ const Funnel = () => {
 
                         {data?.currentStep === 9 && <NinthFunnel handleFormSubmit={handleFormSubmit} />}
 
-                        {data?.currentStep < 9 && <FunnelSidebar />}
+                        {data?.currentStep < 10 && <FunnelSidebar />}
 
                     </div>
                 }

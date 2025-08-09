@@ -49,13 +49,15 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
         setIsSubmitting(true);
 
+        const totalAmmount = (data?.agreement_amount ?? 0) + (data?.en_amount ?? 0) + (data?.rush_processing_amount ?? 0) + (data?.plan?.plan_price ?? 0) + 100
+
         try {
             // Save payment method to localStorage
             companyFormationService.saveToLocalStorage({
                 ...data,
                 payment: {
                     method: paymentOption as 'paypal' | 'stripe',
-                    amount: 0, // This will be calculated based on the plan
+                    amount: totalAmmount, // This will be calculated based on the plan
                     status: 'pending'
                 },
                 currentStep: 9
