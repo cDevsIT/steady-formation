@@ -4,6 +4,7 @@ import { FunnelHeading } from "../ui/FunnelHeading";
 import Image from "../ui/Image";
 import OwnersInfoBlock from "./Comp/OwnersInfoBlock";
 import { dataState } from "./Funnel";
+import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 
 const initialPersonalInfo = {
   name: "Nasir Uddin",
@@ -32,61 +33,10 @@ const initialOwnerInfoTwo = {
   country: "United States of America",
 };
 
-const feeData = [
-  {
-    id: 1,
-    title: "State Fee",
-    subtitle: "Idaho",
-    icon: "/icons/overview-company.svg",
-    price: "$100"
-  },
-  {
-    id: 2,
-    title: "Registered Agent Package",
-    subtitle: "Free",
-    icon: "/icons/overview-free.svg",
-    price: "Free"
-  },
-  {
-    id: 3,
-    title: "Business Address Package",
-    subtitle: "Free",
-    icon: "/icons/overview-free.svg",
-    price: "Free"
-  },
-  {
-    id: 4,
-    title: "Registered Agent",
-    subtitle: "Free",
-    icon: "/icons/overview-free.svg",
-    price: "Free"
-  },
-  {
-    id: 5,
-    title: "EIN",
-    subtitle: "No",
-    icon: "/icons/overview-ein.svg",
-    price: "$0.00"
-  },
-  {
-    id: 6,
-    title: "Operating Agreement / Bylaws",
-    subtitle: "No",
-    icon: "/icons/overview-aggrement.svg",
-    price: "$0.00"
-  },
-  {
-    id: 7,
-    title: "Expedited Processing",
-    subtitle: "No",
-    icon: "/icons/overview-processing.svg",
-    price: "$0.00"
-  }
 
-];
 
 const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-  const [data, setData] = useState<dataState>({});
+  const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
   const [personalInfo, setPersonalInfo] = useState(initialPersonalInfo);
   const [businessInfo, setBusinessInfo] = useState(initialBusinessInfo);
   const [ownerInfo, setOwnerInfo] = useState(initialOwnerInfo);
@@ -96,17 +46,66 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
 
 
-
   // Load initial data from localStorage
   useEffect(() => {
-    const localData = localStorage.getItem('companyData');
-    if (localData) {
-      const parsedData = JSON.parse(localData);
-      setData(parsedData);
-    }
+    const localData = companyFormationService.getFromLocalStorage();
+    setData(localData);
   }, []);
 
-  const singleLLc = data?.businessType === 'llc' && data?.stepTwo?.llcType === 'singleLLC' || data?.businessType === 's_corp'
+  const feeData = [
+    {
+      id: 1,
+      title: "State Fee",
+      subtitle: "Idaho",
+      icon: "/icons/overview-company.svg",
+      price: "$100"
+    },
+    {
+      id: 2,
+      title: "Registered Agent Package",
+      subtitle: "Free",
+      icon: "/icons/overview-free.svg",
+      price: "Free"
+    },
+    {
+      id: 3,
+      title: "Business Address Package",
+      subtitle: "Free",
+      icon: "/icons/overview-free.svg",
+      price: "Free"
+    },
+    {
+      id: 4,
+      title: "Registered Agent",
+      subtitle: "Free",
+      icon: "/icons/overview-free.svg",
+      price: "Free"
+    },
+    {
+      id: 5,
+      title: "EIN",
+      subtitle: `${data?.en_amount === 0 ? 'No' : 'Yes'}`,
+      icon: "/icons/overview-ein.svg",
+      price: `${data?.en_amount === 0 ? 'Free' : `$${data?.en_amount}`}`
+    },
+    {
+      id: 6,
+      title: "Operating Agreement / Bylaws",
+      subtitle: `${data?.agreement_amount === 0 ? 'No' : 'Yes'}`,
+      icon: "/icons/overview-aggrement.svg",
+      price: `${data?.agreement_amount === 0 ? 'Free' : `$${data?.agreement_amount}`}`
+    },
+    {
+      id: 7,
+      title: "Expedited Processing",
+      subtitle: `${data?.rush_processing_amount === 0 ? 'No' : 'Yes'}`,
+      icon: "/icons/overview-processing.svg",
+      price: `${data?.rush_processing_amount === 0 ? 'Free' : `$${data?.rush_processing_amount}`}`
+    }
+
+  ];
+
+  const singleLLc = data?.businessType === 'llc' && data?.businessDetails?.llcType === 'singleLLC' || data?.businessType === 's_corp'
 
   const directorInfo = data?.businessType === 'non_profit'
 

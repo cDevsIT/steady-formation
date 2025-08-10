@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChildComponentProps } from "./SecondFunnel";
 import { FunnelHeading, FunnelSubHeading } from "../ui/FunnelHeading";
 import Image from "../ui/Image";
+import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 
 // Custom Check Icon Component
 const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => {
@@ -15,6 +16,7 @@ const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => {
 };
 
 const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
+  const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
   // State for EIN option and express EIN option
   const [einOption, setEinOption] = useState<string>("");
   const [expressOption, setExpressOption] = useState<string>("");
@@ -26,9 +28,22 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   // Only show express EIN and SSN if 'add' or 'expedite' is selected
   const showExpressSection = einOption === "add" || einOption === "expedite";
 
+  useEffect(() => {
+          const localData = companyFormationService.getFromLocalStorage();
+          setData(localData);
+      }, []);
+
   // Handle continue (for demo, just calls handleFormSubmit if provided)
   const handleContinue = () => {
-    if (handleFormSubmit) handleFormSubmit({ stepFive: { einOption: einOption, expressOption: expressOption, ssn: ssn } });
+    let price = 0
+    if (einOption === "add"){
+      price = 69
+    } else if (einOption === "expedite"){
+      price = 149
+    }
+
+    const isAmmount = data?.total_ammount ? data?.total_ammount : 0;
+    if (handleFormSubmit) handleFormSubmit({ stepFive: { einOption: einOption, expressOption: expressOption, ssn: ssn }, en_amount: price });
   };
 
   return (

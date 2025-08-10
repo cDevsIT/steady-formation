@@ -7,7 +7,8 @@ const SeventhFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [processing, setProcessing] = useState<string>("");
 
     const handleContinue = () => {
-        if (handleFormSubmit) handleFormSubmit({ stepSeven: { processing: processing } });
+        const price = processing === 'Expedited Processing' ? 99 : 0
+        if (handleFormSubmit) handleFormSubmit({ stepSeven: { processing: processing }, rush_processing_amount: price });
     };
     return (
         <div className="max-w-[728px]">

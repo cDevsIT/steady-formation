@@ -27,8 +27,8 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 companyName: data.companyName || "",
                 fullName: "",
                 email: "",
-                primaryPhone: "",
-                secondaryPhone: "",
+                primaryPhone: "2222222222",
+                secondaryPhone: "2222222222",
             });
         }
     }, [data, formMethods]);

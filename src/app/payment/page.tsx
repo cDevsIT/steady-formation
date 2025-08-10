@@ -34,7 +34,7 @@ const PaymentPage = () => {
         // State filing fee
         if (data.businessDetails?.stateName) {
             // This should be fetched from the API based on state
-            total += 70; // Default state fee
+            total += 100; // Default state fee
         }
         
         // Plan price
