@@ -23,9 +23,9 @@ const PayoutHistoryPage = () => {
             </div>
             {/* Payout History Table */}
             <div className="bg-white rounded-2xl rounded-tl-none border border-[#E4E7EC]">
-                <div className="flex flex-row items-center gap-4 py-6">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-4 py-6">
                     <div className="text-[18px] font-semibold text-black whitespace-nowrap ml-6">Payment History</div>
-                    <div className="relative w-full max-w-xs ml-6">
+                    <div className="relative w-[80%] md:w-full max-w-xs ml-6">
                         <input type="text" placeholder="Search" className="w-full pl-9 pr-3 py-2 rounded-lg border border-[#E4E7EC] bg-white text-[15px] focus:outline-none" />
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#B0B7C3]">
                             <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.5 11.5L15 15" stroke="#B0B7C3" strokeWidth="2" strokeLinecap="round" /><circle cx="7.5" cy="7.5" r="5.5" stroke="#B0B7C3" strokeWidth="2" /></svg>
