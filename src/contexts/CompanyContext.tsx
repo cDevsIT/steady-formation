@@ -94,7 +94,7 @@ export const CompanyProvider: React.FC<CompanyProviderProps> = ({ children }) =>
                 if (processedCompanies.length > 0) {
                     const savedCompanyId = localStorage.getItem('selected_company_id');
                     if (savedCompanyId) {
-                        const savedCompany = processedCompanies.find(c => c.id.toString() === savedCompanyId);
+                        const savedCompany = processedCompanies.find((c: any) => c.id.toString() === savedCompanyId);
                         if (savedCompany) {
                             setSelectedCompany(savedCompany);
                         } else {
