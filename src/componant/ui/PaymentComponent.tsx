@@ -66,7 +66,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
             // User cancelled payment
             onCancel();
         }
-    }, [onSuccess, onError, onCancel]);
+    }, [handlePaymentSuccess, onCancel]);
 
     return (
         <div className={`flex flex-col gap-4 ${className}`}>

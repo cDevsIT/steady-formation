@@ -42,7 +42,6 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
       price = 149
     }
 
-    const isAmmount = data?.total_ammount ? data?.total_ammount : 0;
     if (handleFormSubmit) handleFormSubmit({ stepFive: { einOption: einOption, expressOption: expressOption, ssn: ssn }, en_amount: price });
   };
 

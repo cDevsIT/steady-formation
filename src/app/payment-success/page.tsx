@@ -45,7 +45,7 @@ const PaymentSuccessPage = () => {
                         <h3 className="font-semibold text-blue-900 mb-2">What happens next?</h3>
                         <ul className="text-sm text-blue-800 space-y-1">
                             <li>• Your application will be reviewed by our team</li>
-                            <li>• You'll receive status updates via email</li>
+                            <li>• You&apos;ll receive status updates via email</li>
                             <li>• Processing typically takes 2-3 business days</li>
                             <li>• You can track progress in your dashboard</li>
                         </ul>
