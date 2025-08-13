@@ -8,6 +8,7 @@ import { InputField, ReusableForm } from "../ui/ReusableForm";
 import { countries } from "./funnel.type";
 import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 import { useRouter } from "next/navigation";
+import { createStripeSession, createPayPalPayment } from "@/services/paymentService";
 
 // Custom Check Icon Component
 const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => {
@@ -26,7 +27,6 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [formMethods, setFormMethods] = useState<any>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
-    const isWithLink = paymentOption
 
     // Load initial data from localStorage using the new service
     useEffect(() => {
@@ -49,43 +49,48 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
         setIsSubmitting(true);
 
-        const totalAmmount = (data?.agreement_amount ?? 0) + (data?.en_amount ?? 0) + (data?.rush_processing_amount ?? 0) + (data?.plan?.plan_price ?? 0) + 100
-
         try {
+            // Get all localStorage data for payment processing
+            const localStorageData = companyFormationService.getFromLocalStorage();
+            
             // Save payment method to localStorage
             companyFormationService.saveToLocalStorage({
-                ...data,
+                ...localStorageData,
                 payment: {
                     method: paymentOption as 'paypal' | 'stripe',
-                    amount: totalAmmount, // This will be calculated based on the plan
+                    amount: (localStorageData?.agreement_amount ?? 0) + (localStorageData?.en_amount ?? 0) + (localStorageData?.rush_processing_amount ?? 0) + (localStorageData?.plan?.plan_price ?? 0) + 100,
                     status: 'pending'
                 },
                 currentStep: 9
             });
 
-            // Submit data to API BEFORE payment
-            const result = await companyFormationService.submitToAPI();
+            // Create payment session based on selected method
+            if (paymentOption === 'stripe') {
+                const stripeSession = await createStripeSession(localStorageData);
+                // Redirect to Stripe checkout
+                window.location.href = stripeSession.checkout_url;
+            } else if (paymentOption === 'paypal') {
+                const paypalPayment = await createPayPalPayment(localStorageData);
+                // Redirect to PayPal checkout
+                window.location.href = paypalPayment.approval_url;
+            } else {
+                throw new Error('Invalid payment method selected');
+            }
 
-            if (result.success) {
-                // Redirect to payment page based on selected method
-                if (paymentOption === 'paypal') {
-                    router.push('/payment?method=paypal');
-                } else if (paymentOption === 'card') {
-                    router.push('/payment?method=stripe');
+        } catch (error) {
+            console.error('Error creating payment session:', error);
+            
+            // Handle specific error cases
+            if (error instanceof Error) {
+                if (error.message.includes('Email Already Exists') || error.message.includes('email already exists')) {
+                    alert('An account with this email already exists. Please login first or use a different email address.');
                 } else {
-                    router.push('/payment');
+                    alert('An error occurred while creating the payment session. Please try again.');
                 }
             } else {
-                if (result.error?.includes('Missing required data')) {
-                    alert('Please complete all required steps before proceeding to payment. Missing: ' + result.error.replace('Missing required data: ', ''));
-                } else {
-                    alert('Failed to submit company formation data: ' + result.error);
-                }
+                alert('An error occurred while creating the payment session. Please try again.');
             }
-        } catch (error) {
-            console.error('Error submitting data:', error);
-            alert('An error occurred while submitting your data.');
-        } finally {
+            
             setIsSubmitting(false);
         }
     };
@@ -95,19 +100,16 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         setFormMethods(methods);
     };
 
-    const handleContinueWithLink = async (isWithLink: boolean) => {
+    const handleContinueWithLink = async () => {
         if (!paymentOption) {
             alert("Please select a payment option.");
-            return;
-        }
-        if (isWithLink) {
-            window.open("https://dashboard.stripe.com/register/payment_links", "_blank");
             return;
         }
         
         // Call the same submit function
         await handleSubmit({} as CustomFormData);
     };
+
     return (
         <div className="lg:max-w-[730px] w-full">
             <FunnelHeading>
@@ -115,17 +117,17 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             </FunnelHeading>
             <div className="flex flex-col sm:flex-row gap-4 mb-3">
                 <div
-                    className={`flex items-center gap-4 p-[20px] w-full h-[120px] rounded-xl border-2 cursor-pointer transition-all duration-150 ${paymentOption === "yes" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
-                    onClick={() => setPaymentOption("card")}
+                    className={`flex items-center gap-4 p-[20px] w-full h-[120px] rounded-xl border-2 cursor-pointer transition-all duration-150 ${paymentOption === "stripe" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
+                    onClick={() => setPaymentOption("stripe")}
                 >
-                    <CheckIcon isSelected={paymentOption === "card"} />
+                    <CheckIcon isSelected={paymentOption === "stripe"} />
                     <div className="flex gap-2 items-center">
                         <Image className="w-[121px]" url="/icons/card.svg" alt="Card" />
                         <span className="text-xl font-medium text-black">Card</span>
                     </div>
                 </div>
                 <div
-                    className={`flex items-center justify-between gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${paymentOption === "no" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
+                    className={`flex items-center justify-between gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${paymentOption === "paypal" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
                     onClick={() => setPaymentOption("paypal")}
                 >
                     <CheckIcon isSelected={paymentOption === "paypal"} />
@@ -137,7 +139,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             </div>
 
             <div
-                className={`flex items-center gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${paymentOption === "no" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
+                className={`flex items-center gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${paymentOption === "balance" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
             >
                 <CheckIcon isSelected={false} />
                 <div className="flex gap-2 items-center w-full justify-between">
@@ -149,79 +151,12 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             {/* Continue Button */}
             <button
                 type="button"
-                onClick={() => handleContinueWithLink(paymentOption === "card")}
+                onClick={handleContinueWithLink}
                 disabled={isSubmitting}
                 className="mt-6 w-full bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-xl shadow transition-all text-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                {isSubmitting ? 'Submitting...' : (isWithLink ? 'Pay With Link' : 'Continue')}
+                {isSubmitting ? 'Processing...' : 'Continue to Payment'}
             </button>
-            {/* SSN input only if Yes is selected */}
-            {paymentOption === "card" && (
-                <div className="mb-2 mt-8">
-                    <h5 className="block text-base font-bold mb-1 text-black">Your Or Pay With Card</h5>
-                    <ReusableForm
-                        onSubmit={handleSubmit}
-                        submitText="Pay"
-                        onFormStateChange={handleFormStateChange}
-                        className="mb-5 mt-2"
-                    >
-                        <InputField
-                            name="email"
-                            label="Email"
-                            type="email"
-                            required
-                            placeholder="Enter Email"
-                            className="lg:col-span-2 "
-                        />
-
-                        <InputField
-                            name="cardNumber"
-                            label="Card Number"
-                            type="text"
-                            required
-                            placeholder="Enter Card Number"
-                            className="lg:col-span-2 "
-                        />
-
-                        <InputField
-                            name="expiryDate"
-                            label="Expiry date"
-                            type="text"
-                            required
-                            placeholder="Enter Expiry date"
-                        />
-                        <InputField
-                            name="cvc"
-                            label="CVC"
-                            type="text"
-                            required
-                            placeholder="Enter CVC"
-                        />
-
-                        <InputField
-                            name="country"
-                            label="Country"
-                            type="select"
-                            required
-                            placeholder="Select Country"
-                            className="lg:col-span-2 "
-                            options={countries}
-                        />
-
-                        {/* Checkbox Section */}
-                        <div className="mb-6 p-4 bg-gray-50 lg:col-span-2  rounded-xl flex items-start gap-3">
-                            <input type="checkbox" id="save-info" className="mt-1 accent-purple-500 w-4 h-4 border-gray-200" />
-                            <div>
-                                <label htmlFor="save-info" className="font-semibold text-base text-black block">Securely save my information for 1-click checkout</label>
-                                <span className="text-gray-600 font-normal text-base block mt-1">Pay faster on Steady Formation and everywhere Link is accepted.</span>
-                            </div>
-                        </div>
-                    </ReusableForm>
-
-
-
-                </div>
-            )}
 
             <div className="border border-dashed border-gray-200 rounded-xl p-4 mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 relative">
                 <div className="flex flex-col gap-2 w-full sm:w-auto">
