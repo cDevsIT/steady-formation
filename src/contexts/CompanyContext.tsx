@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { API_CONFIG } from '@/config/api';
 
 export interface Company {
@@ -56,7 +56,7 @@ export const CompanyProvider: React.FC<CompanyProviderProps> = ({ children }) =>
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchCompanies = async () => {
+    const fetchCompanies = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
@@ -91,9 +91,20 @@ export const CompanyProvider: React.FC<CompanyProviderProps> = ({ children }) =>
                 setCompanies(processedCompanies);
                 
                 // If no company is selected, select the first one
-                if (!selectedCompany && processedCompanies.length > 0) {
-                    setSelectedCompany(processedCompanies[0]);
-                    localStorage.setItem('selected_company_id', processedCompanies[0].id.toString());
+                if (processedCompanies.length > 0) {
+                    const savedCompanyId = localStorage.getItem('selected_company_id');
+                    if (savedCompanyId) {
+                        const savedCompany = processedCompanies.find((c: any) => c.id.toString() === savedCompanyId);
+                        if (savedCompany) {
+                            setSelectedCompany(savedCompany);
+                        } else {
+                            setSelectedCompany(processedCompanies[0]);
+                            localStorage.setItem('selected_company_id', processedCompanies[0].id.toString());
+                        }
+                    } else {
+                        setSelectedCompany(processedCompanies[0]);
+                        localStorage.setItem('selected_company_id', processedCompanies[0].id.toString());
+                    }
                 }
             } else {
                 throw new Error(result.message || 'Failed to fetch companies');
@@ -104,27 +115,18 @@ export const CompanyProvider: React.FC<CompanyProviderProps> = ({ children }) =>
         } finally {
             setLoading(false);
         }
-    };
+    }, []); // Remove selectedCompany from dependencies to prevent infinite loop
 
     const refreshCompanies = () => {
         fetchCompanies();
     };
 
-    // Load selected company from localStorage on mount
-    useEffect(() => {
-        const savedCompanyId = localStorage.getItem('selected_company_id');
-        if (savedCompanyId && companies.length > 0) {
-            const company = companies.find(c => c.id.toString() === savedCompanyId);
-            if (company) {
-                setSelectedCompany(company);
-            }
-        }
-    }, [companies]);
+    // This logic is now handled in fetchCompanies to avoid multiple API calls
 
     // Fetch companies on mount
     useEffect(() => {
         fetchCompanies();
-    }, []);
+    }, [fetchCompanies]);
 
     // Save selected company to localStorage when it changes
     useEffect(() => {

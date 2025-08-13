@@ -19,6 +19,14 @@ export const API_CONFIG = {
             UPDATE_PASSWORD: '/user/password',
             UPLOAD_AVATAR: '/user/avatar',
         },
+        PAYMENTS: {
+            STRIPE: {
+                CREATE_SESSION: '/payments/stripe/create-session',
+            },
+            PAYPAL: {
+                CREATE_PAYMENT: '/payments/paypal/create-payment',
+            },
+        },
         BLOGS: {
             LIST: '/blogs',
             DETAIL: (slug: string) => `/blogs/${slug}`,

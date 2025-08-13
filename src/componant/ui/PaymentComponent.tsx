@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Button from './Button';
 import { useCompanyFormation } from '@/lib/useCompanyFormation';
 
@@ -39,7 +39,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
     };
 
     // Handle payment success (called when user returns from PayPal)
-    const handlePaymentSuccess = async (orderId: string) => {
+    const handlePaymentSuccess = useCallback(async (orderId: string) => {
         try {
             const result = await capturePayPalPayment(orderId);
             
@@ -51,7 +51,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
         } catch (err) {
             onError('Payment capture failed');
         }
-    };
+    }, [capturePayPalPayment, onSuccess, onError]);
 
     // Check for PayPal return parameters
     useEffect(() => {
@@ -66,7 +66,7 @@ const PaymentComponent: React.FC<PaymentComponentProps> = ({
             // User cancelled payment
             onCancel();
         }
-    }, [onSuccess, onError, onCancel]);
+    }, [handlePaymentSuccess, onCancel]);
 
     return (
         <div className={`flex flex-col gap-4 ${className}`}>

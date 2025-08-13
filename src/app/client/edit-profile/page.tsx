@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import Image from '@/componant/ui/Image';
+import Image from 'next/image';
 import Button from '@/componant/ui/Button';
 import { getUserProfile, updateUserProfile, updateUserPassword, UserProfile, UpdateProfileData, UpdatePasswordData } from '@/services/userService';
 import { useRouter } from 'next/navigation';
@@ -223,100 +223,18 @@ export default function EditProfile() {
     // Handle password form submission
     const handlePasswordSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (passwordData.new_password !== passwordData.confirm_password) {
+            setPasswordError('Passwords do not match');
+            return;
+        }
+        
         try {
-            setSaving(true);
-            setPasswordError(null);
-
-            // Validate required fields
-            if (!passwordData.current_password?.trim()) {
-                setPasswordError('Current password is required');
-                setSaving(false);
-                return;
-            }
-            if (!passwordData.new_password?.trim()) {
-                setPasswordError('New password is required');
-                setSaving(false);
-                return;
-            }
-            if (!passwordData.confirm_password?.trim()) {
-                setPasswordError('Confirm password is required');
-                setSaving(false);
-                return;
-            }
-
-            if (passwordData.new_password !== passwordData.confirm_password) {
-                setPasswordError('New passwords do not match');
-                setSaving(false);
-                return;
-            }
-
-            // Ensure minimum password length
-            if (passwordData.new_password.length < 8) {
-                setPasswordError('New password must be at least 8 characters long');
-                setSaving(false);
-                return;
-            }
-
-            const updatePasswordData = {
-                current_password: passwordData.current_password.trim(),
-                new_password: passwordData.new_password.trim(),
-                confirm_password: passwordData.confirm_password.trim()
-            };
-
-            await updateUserPassword(updatePasswordData);
-            setSuccess('Password updated successfully!');
-            setPasswordError(null); // Clear any error messages
-            setShowPasswordModal(false);
-            
-            // Clear password form
-            setPasswordData({
-                current_password: '',
-                new_password: '',
-                confirm_password: ''
-            });
-
-            // Clear success message after 3 seconds
-            setTimeout(() => setSuccess(null), 3000);
-        } catch (err) {
-            if (err instanceof Error) {
-                // Try to parse error message for validation errors
-                try {
-                    const errorData = JSON.parse(err.message);
-                    console.log('Password error data:', errorData);
-                    
-                    if (errorData.errors) {
-                        // Check if all password fields are showing as required - this usually means wrong current password
-                        const allFieldsRequired = errorData.errors.current_password && 
-                                               errorData.errors.new_password && 
-                                               errorData.errors.confirm_password &&
-                                               errorData.errors.current_password.includes('required') &&
-                                               errorData.errors.new_password.includes('required') &&
-                                               errorData.errors.confirm_password.includes('required');
-                        
-                        if (allFieldsRequired) {
-                            setPasswordError('Current password is incorrect');
-                        } else if (errorData.errors.current_password && errorData.errors.current_password.includes('required')) {
-                            setPasswordError('Current password is required');
-                        } else if (errorData.errors.new_password && errorData.errors.new_password.includes('required')) {
-                            setPasswordError('New password is required');
-                        } else if (errorData.errors.confirm_password && errorData.errors.confirm_password.includes('required')) {
-                            setPasswordError('Confirm password is required');
-                        } else {
-                            const errorMessages = Object.values(errorData.errors).flat();
-                            setPasswordError(`Validation failed: ${errorMessages.join(', ')}`);
-                        }
-                    } else {
-                        setPasswordError(errorData.message || err.message);
-                    }
-                } catch {
-                    setPasswordError(err.message);
-                }
-            } else {
-                setPasswordError('Failed to update password');
-            }
-            console.error('Error updating password:', err);
-        } finally {
-            setSaving(false);
+            await updateUserPassword(passwordData);
+            alert('Password updated successfully!');
+            setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
+            setPasswordError('');
+        } catch (error) {
+            setPasswordError(error instanceof Error ? error.message : 'Failed to update password');
         }
     };
 
@@ -369,7 +287,7 @@ export default function EditProfile() {
                             />
                         ) : (
                             <Image 
-                                url="/client/profile-icon1.svg" 
+                                src="/client/profile-icon1.svg" 
                                 alt="Profile Icon" 
                                 width={80} 
                                 height={80} 
@@ -391,7 +309,7 @@ export default function EditProfile() {
                             htmlFor="avatar-upload"
                             className="absolute -bottom-1 -right-1 bg-[#7856FC] rounded-full p-1 border-2 border-white shadow flex items-center justify-center cursor-pointer hover:bg-[#6840e0] transition-colors"
                         >
-                            <Image url="/client/upload-icon1.svg" alt="Upload Icon" width={20} height={20} className="w-5 h-5" />
+                            <Image src="/client/upload-icon1.svg" alt="Upload Icon" width={20} height={20} className="w-5 h-5" />
                         </label>
                     </div>
                     
@@ -534,7 +452,7 @@ export default function EditProfile() {
                             className="absolute -top-5 -right-6 cursor-pointer bg-white rounded-full shadow p-1 flex items-center justify-center"
                             aria-label="Close"
                         >
-                            <Image url="/client/cross-icon.svg" alt="Close" width={24} height={24} />
+                            <Image src="/client/cross-icon.svg" alt="Close" width={24} height={24} />
                         </button>
                         
                         {/* Title */}
