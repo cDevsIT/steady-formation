@@ -64,7 +64,8 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
     // Load initial data and set selected plan
     useEffect(() => {
-        setSelected(plans.findIndex(plan => plan.name === data.plan?.plan_name))
+        const findCurrentSelect = plans.findIndex(plan => plan.name === data.plan?.plan_name)
+        setSelected(findCurrentSelect ?? 0)
     }, [data.plan?.plan_name]);
 
 

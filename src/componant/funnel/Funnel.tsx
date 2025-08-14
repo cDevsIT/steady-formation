@@ -19,8 +19,8 @@ import RegisterConfirm from "./RegisterConfirm";
 import OwnersInfo from "./OwnersInfo";
 import OwnersInfoComplete from "./OwnersInfoComplete";
 import FirstFunnelSidebar from "./Comp/FirstFunnelSidebar";
-import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 import { handleStripeSuccess, handlePayPalSuccess, handleStripeCancel, handlePayPalCancel } from "@/services/paymentService";
+import companyFormationService, { useCompanyFormationData, CompanyFormationData } from "@/lib/companyFormationService";
 
 export interface dataState {
     businessType?: string;
@@ -46,13 +46,13 @@ export interface dataState {
 const FunnelContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
+    const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'cancel' | null>(null);
+    const [paymentData, setPaymentData] = useState<any>(null);
+    const data = useCompanyFormationData();
     const [currentStep, setCurrentStep] = useState(1);
     const [totalSteps] = useState(9);
     const [refreshKey, setRefreshKey] = useState(0);
-    const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'cancel' | null>(null);
-    const [paymentData, setPaymentData] = useState<any>(null);
-    const [isLoading , setIsLoading]= useState(false)
+    const [isLoading, setIsLoading] = useState(true);
 
     const handleChildSubmitSuccess = () => {
         setRefreshKey(prev => prev + 1); // triggers re-render
@@ -233,7 +233,12 @@ const FunnelContent = () => {
                                     registrationConfrim: true,
                                     currentStep: 11
                                 });
-                                setData({ ...localData, registrationConfrim: true, currentStep: 11 });
+                                // Update the data by saving to localStorage - the hook will automatically update
+                                companyFormationService.saveToLocalStorage({
+                                    ...localData,
+                                    registrationConfrim: true,
+                                    currentStep: 11
+                                });
                             }}
                             className="bg-[#7856FC] text-white px-8 py-3 rounded-lg hover:bg-[#5D3FC4] transition-colors font-medium"
                         >
@@ -329,7 +334,7 @@ const FunnelContent = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4">
 
                         <FirstFunnel handleFormSubmit={handleFormSubmit} />
-                        <FirstFunnelSidebar/>
+                        <FirstFunnelSidebar />
                     </div>
                 }
 
