@@ -6,7 +6,7 @@ import Image from "../ui/Image";
 import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
-import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
+import companyFormationService, { useCompanyFormationData, CompanyFormationData } from "@/lib/companyFormationService";
 
 const plans = [
     {
@@ -59,14 +59,13 @@ const CheckIcon = () => (
 
 const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [selected, setSelected] = useState(0);
-    const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
+    const data = useCompanyFormationData();
     const [formMethods, setFormMethods] = useState<any>(null);
 
-    // Load initial data from localStorage using the new service
+    // Load initial data and set selected plan
     useEffect(() => {
-        const localData = companyFormationService.getFromLocalStorage();
-        setData(localData);
-    }, []);
+        setSelected(plans.findIndex(plan => plan.name === data.plan?.plan_name))
+    }, [data.plan?.plan_name]);
 
 
     useEffect(() => {
@@ -110,6 +109,20 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const handleFormStateChange = (methods: any) => {
         setFormMethods(methods);
     };
+
+    // Handle plan selection and save to localStorage
+    const handlePlanSelection = (idx: number) => {
+        setSelected(idx);
+        // Save plan data to localStorage instantly when selected
+        const selectedPlan = plans[idx];
+        companyFormationService.saveToLocalStorage({
+            ...data,
+            plan: {
+                plan_name: selectedPlan.name,
+                plan_price: selectedPlan.price,
+            }
+        });
+    };
     return (
         <div className="lg:max-w-[728px]">
             <FunnelHeading >
@@ -127,6 +140,8 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                             ? "border-purple-600 ring-2 ring-purple-200"
                             : "border-gray-200"
                             } flex flex-col justify-between`}
+                        
+                        onClick={() => handlePlanSelection(idx)}
                     >
                         <div>
                             <div className="flex items-center justify-between mb-2">
@@ -149,7 +164,7 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                                 : "bg-white text-gray-600 border-gray-200 hover:text-white hover:bg-primary-hover"
                                 }`}
                             disabled={selected === idx}
-                            onClick={() => setSelected(idx)}
+                            
                         >
                             {selected === idx ? "Selected" : "Select"}
                         </button>

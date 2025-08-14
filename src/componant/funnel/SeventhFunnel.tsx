@@ -1,15 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FunnelHeading } from "../ui/FunnelHeading";
 import { ChildComponentProps } from "./SecondFunnel";
 import { CheckIcon } from "./SixthFunnel";
+import companyFormationService, { useCompanyFormationData } from "@/lib/companyFormationService";
 
 const SeventhFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-    const [processing, setProcessing] = useState<string>("");
+    const data = useCompanyFormationData();
+    const [processing, setProcessing] = useState<string>("Standard Processing");
+
+    useEffect(() => {
+          // Set EIN option based on existing data
+        if (data?.agreement_amount === 99) {
+            setProcessing("Expedited Processing");
+          } else if (data?.agreement_amount === 0 || !data?.agreement_amount) {
+            setProcessing("Standard Processing");
+          }
+        }, [data?.agreement_amount]);
 
     const handleContinue = () => {
         const price = processing === 'Expedited Processing' ? 99 : 0
         if (handleFormSubmit) handleFormSubmit({ stepSeven: { processing: processing }, rush_processing_amount: price });
     };
+
+    const handlePlanSelection = (option: string) => {
+          let price = 0
+        if (option === "Expedited Processing") {
+            price = 99
+        } else if (option === "Standard Processing") {
+            price = 0
+          } 
+        setProcessing(option);
+          companyFormationService.saveToLocalStorage({
+            ...data,
+              rush_processing_amount: price
+          });
+        };
     return (
         <div className="max-w-[728px]">
             <FunnelHeading>
@@ -24,8 +49,8 @@ const SeventhFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
             <div className="flex flex-col sm:flex-row gap-4 mb-3 mt-6">
                 <div
-                    className={`flex items-center gap-4 p-[20px] w-full h-[120px] rounded-xl border-2 cursor-pointer transition-all duration-150 ${processing === "yes" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
-                    onClick={() => setProcessing("Expedited Processing")}
+                    className={`flex items-center gap-4 p-[20px] w-full h-[120px] rounded-xl border-2 cursor-pointer transition-all duration-150 ${processing === "Expedited Processing" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
+                    onClick={() => handlePlanSelection("Expedited Processing")}
                 >
                     <CheckIcon isSelected={processing === "Expedited Processing"} />
                     <div className="flex flex-col">
@@ -37,8 +62,8 @@ const SeventhFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                     </div>
                 </div>
                 <div
-                    className={`flex items-center gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${processing === "no" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
-                    onClick={() => setProcessing("Standard Processing")}
+                    className={`flex items-center gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${processing === "Standard Processing" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
+                    onClick={() => handlePlanSelection("Standard Processing")}
                 >
                     <CheckIcon isSelected={processing === "Standard Processing"} />
                     <div className="flex flex-col">

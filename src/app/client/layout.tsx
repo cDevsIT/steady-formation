@@ -135,7 +135,7 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
         );
     }
 
-    if (!user || !selectedCompany) {
+    if (!user ) {
         return null;
     }
 
@@ -197,12 +197,12 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
                                         {companies.map((company, idx) => (
                                             <button
                                                 key={company.name}
-                                                className={`flex items-center w-full px-4 py-2 gap-3 hover:bg-[#f4f4f7] transition-colors ${selectedCompany.name === company.name ? 'bg-[#f9fafb]' : ''}`}
+                                                className={`flex items-center w-full px-4 py-2 gap-3 hover:bg-[#f4f4f7] transition-colors ${selectedCompany?.name === company.name ? 'bg-[#f9fafb]' : ''}`}
                                                 onClick={() => { setSelectedCompany(company); setDropdownOpen(false); }}
                                             >
                                                 <NextImage src={company.icon} alt={company.name + ' icon'} width={32} height={32} className="w-8 h-8 rounded-full border border-[#ececec]" />
                                                 <div className="flex flex-col text-left">
-                                                    <span className={`font-medium text-sm ${selectedCompany.name === company.name ? 'text-[#7856FC]' : 'text-[#23272E]'}`}>{company.name}</span>
+                                                    <span className={`font-medium text-sm ${selectedCompany?.name === company.name ? 'text-[#7856FC]' : 'text-[#23272E]'}`}>{company.name}</span>
                                                     <span className="text-xs font-normal text-[#7C8493]">{company.address}</span>
                                                 </div>
                                             </button>
@@ -256,7 +256,7 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
                         <div className="pt-6 pb-4 border-b border-[#ececec] px-6">
                             {/* Icon row */}
                             <div className="flex mb-3">
-                                <NextImage src={selectedCompany.icon} alt="User Icon" width={56} height={56} className="w-14 h-14 rounded-full" />
+                                <NextImage src={selectedCompany?.icon ?? ''} alt="User Icon" width={56} height={56} className="w-14 h-14 rounded-full" />
                             </div>
                             {/* Info and dropdown row */}
                             <div className="relative">
@@ -265,8 +265,8 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
                                     onClick={() => setDropdownOpen((open) => !open)}
                                 >
                                     <div className="flex flex-col text-left">
-                                        <span className="font-bold text-lg text-black leading-tight truncate">{selectedCompany.name}</span>
-                                        <span className="text-[#7C8493] text-xs leading-tight truncate">{selectedCompany.address}</span>
+                                        <span className="font-bold text-lg text-black leading-tight truncate">{selectedCompany?.name}</span>
+                                        <span className="text-[#7C8493] text-xs leading-tight truncate">{selectedCompany?.address}</span>
                                     </div>
                                     <div className="flex-shrink-0 ml-2">
                                         <NextImage
@@ -290,12 +290,12 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
                                         {companies.map((company, idx) => (
                                             <button
                                                 key={company.name}
-                                                className={`flex items-center w-full px-4 py-2 gap-3 hover:bg-[#f4f4f7] transition-colors ${selectedCompany.name === company.name ? 'bg-[#f9fafb]' : ''}`}
+                                                className={`flex items-center w-full px-4 py-2 gap-3 hover:bg-[#f4f4f7] transition-colors ${selectedCompany?.name === company.name ? 'bg-[#f9fafb]' : ''}`}
                                                 onClick={() => { setSelectedCompany(company); setDropdownOpen(false); }}
                                             >
                                                 <NextImage src={company.icon} alt={company.name + ' icon'} width={36} height={36} className="w-9 h-9 rounded-full border border-[#ececec]" />
                                                 <div className="flex flex-col text-left">
-                                                    <span className={`font-medium leading-7 text-sm ${selectedCompany.name === company.name ? 'text-[#7856FC]' : 'text-[#23272E]'}`}>{company.name}</span>
+                                                    <span className={`font-medium leading-7 text-sm ${selectedCompany?.name === company.name ? 'text-[#7856FC]' : 'text-[#23272E]'}`}>{company.name}</span>
                                                     <span className="text-xs leading-4 font-normal text-[#7C8493]">{company.address}</span>
                                                 </div>
                                             </button>

@@ -1,4 +1,5 @@
 import { API_CONFIG } from '@/config/api';
+import { useEffect, useState } from 'react';
 
 export interface CompanyFormationData {
   // Step 1: Basic Info
@@ -97,6 +98,20 @@ export interface CompanyFormationData {
 
 class CompanyFormationService {
   private readonly STORAGE_KEY = 'company_formation_data';
+  private listeners: Array<() => void> = [];
+  
+  // Add event listener for localStorage changes
+  addListener(callback: () => void): () => void {
+    this.listeners.push(callback);
+    return () => {
+      this.listeners = this.listeners.filter(listener => listener !== callback);
+    };
+  }
+  
+  // Notify all listeners when data changes
+  private notifyListeners(): void {
+    this.listeners.forEach(listener => listener());
+  }
   
   // Save data to localStorage
   saveToLocalStorage(data: Partial<CompanyFormationData>): void {
@@ -109,6 +124,7 @@ class CompanyFormationService {
       };
       
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedData));
+      this.notifyListeners(); // Notify all listeners of the change
     } catch (error) {
       console.error('Error saving to localStorage:', error);
     }
@@ -404,4 +420,26 @@ class CompanyFormationService {
 }
 
 export const companyFormationService = new CompanyFormationService();
-export default companyFormationService; 
+export default companyFormationService;
+
+// Custom hook for real-time localStorage updates
+export const useCompanyFormationData = (): CompanyFormationData => {
+  const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
+
+  useEffect(() => {
+    // Load initial data
+    const initialData = companyFormationService.getFromLocalStorage();
+    setData(initialData);
+
+    // Subscribe to localStorage changes
+    const unsubscribe = companyFormationService.addListener(() => {
+      const updatedData = companyFormationService.getFromLocalStorage();
+      setData(updatedData);
+    });
+
+    // Cleanup subscription on unmount
+    return unsubscribe;
+  }, []);
+
+  return data;
+}; 
