@@ -4,7 +4,7 @@ import { FunnelHeading } from "../ui/FunnelHeading";
 import Image from "../ui/Image";
 import OwnersInfoBlock from "./Comp/OwnersInfoBlock";
 import { dataState } from "./Funnel";
-import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
+import companyFormationService, { CompanyFormationData, useCompanyFormationData } from "@/lib/companyFormationService";
 
 const initialPersonalInfo = {
   name: "Nasir Uddin",
@@ -36,7 +36,7 @@ const initialOwnerInfoTwo = {
 
 
 const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-  const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
+  const data = useCompanyFormationData();
   const [personalInfo, setPersonalInfo] = useState(initialPersonalInfo);
   const [businessInfo, setBusinessInfo] = useState(initialBusinessInfo);
   const [ownerInfo, setOwnerInfo] = useState(initialOwnerInfo);
@@ -48,8 +48,6 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
   // Load initial data from localStorage
   useEffect(() => {
-    const localData = companyFormationService.getFromLocalStorage();
-    setData(localData);
   }, []);
 
   const feeData = [

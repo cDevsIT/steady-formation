@@ -4,19 +4,14 @@ import Button from '../../ui/Button';
 import { useEffect, useState } from 'react';
 import Image from '@/componant/ui/Image';
 import Rating from '@/componant/shared/Rating';
-import companyFormationService, { CompanyFormationData } from '@/lib/companyFormationService';
+import companyFormationService, { useCompanyFormationData, CompanyFormationData } from '@/lib/companyFormationService';
 
 
 
 const FunnelSidebar = () => {
-    const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
+    const data = useCompanyFormationData();
     const [currentSlide, setCurrentSlide] = useState(0);
     const reviews = sampleReviews.slice(0, 3);
-
-     useEffect(() => {
-        const localData = companyFormationService.getFromLocalStorage();
-        setData(localData);
-      }, []);
 
     const orderSummary = [
         { label: 'Incorporation of Your Company', value: 'Free' },
