@@ -58,15 +58,23 @@ const CheckIcon = () => (
 );
 
 const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-    const [selected, setSelected] = useState(0);
+    const [selected, setSelected] = useState(0); // Default to Free plan (index 0)
     const data = useCompanyFormationData();
     const [formMethods, setFormMethods] = useState<any>(null);
 
     // Load initial data and set selected plan
     useEffect(() => {
-        const findCurrentSelect = plans.findIndex(plan => plan.name === data.plan?.plan_name)
-        setSelected(findCurrentSelect ?? 0)
-    }, [data.plan?.plan_name]);
+        if (data.plan?.plan_name) {
+            const findCurrentSelect = plans.findIndex(plan => plan.name === data.plan?.plan_name)
+            if (findCurrentSelect !== -1) {
+                setSelected(findCurrentSelect)
+            }
+        } else {
+            // Default to Free plan (index 0) if no plan is selected
+            setSelected(0)
+
+        }
+    }, [data.plan?.plan_name, data]);
 
 
     useEffect(() => {
