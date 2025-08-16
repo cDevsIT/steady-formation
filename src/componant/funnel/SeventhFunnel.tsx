@@ -10,12 +10,12 @@ const SeventhFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
     useEffect(() => {
           // Set EIN option based on existing data
-        if (data?.agreement_amount === 99) {
+        if (data?.rush_processing_amount === 99) {
             setProcessing("Expedited Processing");
-          } else if (data?.agreement_amount === 0 || !data?.agreement_amount) {
+          } else if (data?.rush_processing_amount === 0 || !data?.rush_processing_amount) {
             setProcessing("Standard Processing");
           }
-        }, [data?.agreement_amount]);
+        }, [data?.rush_processing_amount]);
 
     const handleContinue = () => {
         const price = processing === 'Expedited Processing' ? 99 : 0
