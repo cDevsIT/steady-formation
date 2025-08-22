@@ -1,47 +1,49 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChildComponentProps } from "../SecondFunnel";
 import { dataState } from "../Funnel";
 import { CustomFormData } from "@/componant/ui/FormSample";
 import { InputField, ReusableForm } from "@/componant/ui/ReusableForm";
 import { countries } from "../funnel.type";
+import companyFormationService, { useCompanyFormationData } from "@/lib/companyFormationService";
 
 const OwnersInfoFormTypeThree: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [formMethods, setFormMethods] = useState<any>(null);
-    const [data, setData] = useState<dataState>({});
+    const data = useCompanyFormationData();
+    const numberOfOwners = data?.businessDetails?.number_of_ownership || 1;
 
     // Load initial data from localStorage
     useEffect(() => {
-        const localData = localStorage.getItem('companyData');
-        if (localData) {
-            const parsedData = JSON.parse(localData);
-            setData(parsedData);
+        let localStorageData = data;
+        if (!data || Object.keys(data).length <= 1) {
+            localStorageData = companyFormationService.getFromLocalStorage();
+            console.log("Fallback - Loading directly from localStorage:", localStorageData);
         }
     }, []);
 
+    // Generate initial form data based on number of directors
+    const generateInitialFormData = () => {
+        const initialData: any = {};
+
+        for (let i = 1; i <= numberOfOwners; i++) {
+            const directorPrefix = `director_${i}`;
+            initialData[`${directorPrefix}_name`] = `Director ${i}`;
+            initialData[`${directorPrefix}_email`] = "demo@email.com";
+            initialData[`${directorPrefix}_mobile`] = "2345678901";
+            initialData[`${directorPrefix}_country`] = "us";
+            initialData[`${directorPrefix}_city`] = 'New York';
+            initialData[`${directorPrefix}_state`] = 'Manhattan';
+            initialData[`${directorPrefix}_zipCode`] = '22011';
+            initialData[`${directorPrefix}_streetAddress`] = '111, manhattan, new work';
+        }
+
+        return initialData;
+    };
 
     useEffect(() => {
         if (formMethods) {
-            formMethods.reset({
-                //remove this
-                director_one_name: "SHIKHOR",
-                director_one_email: "demo@email.com",
-                director_one_mobile: "2345678901",
-                director_one_country: "us",
-                director_one_city: 'New York',
-                director_one_state: 'Manhattan',
-                director_one_zipCode: '22011',
-                director_one_streetAddress: '111, manhattan, new work',
-                director_two_name: "SHIKHOR",
-                director_two_email: "demo@email.com",
-                director_two_mobile: "2345678901",
-                director_two_country: "us",
-                director_two_city: 'New York',
-                director_two_state: 'Manhattan',
-                director_two_zipCode: '22011',
-                director_two_streetAddress: '111, manhattan, new work',
-            });
+            formMethods.reset(generateInitialFormData());
         }
-    }, [data, formMethods]);
+    }, [data, formMethods, numberOfOwners]);
 
     const handleSubmit = (data: CustomFormData) => {
         handleFormSubmit({ OwnersInfo: data, isOwnersInfoComplete: true })
@@ -50,32 +52,32 @@ const OwnersInfoFormTypeThree: React.FC<ChildComponentProps> = ({ handleFormSubm
     // Handle form state changes and set up watchers
     const handleFormStateChange = (methods: any) => {
         setFormMethods(methods);
-
     };
-    return (
-        <div className="max-w-[758px] mx-auto py-24">
-            <ReusableForm
-                onSubmit={handleSubmit}
-                submitText="Continue"
-                onFormStateChange={handleFormStateChange}
-                className="mb-5 mt-10"
-            >
-                <div className="lg:col-span-2 ">
-                    <h2 className="text-[30px] font-semibold text-black"> Director Info 1 </h2>
-                    <p className="text-base font-normal text-gray-600">On of the director must be US resident</p>
+
+    // Generate director form fields dynamically
+    const generateDirectorForm = (directorNumber: number) => {
+        const directorPrefix = `director_${directorNumber}`;
+
+        return (
+            <React.Fragment key={`director-${directorNumber}`}>
+                <div className="lg:col-span-2">
+                    <h2 className="text-[30px] font-semibold text-black">
+                        Director Info {directorNumber}
+                    </h2>
+                    <p className="text-base font-normal text-gray-600">One of the director must be US resident</p>
                 </div>
-                
+
                 <InputField
-                    name="director_one_name"
+                    name={`${directorPrefix}_name`}
                     label="Name"
                     type="text"
                     required
                     placeholder="Enter Your Name"
-                    className="lg:col-span-2 "
+                    className="lg:col-span-2"
                 />
 
                 <InputField
-                    name="director_one_email"
+                    name={`${directorPrefix}_email`}
                     label="Email"
                     placeholder="Enter your email"
                     required
@@ -84,89 +86,15 @@ const OwnersInfoFormTypeThree: React.FC<ChildComponentProps> = ({ handleFormSubm
                 />
 
                 <InputField
-                    name="director_one_mobile"
+                    name={`${directorPrefix}_mobile`}
                     label="Mobile Number"
                     type="phone"
                     required
                     placeholder="Enter mobile number"
                 />
-                <InputField
-                    name="director_one_country"
-                    label="Country"
-                    type="select"
-                    required
-                    placeholder="Select Country"
-                    className=""
-                    options={countries}
-                    belowText= 'One of director must be from USA'
-                />
 
                 <InputField
-                    name="director_one_city"
-                    label="City"
-                    type="text"
-                    required
-                    placeholder="Enter City"
-                />
-
-                <InputField
-                    name="director_one_state"
-                    label="State"
-                    type="text"
-                    required
-                    placeholder="Enter State"
-                />
-                <InputField
-                    name="director_one_zipCode"
-                    label="Zip Code"
-                    type="text"
-                    required
-                    placeholder="Enter Zip Code"
-                />
-
-                <InputField
-                    name="director_one_streetAddress"
-                    label="Streen Address"
-                    type="text"
-                    required
-                    placeholder="Enter Street Address"
-                    className="lg:col-span-2 "
-                />
-
-
-
-                <div className="lg:col-span-2 ">
-                    <h2 className="text-[30px] font-semibold text-black"> Director Info 2 </h2>
-                    <p className="text-base font-normal text-gray-600">On of the director must be US resident</p>
-                </div>
-
-                <InputField
-                    name="director_two_name"
-                    label="Name"
-                    type="text"
-                    required
-                    placeholder="Enter Your Name"
-                    className="lg:col-span-2 "
-                />
-
-                <InputField
-                    name="director_two_email"
-                    label="Email"
-                    placeholder="Enter your email"
-                    required
-                    type="text"
-                    className=''
-                />
-
-                <InputField
-                    name="director_two_mobile"
-                    label="Mobile Number"
-                    type="phone"
-                    required
-                    placeholder="Enter mobile number"
-                />
-                <InputField
-                    name="director_two_country"
+                    name={`${directorPrefix}_country`}
                     label="Country"
                     type="select"
                     required
@@ -177,7 +105,7 @@ const OwnersInfoFormTypeThree: React.FC<ChildComponentProps> = ({ handleFormSubm
                 />
 
                 <InputField
-                    name="director_two_city"
+                    name={`${directorPrefix}_city`}
                     label="City"
                     type="text"
                     required
@@ -185,14 +113,15 @@ const OwnersInfoFormTypeThree: React.FC<ChildComponentProps> = ({ handleFormSubm
                 />
 
                 <InputField
-                    name="director_two_state"
+                    name={`${directorPrefix}_state`}
                     label="State"
                     type="text"
                     required
                     placeholder="Enter State"
                 />
+
                 <InputField
-                    name="director_two_zipCode"
+                    name={`${directorPrefix}_zipCode`}
                     label="Zip Code"
                     type="text"
                     required
@@ -200,19 +129,28 @@ const OwnersInfoFormTypeThree: React.FC<ChildComponentProps> = ({ handleFormSubm
                 />
 
                 <InputField
-                    name="director_two_streetAddress"
-                    label="Streen Address"
+                    name={`${directorPrefix}_streetAddress`}
+                    label="Street Address"
                     type="text"
                     required
                     placeholder="Enter Street Address"
-                    className="lg:col-span-2 "
+                    className="lg:col-span-2"
                 />
+            </React.Fragment>
+        );
+    };
 
-
-
-
+    return (
+        <div className="max-w-[758px] mx-auto py-24">
+            <ReusableForm
+                onSubmit={handleSubmit}
+                submitText="Continue"
+                onFormStateChange={handleFormStateChange}
+                className="mb-5 mt-10"
+            >
+                {/* Generate director forms dynamically */}
+                {Array.from({ length: numberOfOwners }, (_, index) => generateDirectorForm(index + 1))}
             </ReusableForm>
-
         </div>
     );
 };
