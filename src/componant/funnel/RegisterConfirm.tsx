@@ -1,9 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "../ui/Image";
 import { ChildComponentProps } from "./SecondFunnel";
+import companyFormationService, { useCompanyFormationData } from "@/lib/companyFormationService";
+const initialInfo = {
+  name: "",
+  email: "",
+  traID: 'Thbd254 2543 21452',
+  time: "10:00 AM",
+  date: "Jun 6, 2025",
+  paymentMethod: "",
+  totalAmount: "$0.00"
+};
 
 const RegisterConfirm: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
+  const data = useCompanyFormationData();
+  const [personalInfo, setPersonalInfo] = useState(initialInfo);
+
+  // Load initial data from localStorage
+  useEffect(() => {
+    let localStorageData = data;
+    if (!data || Object.keys(data).length <= 1) {
+      localStorageData = companyFormationService.getFromLocalStorage();
+      console.log("Fallback - Loading directly from localStorage:", localStorageData);
+    }
+
+    // Load user info from localStorage
+    setPersonalInfo({
+      name: `${localStorageData?.userInfo?.first_name} ${localStorageData?.userInfo?.last_name}`.trim(),
+      email: localStorageData?.userInfo?.email || "",
+      traID: initialInfo.traID,
+      time: initialInfo.time,
+      date: initialInfo.date,
+      paymentMethod: localStorageData?.payment?.method || '',
+      totalAmount: `$${localStorageData?.payment?.amount.toFixed(2)}`,
+    });
+  }, []);
   const handleSubmit = () => {
     handleFormSubmit({ registrationConfrim: true });
   };
@@ -26,13 +58,13 @@ const RegisterConfirm: React.FC<ChildComponentProps> = ({ handleFormSubmit }) =>
           </div>
           <div className="flex flex-col gap-3 mt-4">
             {[
-              { label: 'Name', value: 'Nasir Uddin' },
-              { label: 'Email', value: 'nasir@gmail.com' },
-              { label: 'Transaction ID', value: 'Thbd254 2543 21452' },
-              { label: 'Time', value: '10:00 AM' },
-              { label: 'Date', value: 'Jun 6, 2025' },
-              { label: 'Payment Method', value: 'Stripe' },
-              { label: 'Total Amount', value: '$100.00' },
+              { label: 'Name', value: personalInfo.name },
+              { label: 'Email', value: personalInfo.email },
+              { label: 'Transaction ID', value: personalInfo.traID },
+              { label: 'Time', value: personalInfo.time },
+              { label: 'Date', value: personalInfo.date },
+              { label: 'Payment Method', value: personalInfo.paymentMethod },
+              { label: 'Total Amount', value: personalInfo.totalAmount },
             ].map((item, idx) => (
               <div className="flex justify-between" key={item.label}>
                 <span className="text-black text-base font-normal">{item.label}</span>

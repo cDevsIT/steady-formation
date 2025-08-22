@@ -8,19 +8,20 @@ import OwnersInfoFormTypeOne from "./Comp/OwnersInfoFormTypeOne";
 import OwnersInfoFormTypeTwo from "./Comp/OwnersInfoFormTypeTwo";
 import OwnersInfoFormTypeThree from "./Comp/OwnersInfoFormTypeThree";
 import OwnersInfoFormTypeFour from "./Comp/OwnersInfoFormTypeFour";
+import companyFormationService, { useCompanyFormationData } from "@/lib/companyFormationService";
 
 const OwnersInfo: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-    const [data, setData] = useState<dataState>({});
+    const data = useCompanyFormationData();
 
     // Load initial data from localStorage
     useEffect(() => {
-        const localData = localStorage.getItem('companyData');
-        if (localData) {
-            const parsedData = JSON.parse(localData);
-            setData(parsedData);
+        let localStorageData = data;
+        if (!data || Object.keys(data).length <= 1) {
+            localStorageData = companyFormationService.getFromLocalStorage();
+            console.log("Fallback - Loading directly from localStorage:", localStorageData);
         }
     }, []);
-    const singleLLc = data?.businessType === 'llc' && data?.stepTwo?.llcType === 'singleLLC'
+    const singleLLc = data?.businessType === 'llc' && data?.businessDetails?.llcType === 'singleLLC'
 
     const singleCorp = data?.businessType === 's_corp'
 

@@ -55,7 +55,7 @@ const OwnersInfoFormTypeOne: React.FC<ChildComponentProps> = ({ handleFormSubmit
     };
     return (
         <div className="max-w-[758px] mx-auto py-24">
-            <h2 className="text-[30px] font-semibold text-black"> This is OwnersInfo Component </h2>
+            <h2 className="text-[30px] font-semibold text-black">Owners Info </h2>
             <ReusableForm
                 onSubmit={handleSubmit}
                 submitText="Continue"

@@ -48,17 +48,15 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         onClick={() => !disabled && setIsOpen(!isOpen)}
         onBlur={handleBlur}
         disabled={disabled}
-        className={`w-full px-3 py-2 border rounded-md bg-white text-left flex items-center justify-between focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-          hasError ? 'border-red-500' : 'border-gray-300'
-        } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''}`}
+        className={`w-full px-3 py-2 border rounded-md bg-white text-left flex items-center justify-between focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
+          } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''}`}
       >
         <span className={value ? 'text-gray-900' : 'text-gray-500'}>
           {getSelectedLabel(value)}
         </span>
         <svg
-          className={`w-3 h-3 sm:w-4 sm:h-4 text-gray-400 transition-transform flex-shrink-0 ml-1 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-3 h-3 sm:w-4 sm:h-4 text-gray-400 transition-transform flex-shrink-0 ml-1 ${isOpen ? "rotate-180" : ""
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -132,14 +130,14 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   // Load initial data from localStorage
   useEffect(() => {
     console.log("EightFunnel - Loading data from localStorage:", data);
-    
+
     // Fallback: Load directly from localStorage if hook data is empty
     let localStorageData = data;
     if (!data || Object.keys(data).length <= 1) {
       localStorageData = companyFormationService.getFromLocalStorage();
       console.log("Fallback - Loading directly from localStorage:", localStorageData);
     }
-    
+
     // Load user info from localStorage
     if (localStorageData?.userInfo) {
       const userInfo = localStorageData.userInfo;
@@ -168,7 +166,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const loadInitialData = () => {
       const localStorageData = companyFormationService.getFromLocalStorage();
       console.log("Component mount - Loading from localStorage:", localStorageData);
-      
+
       // Load user info
       if (localStorageData?.userInfo) {
         const userInfo = localStorageData.userInfo;
@@ -260,19 +258,19 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   const handleSave = () => {
     if (editSection === "personal") {
       setPersonalInfo(tempData);
-      
+
       // Update localStorage with the new user info
       const nameParts = tempData.name.split(' ');
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
-      
+
       const updatedUserInfo = {
         first_name: firstName,
         last_name: lastName,
         email: tempData.email,
         phone_number: tempData.phone,
       };
-      
+
       // Update the localStorage data
       const currentData = companyFormationService.getFromLocalStorage();
       companyFormationService.saveToLocalStorage({
@@ -282,7 +280,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     }
     if (editSection === "business") {
       setBusinessInfo(tempData);
-      
+
       // Update localStorage with the new business info
       const currentData = companyFormationService.getFromLocalStorage();
       companyFormationService.saveToLocalStorage({
@@ -475,7 +473,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
       </div>
 
       {/* Owners Info */}
-
+      {/* 
       {singleLLc && <OwnersInfoBlock
         data={ownerInfo}
         handleEdit={handleEdit}
@@ -538,7 +536,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
           editSectionName='ownerTwo'
           title="Owners Info 02"
         />
-      </>}
+      </>} */}
 
       {/* Fee Breakdown */}
       <div className="bg-white rounded-lg border border-gray-200 relative max-w-[728px]">

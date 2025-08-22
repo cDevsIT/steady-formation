@@ -81,7 +81,7 @@ export const InputField: React.FC<InputFieldProps> = ({
     rules = {},
     className = '',
     disabled = false,
-    belowText= ''
+    belowText = ''
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
@@ -240,7 +240,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                             </div>
                         )}
 
-                        
+
 
                         {belowText && <span className='text-sm font-normal text-gray-600'>{belowText}</span>}
                     </div>
@@ -489,16 +489,35 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
         onSubmit(data);
     };
 
-    // Clone children and pass required props
-    const enhancedChildren = React.Children.map(children, (child) => {
-        if (React.isValidElement(child) && child.type === InputField) {
-            return React.cloneElement(child as React.ReactElement<InputFieldProps>, {
-                control,
-                errors
-            });
-        }
-        return child;
-    });
+    // Clone children and pass required props recursively
+    const cloneChildrenWithProps = (children: React.ReactNode): React.ReactNode => {
+        return React.Children.map(children, (child) => {
+            if (!React.isValidElement(child)) {
+                return child;
+            }
+
+            // If it's an InputField, clone it with control and errors props
+            if (child.type === InputField) {
+                return React.cloneElement(child as React.ReactElement<InputFieldProps>, {
+                    control,
+                    errors
+                });
+            }
+
+            // If it has children, recursively clone them
+            const childProps = child.props as any;
+            if (childProps && childProps.children) {
+                return React.cloneElement(child, {
+                    ...childProps,
+                    children: cloneChildrenWithProps(childProps.children)
+                });
+            }
+
+            return child;
+        });
+    };
+
+    const enhancedChildren = cloneChildrenWithProps(children);
 
     return (
         <div className={`space-y-4 grid gap-4 grid-cols-1 lg:grid-cols-2 ${className}`}>

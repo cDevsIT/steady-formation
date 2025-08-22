@@ -6,7 +6,7 @@ import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
 import { countries } from "./funnel.type";
-import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
+import companyFormationService, { CompanyFormationData, useCompanyFormationData } from "@/lib/companyFormationService";
 import { useRouter } from "next/navigation";
 import { createStripeSession, createPayPalPayment } from "@/services/paymentService";
 
@@ -23,16 +23,13 @@ const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => {
 
 const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [paymentOption, setPaymentOption] = useState<string>("");
-    const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
+    const data = useCompanyFormationData();
     const [formMethods, setFormMethods] = useState<any>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
 
     // Load initial data from localStorage using the new service
-    useEffect(() => {
-        const localData = companyFormationService.getFromLocalStorage();
-        setData(localData);
-    }, []);
+
 
     useEffect(() => {
         if (formMethods) {
@@ -52,7 +49,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         try {
             // Get all localStorage data for payment processing
             const localStorageData = companyFormationService.getFromLocalStorage();
-            
+
             // Save payment method to localStorage
             companyFormationService.saveToLocalStorage({
                 ...localStorageData,
@@ -79,7 +76,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
         } catch (error) {
             console.error('Error creating payment session:', error);
-            
+
             // Handle specific error cases
             if (error instanceof Error) {
                 if (error.message.includes('Email Already Exists') || error.message.includes('email already exists')) {
@@ -90,7 +87,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             } else {
                 alert('An error occurred while creating the payment session. Please try again.');
             }
-            
+
             setIsSubmitting(false);
         }
     };
@@ -105,7 +102,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             alert("Please select a payment option.");
             return;
         }
-        
+
         // Call the same submit function
         await handleSubmit({} as CustomFormData);
     };

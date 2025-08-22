@@ -1,52 +1,53 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChildComponentProps } from "../SecondFunnel";
 import { dataState } from "../Funnel";
 import { CustomFormData } from "@/componant/ui/FormSample";
 import { InputField, ReusableForm } from "@/componant/ui/ReusableForm";
 import { countries, manageTypes } from "../funnel.type";
+import companyFormationService, { useCompanyFormationData } from "@/lib/companyFormationService";
 
 const OwnersInfoFormTypeTwo: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [formMethods, setFormMethods] = useState<any>(null);
-    const [data, setData] = useState<dataState>({});
     const [watchedValues, setWatchedValues] = useState<any>({});
+    const data = useCompanyFormationData();
+    const numberOfOwners = data?.businessDetails?.number_of_ownership || 1;
 
     // Load initial data from localStorage
     useEffect(() => {
-        const localData = localStorage.getItem('companyData');
-        if (localData) {
-            const parsedData = JSON.parse(localData);
-            setData(parsedData);
+        let localStorageData = data;
+        if (!data || Object.keys(data).length <= 1) {
+            localStorageData = companyFormationService.getFromLocalStorage();
+            console.log("Fallback - Loading directly from localStorage:", localStorageData);
         }
     }, []);
 
+    // Generate initial form data based on number of owners
+    const generateInitialFormData = () => {
+        const initialData: any = {
+            who_manage: "member_manage",
+        };
+
+        for (let i = 1; i <= numberOfOwners; i++) {
+            const ownerPrefix = `owner_${i}`;
+            initialData[`${ownerPrefix}_name`] = `Owner ${i}`;
+            initialData[`${ownerPrefix}_email`] = "demo@email.com";
+            initialData[`${ownerPrefix}_mobile`] = "2345678901";
+            initialData[`${ownerPrefix}_country`] = "us";
+            initialData[`${ownerPrefix}_city`] = 'New York';
+            initialData[`${ownerPrefix}_state`] = 'Manhattan';
+            initialData[`${ownerPrefix}_zipCode`] = '22011';
+            initialData[`${ownerPrefix}_streetAddress`] = '111, manhattan, new work';
+            initialData[`${ownerPrefix}_ownersPercentage`] = String(Math.floor(100 / numberOfOwners));
+        }
+
+        return initialData;
+    };
 
     useEffect(() => {
         if (formMethods) {
-            formMethods.reset({
-                who_manage: "member_manage",
-                //remove this
-                owner_one_name: "Owner One",
-                owner_one_email: "demo@email.com",
-                owner_one_mobile: "2345678901",
-                owner_one_country: "us",
-                owner_one_city: 'New York',
-                owner_one_state: 'Manhattan',
-                owner_one_zipCode: '22011',
-                owner_one_streetAddress: '111, manhattan, new work',
-                owner_one_ownersPercentage: '100',
-
-                owner_two_name: "Owner two",
-                owner_two_email: "demo@email.com",
-                owner_two_mobile: "2345678901",
-                owner_two_country: "us",
-                owner_two_city: 'New York',
-                owner_two_state: 'Manhattan',
-                owner_two_zipCode: '22011',
-                owner_two_streetAddress: '111, manhattan, new work',
-                owner_two_ownersPercentage: '100',
-            });
+            formMethods.reset(generateInitialFormData());
         }
-    }, [data, formMethods]);
+    }, [data, formMethods, numberOfOwners]);
 
     const handleSubmit = (data: CustomFormData) => {
         handleFormSubmit({ OwnersInfo: data, isOwnersInfoComplete: true })
@@ -64,6 +65,107 @@ const OwnersInfoFormTypeTwo: React.FC<ChildComponentProps> = ({ handleFormSubmit
         // Cleanup subscription when component unmounts or form changes
         return () => subscription.unsubscribe();
     };
+
+    // Generate owner form fields dynamically
+    const generateOwnerForm = (ownerNumber: number) => {
+        const ownerPrefix = `owner_${ownerNumber}`;
+
+        return (
+            <React.Fragment key={`owner-${ownerNumber}`}>
+                <h2 className="text-[30px] font-semibold text-black lg:col-span-2">
+                    Owner Info {ownerNumber.toString().padStart(2, '0')}
+                </h2>
+
+                <InputField
+                    name={`${ownerPrefix}_name`}
+                    label="Name"
+                    type="text"
+                    required
+                    placeholder="Enter Your Name"
+                    className=""
+                />
+
+                <InputField
+                    name={`${ownerPrefix}_email`}
+                    label="Email"
+                    placeholder="Enter your email"
+                    required
+                    type="text"
+                    className=''
+                />
+
+                <InputField
+                    name={`${ownerPrefix}_mobile`}
+                    label="Mobile Number"
+                    type="phone"
+                    required
+                    placeholder="Enter mobile number"
+                />
+
+                <InputField
+                    name={`${ownerPrefix}_percentage`}
+                    label="Ownership Percentage"
+                    type="text"
+                    required
+                    placeholder="Enter Ownership Percentage"
+                />
+
+                <InputField
+                    name={`${ownerPrefix}_country`}
+                    label="Country"
+                    type="select"
+                    required
+                    placeholder="Select Country"
+                    className=""
+                    options={countries}
+                />
+
+                <InputField
+                    name={`${ownerPrefix}_city`}
+                    label="City"
+                    type="text"
+                    required
+                    placeholder="Enter City"
+                />
+
+                <InputField
+                    name={`${ownerPrefix}_state`}
+                    label="State"
+                    type="text"
+                    required
+                    placeholder="Enter State"
+                />
+
+                <InputField
+                    name={`${ownerPrefix}_zipCode`}
+                    label="Zip Code"
+                    type="text"
+                    required
+                    placeholder="Enter Zip Code"
+                />
+
+                <InputField
+                    name={`${ownerPrefix}_streetAddress`}
+                    label="Street Address"
+                    type="text"
+                    required
+                    placeholder="Enter Street Address"
+                    className="lg:col-span-2"
+                />
+            </React.Fragment>
+        );
+    };
+
+    // Generate owner options for manager selection
+    const generateOwnerOptions = () => {
+        const options = [];
+        for (let i = 1; i <= numberOfOwners; i++) {
+            const ownerName = watchedValues?.[`owner_${i}_name`] || `Owner ${i}`;
+            options.push({ label: ownerName, value: ownerName });
+        }
+        return options;
+    };
+
     return (
         <div className="max-w-[758px] mx-auto py-24">
             <ReusableForm
@@ -71,178 +173,23 @@ const OwnersInfoFormTypeTwo: React.FC<ChildComponentProps> = ({ handleFormSubmit
                 submitText="Continue"
                 onFormStateChange={handleFormStateChange}
                 className="mb-5 mt-10"
+                defaultValues={generateInitialFormData()}
             >
-                <h2 className="text-[30px] font-semibold text-black lg:col-span-2">Owner Info 01</h2>
-
-                <InputField
-                    name="owner_one_name"
-                    label="Name"
-                    type="text"
-                    required
-                    placeholder="Enter Your Name"
-                    className=""
-                />
-
-                <InputField
-                    name="owner_one_email"
-                    label="Email"
-                    placeholder="Enter your email"
-                    required
-                    type="text"
-                    className=''
-                />
-
-                <InputField
-                    name="owner_one_mobile"
-                    label="Mobile Number"
-                    type="phone"
-                    required
-                    placeholder="Enter mobile number"
-                />
-
-                <InputField
-                    name="owner_one_percentage"
-                    label="Ownership Percentage"
-                    type="text"
-                    required
-                    placeholder="Enter Ownership Percentage"
-                />
-                <InputField
-                    name="owner_one_country"
-                    label="Country"
-                    type="select"
-                    required
-                    placeholder="Select Country"
-                    className=""
-                    options={countries}
-                />
-
-                <InputField
-                    name="owner_one_city"
-                    label="City"
-                    type="text"
-                    required
-                    placeholder="Enter City"
-                />
-
-                <InputField
-                    name="owner_one_state"
-                    label="State"
-                    type="text"
-                    required
-                    placeholder="Enter State"
-                />
-                <InputField
-                    name="owner_one_zipCode"
-                    label="Zip Code"
-                    type="text"
-                    required
-                    placeholder="Enter Zip Code"
-                />
-
-                <InputField
-                    name="owner_one_streetAddress"
-                    label="Streen Address"
-                    type="text"
-                    required
-                    placeholder="Enter Street Address"
-                    className="lg:col-span-2 "
-                />
-
-
-                <h2 className="text-[30px] font-semibold text-black lg:col-span-2">Owner Info 02</h2>
-
-                <InputField
-                    name="owner_two_name"
-                    label="Name"
-                    type="text"
-                    required
-                    placeholder="Enter Your Name"
-                    className=""
-                />
-
-                <InputField
-                    name="owner_two_email"
-                    label="Email"
-                    placeholder="Enter your email"
-                    required
-                    type="text"
-                    className=''
-                />
-
-                <InputField
-                    name="owner_two_mobile"
-                    label="Mobile Number"
-                    type="text"
-                    required
-                    placeholder="Enter mobile number"
-                />
-
-                <InputField
-                    name="owner_two_percentage"
-                    label="Ownership Percentage"
-                    type="phone"
-                    required
-                    placeholder="Enter Ownership Percentage"
-                />
-                <InputField
-                    name="owner_two_country"
-                    label="Country"
-                    type="select"
-                    required
-                    placeholder="Select Country"
-                    className=""
-                    options={countries}
-                />
-
-                <InputField
-                    name="owner_two_city"
-                    label="City"
-                    type="text"
-                    required
-                    placeholder="Enter City"
-                />
-
-                <InputField
-                    name="owner_two_state"
-                    label="State"
-                    type="text"
-                    required
-                    placeholder="Enter State"
-                />
-                <InputField
-                    name="owner_two_zipCode"
-                    label="Zip Code"
-                    type="text"
-                    required
-                    placeholder="Enter Zip Code"
-                />
-
-                <InputField
-                    name="owner_two_streetAddress"
-                    label="Streen Address"
-                    type="text"
-                    required
-                    placeholder="Enter Street Address"
-                    className="lg:col-span-2 "
-                />
-
+                {/* Generate owner forms dynamically */}
+                {Array.from({ length: numberOfOwners }, (_, index) => generateOwnerForm(index + 1))}
 
                 <h2 className="text-[30px] font-semibold text-black lg:col-span-2">Manage type</h2>
 
-                {watchedValues?.who_manage === 'member_manage' && <InputField
-                    name="member_as_manager"
-                    label="Select Member"
-                    type="select"
-                    required
-                    placeholder="Select Member"
-                    options={[
-                        { label: watchedValues?.owner_one_name, value: watchedValues?.owner_one_name },
-                        { label: watchedValues?.owner_two_name, value: watchedValues?.owner_two_name },
-                    ]}
-                />}
-
-
+                {watchedValues?.who_manage === 'member_manage' && (
+                    <InputField
+                        name="member_as_manager"
+                        label="Select Member"
+                        type="select"
+                        required
+                        placeholder="Select Member"
+                        options={generateOwnerOptions()}
+                    />
+                )}
 
                 <InputField
                     name="who_manage"
@@ -254,120 +201,92 @@ const OwnersInfoFormTypeTwo: React.FC<ChildComponentProps> = ({ handleFormSubmit
                     options={manageTypes}
                 />
 
-                {watchedValues?.who_manage === 'member_manage' && <InputField
-                    name="owner_as_manager"
-                    label="Select One of the Owenr As a Manager "
-                    type="select"
-                    required
-                    placeholder="Select Owner"
-                    className="lg:col-span-2"
-                    options={[
-                        { label: watchedValues?.owner_one_name, value: watchedValues?.owner_one_name },
-                        { label: watchedValues?.owner_two_name, value: watchedValues?.owner_two_name },
-                    ]}
-                />}
-
-                {/* {watchedValues?.who_manage === 'manager_manage' &&
-                } */}
-
-                {/* Manager Manage Section  */}
-
-                {watchedValues?.who_manage === 'manager_manage' && <InputField
-                    name="manager_name"
-                    label="Name"
-                    type="text"
-                    required
-                    placeholder="Enter Your Name"
-                    className="lg:col-span-2 "
-                />
-                }
-                {watchedValues?.who_manage === 'manager_manage' &&
+                {watchedValues?.who_manage === 'member_manage' && (
                     <InputField
-                        name="manager_email"
-                        label="Email"
-                        placeholder="Enter your email"
-                        required
-                        type="text"
-                        className=''
-                    />
-                }
-
-                    
-                {watchedValues?.who_manage === 'manager_manage' &&
-                    <InputField
-                        name="manager_mobile"
-                        label="Mobile Number"
-                        type="phone"
-                        required
-                        placeholder="Enter mobile number"
-                    />
-                }
-                    
-
-                {watchedValues?.who_manage === 'manager_manage' &&
-                    <InputField
-                        name="manager_country"
-                        label="Country"
+                        name="owner_as_manager"
+                        label="Select One of the Owner As a Manager"
                         type="select"
                         required
-                        placeholder="Select Country"
-                        className=""
-                        options={countries}
+                        placeholder="Select Owner"
+                        className="lg:col-span-2"
+                        options={generateOwnerOptions()}
                     />
-                }
-                    
+                )}
 
-                {watchedValues?.who_manage === 'manager_manage' &&
-                    <InputField
-                        name="manager_city"
-                        label="City"
-                        type="text"
-                        required
-                        placeholder="Enter City"
-                    />
-                }
-                   
+                {/* Manager Manage Section */}
+                {watchedValues?.who_manage === 'manager_manage' && (
+                    <>
+                        <InputField
+                            name="manager_name"
+                            label="Name"
+                            type="text"
+                            required
+                            placeholder="Enter Your Name"
+                            className="lg:col-span-2"
+                        />
 
-                {watchedValues?.who_manage === 'manager_manage' &&
+                        <InputField
+                            name="manager_email"
+                            label="Email"
+                            placeholder="Enter your email"
+                            required
+                            type="text"
+                            className=''
+                        />
 
-<InputField
-                        name="manager_state"
-                        label="State"
-                        type="text"
-                        required
-                        placeholder="Enter State"
-                    />
-                }
+                        <InputField
+                            name="manager_mobile"
+                            label="Mobile Number"
+                            type="phone"
+                            required
+                            placeholder="Enter mobile number"
+                        />
 
+                        <InputField
+                            name="manager_country"
+                            label="Country"
+                            type="select"
+                            required
+                            placeholder="Select Country"
+                            className=""
+                            options={countries}
+                        />
 
-                {watchedValues?.who_manage === 'manager_manage' &&
-                    <InputField
-                        name="manager_zipCode"
-                        label="Zip Code"
-                        type="text"
-                        required
-                        placeholder="Enter Zip Code"
-                    />
-                }
-                    
+                        <InputField
+                            name="manager_city"
+                            label="City"
+                            type="text"
+                            required
+                            placeholder="Enter City"
+                        />
 
-                {watchedValues?.who_manage === 'manager_manage' &&
-                    <InputField
-                        name="manager_streetAddress"
-                        label="Streen Address"
-                        type="text"
-                        required
-                        placeholder="Enter Street Address"
-                        className="lg:col-span-2 "
-                    />
-                }
+                        <InputField
+                            name="manager_state"
+                            label="State"
+                            type="text"
+                            required
+                            placeholder="Enter State"
+                        />
 
-                    
+                        <InputField
+                            name="manager_zipCode"
+                            label="Zip Code"
+                            type="text"
+                            required
+                            placeholder="Enter Zip Code"
+                        />
 
-
-
+                        <InputField
+                            name="manager_streetAddress"
+                            label="Street Address"
+                            type="text"
+                            required
+                            placeholder="Enter Street Address"
+                            className="lg:col-span-2"
+                        />
+                    </>
+                )}
             </ReusableForm>
-
         </div>
     );
 };
