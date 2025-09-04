@@ -4,8 +4,10 @@ import CompanySelectSection from "./Comp/CompanySelectSection";
 import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
-import { industries, llcTypes, numOfOwnerShip, usStates } from "./funnel.type";
+import { industries, llcTypes, numOfOwnerShip } from "./funnel.type";
 import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
+import stateFeesService from "@/lib/stateFeesService";
+import { useStates } from "@/hooks/useStates";
 export interface ChildComponentProps {
     handleFormSubmit: (data: CustomFormData) => void;
 }
@@ -14,6 +16,8 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
     const [selected, setSelected] = useState(data?.businessType || 'llc');
     const [formMethods, setFormMethods] = useState<any>(null);
+    const [isLoadingFees, setIsLoadingFees] = useState(false);
+    const { states: usStates, isLoading: isLoadingStates } = useStates();
 
     const [watchedValues, setWatchedValues] = useState<any>({});
 
@@ -28,16 +32,16 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
 
     useEffect(() => {
-        if (formMethods) {
+        if (formMethods && usStates.length > 0) {
             formMethods.reset({
                 //remove This
                 llcType: "singleLLC",
                 industryType: "technology",
-                stateName: "CO",
+                stateName: usStates[0]?.value || "Colorado",
                 numOfOwnerShip: 1,
             });
         }
-    }, [data, formMethods]);
+    }, [data, formMethods, usStates]);
 
     const handleSubmit = (data: CustomFormData) => {
         // Save the business details to localStorage
@@ -64,10 +68,44 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         // Set up watchers for specific fields
         const subscription = methods.watch((value: any, { name, type }: any) => {
             setWatchedValues(value);
+            
+            // If state name changes, fetch and store state fees
+            if (name === 'stateName' && value.stateName) {
+                fetchAndStoreStateFees(value.stateName);
+            }
         });
 
         // Cleanup subscription when component unmounts or form changes
         return () => subscription.unsubscribe();
+    };
+
+    // Fetch and store state fees when state is selected
+    const fetchAndStoreStateFees = async (stateName: string) => {
+        setIsLoadingFees(true);
+        try {
+            const stateFees = await stateFeesService.getStateFees(stateName);
+            
+            // Store state fees in localStorage for use in sidebar
+            const currentData = companyFormationService.getFromLocalStorage();
+            companyFormationService.saveToLocalStorage({
+                ...currentData,
+                stateFees: stateFees
+            });
+        } catch (error) {
+            console.error('Error fetching state fees:', error);
+            // Set default fees if API fails
+            const currentData = companyFormationService.getFromLocalStorage();
+            companyFormationService.saveToLocalStorage({
+                ...currentData,
+                stateFees: {
+                    registration_fee: 100, // Default fallback
+                    renewal_fee: 50,
+                    transfer_fee: 25
+                }
+            });
+        } finally {
+            setIsLoadingFees(false);
+        }
     };
 
     const showNumberOfOwnership = (selected === 'llc' && watchedValues.llcType === 'singleLLC') || selected === 'non_profit'
@@ -103,10 +141,17 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                     label="State Name"
                     type="select"
                     required
-                    placeholder="Select State Name"
+                    placeholder={isLoadingStates ? "Loading states..." : "Select State Name"}
                     options={usStates}
                     className="mb-1"
+                    disabled={isLoadingStates}
                 />
+                
+                {isLoadingStates && (
+                    <div className="text-sm text-gray-500 mb-1">
+                        Loading available states from API...
+                    </div>
+                )}
 
                 <InputField
                     name="industryType"
@@ -141,7 +186,20 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
                 <div className="lg:col-span-2 mb-1">
                     <p className="text-sm font-medium text-black">State governments charge a one-time LLC formation fee which varies by state. This fee is required to legally register your business. Based on your selected state, we&apos;ll show the exact amount on the next step.</p>
-                    <h4 className="font-bold text-[18px] text-black mt-3 mb-4">In Wyoming, the filing fee is $100</h4>
+                    {watchedValues.stateName && (
+                        <div className="mt-3 mb-4">
+                            {isLoadingFees ? (
+                                <div className="flex items-center gap-2">
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                                    <span className="text-sm text-gray-600">Loading state fees...</span>
+                                </div>
+                            ) : (
+                                <h4 className="font-bold text-[18px] text-black">
+                                    In {watchedValues.stateName}, the filing fee will be shown in the order summary
+                                </h4>
+                            )}
+                        </div>
+                    )}
                 </div>
 
 

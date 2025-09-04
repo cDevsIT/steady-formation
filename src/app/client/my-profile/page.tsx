@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
+import Image from '@/componant/ui/Image';
 import Button from '@/componant/ui/Button';
 import Link from 'next/link';
 import { getUserProfile, UserProfile } from '@/services/userService';
@@ -94,7 +94,7 @@ export default function MyProfile() {
                 <div className="flex flex-row justify-between border-b border-[#E4E7EC] pb-4 mb-8">
                     <div className='flex flex-row items-center space-x-3 pl-[24px]'>
                         {userProfile.avatar ? (
-                            <Image 
+                            <img 
                                 src={`${API_CONFIG.BASE_URL.replace('/api', '')}/storage/${userProfile.avatar}`}
                                 alt="Profile Avatar" 
                                 width={56} 
@@ -102,7 +102,7 @@ export default function MyProfile() {
                                 className="rounded-full object-cover bg-[#F4F3FF]" 
                             />
                         ) : (
-                            <Image src="/client/profile-icon1.svg" alt="Profile Icon" width={56} height={56} className="rounded-full object-cover bg-[#F4F3FF]" />
+                            <Image url="/client/profile-icon1.svg" alt="Profile Icon" width={56} height={56} className="rounded-full object-cover bg-[#F4F3FF]" />
                         )}
                         <span className="font-semibold text-base">{userProfile.full_name}</span>
                     </div>

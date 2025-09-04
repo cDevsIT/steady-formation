@@ -86,6 +86,13 @@ export interface CompanyFormationData {
   // Current step
   currentStep: number;
   
+  // State fees from API
+  stateFees?: {
+    registration_fee: number;
+    renewal_fee: number;
+    transfer_fee: number;
+  };
+  
   // Legacy properties for backward compatibility
   isPaymentComplete?: boolean;
   registrationConfrim?: boolean;
