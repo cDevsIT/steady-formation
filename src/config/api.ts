@@ -35,6 +35,10 @@ export const API_CONFIG = {
             BY_FIELD: '/state-fees/by-field',
             ALL: '/state-fees/all',
             BY_STATE: (stateName: string) => `/state-fees/state/${stateName}`,
+        },
+        COMPANY_STATUS: {
+            STATUS: '/company-status/status',
+            USER_ORDERS: '/company-status/user-orders',
         }
     }
 };

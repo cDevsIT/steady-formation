@@ -1,7 +1,15 @@
+"use client";
+
 import React from 'react';
 import Image from '@/componant/ui/Image';
+import { useCompanyStatus } from '@/hooks/useCompanyStatus';
+import { useCompany } from '@/contexts/CompanyContext';
 
 export default function ClientDashboard() {
+    const { selectedCompany } = useCompany();
+    const { statusData, isLoading, error } = useCompanyStatus({ 
+        user_id: selectedCompany?.user_id || 3 
+    });
     return (
         <div>
 
@@ -12,31 +20,60 @@ export default function ClientDashboard() {
                     <div className="absolute top-4 left-16 right-28 h-1 bg-[#ECECEC] rounded-full mx-4 md:mx-6"></div>
                     {/* Progress line */}
                     <div className="absolute top-4 left-14 h-1 bg-[#7856FC] rounded-full transition-all duration-500 mx-4 md:mx-6"
-                        style={{ width: 'calc(17% + 0px)' }}></div>
+                        style={{ 
+                            width: statusData?.steps 
+                                ? (() => {
+                                    const completedSteps = statusData.steps.filter(step => step.status === 'complete').length;
+                                    const processingSteps = statusData.steps.filter(step => step.status === 'processing').length;
+                                    
+                                    // Calculate total progress: complete steps (full) + processing steps (half)
+                                    const totalProgress = completedSteps + (processingSteps * 0.5);
+                                    
+                                    if (totalProgress === 0) return 'calc(0 + 0px)';
+                                    if (totalProgress === 0.5) return 'calc(8% + 0px)';
+                                    if (totalProgress === 1) return 'calc(15% + 0px)';
+                                    if (totalProgress === 1.5) return 'calc(23% + 0px)';
+                                    if (totalProgress === 2) return 'calc(31% + 0px)';
+                                    if (totalProgress === 2.5) return 'calc(39% + 0px)';
+                                    if (totalProgress === 3) return 'calc(46.5% + 0px)';
+                                    if (totalProgress === 3.5) return 'calc(52.5% + 0px)';
+                                    if (totalProgress === 4) return 'calc(58% + 0px)';
+                                    if (totalProgress === 4.5) return 'calc(68% + 0px)';
+                                    if (totalProgress === 5) return 'calc(78% + 0px)';
+                                    if (totalProgress === 5.5) return 'calc(78% + 0px)';
+                                    if (totalProgress === 6) return 'calc(78% + 0px)';
+                                    return 'calc(0 + 0px)';
+                                })()
+                                : 'calc(0 + 0px)' 
+                        }}></div>
                     {/* Steps */}
                     <div className="flex justify-between relative z-10 px-4 md:px-6">
                         {[
                             { label: 'Name Availability Search' },
                             { label: 'State Filing' },
                             { label: 'Registered Business Address' },
-                            { label: 'Registered Agent Info.' },
+                            { label: 'Mail Forwarding' },
                             { label: 'EIN' },
                             { label: 'Operating Agreement/Corporate Bylaws' },
                         ].map((step, idx) => {
-                            const isCompleted = idx === 0;
-                            const isActive = idx === 1;
-                            const isUpcoming = idx > 1;
+                            // Get status from API data or use default
+                            const apiStep = statusData?.steps?.find(s => s.label === step.label);
+                            const stepStatus = apiStep?.status || (idx === 0 ? 'complete' : idx === 1 ? 'processing' : 'pending');
+                            
+                            const isCompleted = stepStatus === 'complete';
+                            const isProcessing = stepStatus === 'processing';
+                            const isUpcoming = stepStatus === 'pending';
                             return (
                                 <div key={step.label} className="flex flex-col items-center flex-shrink-0 min-w-[90px]">
                                     {/* Step circle */}
                                     <div className={`w-8 h-8 flex items-center justify-center rounded-full transition-all duration-300 mb-3
-                                        ${isCompleted ? 'bg-[#7856FC]' : isActive ? 'bg-[#7856FC]' : 'bg-white border-2 border-[#ECECEC]'}
+                                        ${isCompleted ? 'bg-[#7856FC]' : isProcessing ? 'bg-[#7856FC]' : 'bg-white border-2 border-[#ECECEC]'}
                                     `}>
                                         {isCompleted ? (
                                             <svg className="w-4 h-4" fill="none" stroke="white" strokeWidth="2.5" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                             </svg>
-                                        ) : isActive ? (
+                                        ) : isProcessing ? (
                                             <div className="w-3 h-3 rounded-full bg-white"></div>
                                         ) : (
                                             <div className="w-3 h-3 rounded-full bg-[#ECECEC]"></div>
@@ -44,7 +81,7 @@ export default function ClientDashboard() {
                                     </div>
                                     {/* Step label */}
                                     <div className={`text-[12px] leading-3 font-medium text-center mt-1
-                                        ${isCompleted ? 'text-black font-bold' : isActive ? 'text-[#7856FC]' : 'text-[#BDBDBD]'}
+                                        ${isCompleted ? 'text-black font-bold' : isProcessing ? 'text-[#7856FC]' : 'text-[#BDBDBD]'}
                                     `} style={{ whiteSpace: 'normal' }}>
                                         {step.label}
                                     </div>
