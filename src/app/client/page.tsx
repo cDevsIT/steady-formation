@@ -29,22 +29,22 @@ export default function ClientDashboard() {
                                     // Calculate total progress: complete steps (full) + processing steps (half)
                                     const totalProgress = completedSteps + (processingSteps * 0.5);
                                     
-                                    if (totalProgress === 0) return 'calc(0 + 0px)';
-                                    if (totalProgress === 0.5) return 'calc(8% + 0px)';
-                                    if (totalProgress === 1) return 'calc(15% + 0px)';
-                                    if (totalProgress === 1.5) return 'calc(23% + 0px)';
-                                    if (totalProgress === 2) return 'calc(31% + 0px)';
-                                    if (totalProgress === 2.5) return 'calc(39% + 0px)';
-                                    if (totalProgress === 3) return 'calc(46.5% + 0px)';
-                                    if (totalProgress === 3.5) return 'calc(52.5% + 0px)';
-                                    if (totalProgress === 4) return 'calc(58% + 0px)';
-                                    if (totalProgress === 4.5) return 'calc(68% + 0px)';
-                                    if (totalProgress === 5) return 'calc(78% + 0px)';
-                                    if (totalProgress === 5.5) return 'calc(78% + 0px)';
-                                    if (totalProgress === 6) return 'calc(78% + 0px)';
-                                    return 'calc(0 + 0px)';
+                                    if (totalProgress === 0) return 'calc(0% + 0px)';
+                                    if (totalProgress === 0.5) return 'calc(5% + 0px)';
+                                    if (totalProgress === 1) return 'calc(8.5% + 0px)';
+                                    if (totalProgress === 1.5) return 'calc(11% + 0px)';
+                                    if (totalProgress === 2) return 'calc(16% + 0px)';
+                                    if (totalProgress === 2.5) return 'calc(23% + 0px)';
+                                    if (totalProgress === 3) return 'calc(31% + 0px)';
+                                    if (totalProgress === 3.5) return 'calc(38.5% + 0px)';
+                                    if (totalProgress === 4) return 'calc(46.5% + 0px)';
+                                    if (totalProgress === 4.5) return 'calc(52.75% + 0px)';
+                                    if (totalProgress === 5) return 'calc(59% + 0px)';
+                                    if (totalProgress === 5.5) return 'calc(75% + 0px)';
+                                    if (totalProgress === 6) return 'calc(82.5% + 0px)';
+                                    return 'calc(0% + 0px)';
                                 })()
-                                : 'calc(0 + 0px)' 
+                                : 'calc(0% + 0px)' 
                         }}></div>
                     {/* Steps */}
                     <div className="flex justify-between relative z-10 px-4 md:px-6">
@@ -54,7 +54,7 @@ export default function ClientDashboard() {
                             { label: 'Registered Business Address' },
                             { label: 'Mail Forwarding' },
                             { label: 'EIN' },
-                            { label: 'Operating Agreement/Corporate Bylaws' },
+                            { label: 'Operating Agreement' },
                         ].map((step, idx) => {
                             // Get status from API data or use default
                             const apiStep = statusData?.steps?.find(s => s.label === step.label);
