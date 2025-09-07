@@ -36,10 +36,14 @@ export const API_CONFIG = {
             ALL: '/state-fees/all',
             BY_STATE: (stateName: string) => `/state-fees/state/${stateName}`,
         },
-        COMPANY_STATUS: {
-            STATUS: '/company-status/status',
-            USER_ORDERS: '/company-status/user-orders',
-        }
+               COMPANY_STATUS: {
+                   STATUS: '/company-status/status',
+                   USER_ORDERS: '/company-status/user-orders',
+               },
+               DOCUMENTS: {
+                   USER_DOCUMENTS: '/documents/user-documents',
+                   DOWNLOAD: (orderId: string, type: string) => `/documents/download/${orderId}/${type}`,
+               }
     }
 };
 
