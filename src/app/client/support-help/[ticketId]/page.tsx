@@ -2,34 +2,61 @@
 import React, { useEffect, useState } from "react";
 import SupportTicketChat from "@/componant/client/support-help/SupportTicketChat";
 import { SupportRow } from "@/componant/client/support-help/SupportHelp";
-
-const fetchTickets = async (page = 1, limit = 100): Promise<SupportRow[]> => {
-  const res = await fetch(`https://reqres.in/api/users?page=${page}&per_page=${limit}`, {
-    headers: { 'x-api-key': 'reqres-free-v1' },
-  });
-  const data = await res.json();
-  return data.data.map((user: any) => ({
-    id: user.id,
-    user: `#Tk12${100 + user.id}`,
-    avatar: user.avatar,
-    name: user.first_name,
-    subject: "EIN Not Received",
-    submitted: "Apr 15,2025",
-    updated: "Apr 20,2025",
-    assignee: user.first_name,
-    status: ["In Progress", "Resolve"][user.id % 2],
-    priority: ["High", "Medium", "Low"][user.id % 3],
-  }));
-};
+import { ticketsService } from "@/lib/ticketsService";
 
 const SupportTicketChatPage = ({ params }: { params: Promise<{ ticketId: string }> }) => {
   const [tickets, setTickets] = useState<SupportRow[]>([]);
   const [ticketId, setTicketId] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   useEffect(() => {
-    params.then(({ ticketId }) => setTicketId(ticketId));
-    fetchTickets().then(setTickets);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Get the ticketId from params
+        const { ticketId: paramTicketId } = await params;
+        setTicketId(paramTicketId);
+        
+        // Fetch user's tickets
+        const response = await ticketsService.getUserTickets({
+          page: 1,
+          per_page: 100, // Get all tickets for the sidebar
+        });
+
+        if (response.status === 'success' && response.data) {
+          setTickets(response.data.tickets);
+        } else {
+          setError(response.message || 'Failed to fetch tickets');
+        }
+      } catch (err) {
+        console.error('Error fetching tickets:', err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch tickets');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [params]);
+
+  if (loading) {
+    return (
+      <div className="flex w-full h-[80vh] bg-white rounded-2xl border border-gray-200 overflow-hidden text-[#222] items-center justify-center">
+        <div className="text-gray-500">Loading tickets...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex w-full h-[80vh] bg-white rounded-2xl border border-gray-200 overflow-hidden text-[#222] items-center justify-center">
+        <div className="text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <SupportTicketChat tickets={tickets} initialTicketId={ticketId} />

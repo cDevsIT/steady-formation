@@ -6,22 +6,12 @@ import Image from "@/componant/ui/Image";
 import Modal from "@/componant/ui/Modal";
 import { InputField, ReusableForm } from "@/componant/ui/ReusableFormTwo";
 import { prioroty, serviceTypes } from "@/componant/funnel/funnel.type";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SupportTicketChat from "./SupportTicketChat";
+import { ticketsService, Ticket, CreateTicketData } from "@/lib/ticketsService";
 
-// SupportRow type
-export interface SupportRow {
-  id: number;
-  user: string;
-  avatar: string;
-  name: string;
-  subject: string;
-  submitted: string;
-  updated: string;
-  assignee: string;
-  status: string;
-  priority: string;
-}
+// SupportRow type - using Ticket from service
+export type SupportRow = Ticket;
 
 const PAGE_SIZE = 2;
 
@@ -77,56 +67,46 @@ const SupportHelp = () => {
   const [modalData, setModalData] = useState<SupportRow | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [total, setTotal] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [selectedTicketId, setSelectedTicketId] = useState<string | number | null>(null);
+  const searchParams = useSearchParams();
 
-  // Fetch paginated demo data from reqres.in
+  // Open create ticket modal if URL has ?new=1
   useEffect(() => {
-    setLoading(true);
-    fetch(`https://reqres.in/api/users?page=${paginationPage}&per_page=${limit}`, {
-      headers: {
-        'x-api-key': 'reqres-free-v1',
-      },
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const errMsg = await res.text();
-          throw new Error(`${res.status} ${res.statusText} — ${errMsg}`);
+    if (searchParams?.get('new') === '1') {
+      setCreateTicket(true);
+    }
+  }, [searchParams]);
+
+  // Fetch tickets from API
+  useEffect(() => {
+    const fetchTickets = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await ticketsService.getUserTickets({
+          page: paginationPage,
+          per_page: limit,
+          search: search || undefined,
+        });
+
+        if (response.status === 'success' && response.data) {
+          setData(response.data.tickets);
+          setPageCount(response.data.pagination.last_page);
+          setTotal(response.data.pagination.total);
+        } else {
+          setError(response.message || 'Failed to fetch tickets');
         }
-        return res.json();
-      })
-      .then((res) => {
-        // Map reqres users to SupportRow
-        const mapped: SupportRow[] = res.data.map((user: any) => ({
-          id: user.id,
-          user: `#Tk12${100 + user.id}`,
-          avatar: user.avatar,
-          name: user.first_name,
-          subject: "EIN Not Received",
-          submitted: "Apr 15,2025",
-          updated: "Apr 20,2025",
-          assignee: user.first_name,
-          status: ["In Progress", "Resolve"][user.id % 2],
-          priority: ["High", "Medium", "Low"][user.id % 3],
-        }));
-        // Filter by search
-        const filtered = search
-          ? mapped.filter(
-            (row) =>
-              row.user.toLowerCase().includes(search.toLowerCase()) ||
-              row.name.toLowerCase().includes(search.toLowerCase()) ||
-              row.subject.toLowerCase().includes(search.toLowerCase())
-          )
-          : mapped;
-        setData(filtered);
-        setPageCount(res.total_pages);
-      })
-      .catch((err) => {
-        console.error('Error fetching users:', err);
-      })
-      .finally(() => {
+      } catch (err) {
+        console.error("Error fetching tickets:", err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch tickets');
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchTickets();
   }, [paginationPage, limit, search]);
 
   // Handlers
@@ -155,14 +135,51 @@ const SupportHelp = () => {
   };
 
 
-  const handleNewTicketCreate = (data: any) => {
-    console.log('Form Data:', data);
-    setCreateTicket(false)
-    setCompleteTicket(true);
+  const handleNewTicketCreate = async (formData: any) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const ticketData: CreateTicketData = {
+        title: formData.subject,
+        content: formData.description,
+        attachment: formData.upload_file,
+      };
+
+      const response = await ticketsService.createTicket(ticketData);
+
+      if (response.status === 'success') {
+        setCreateTicket(false);
+        setCompleteTicket(true);
+        // Refresh the tickets list
+        const refreshResponse = await ticketsService.getUserTickets({
+          page: paginationPage,
+          per_page: limit,
+          search: search || undefined,
+        });
+        if (refreshResponse.status === 'success' && refreshResponse.data) {
+          setData(refreshResponse.data.tickets);
+          setPageCount(refreshResponse.data.pagination.last_page);
+          setTotal(refreshResponse.data.pagination.total);
+        }
+      } else {
+        setError(response.message || 'Failed to create ticket');
+      }
+    } catch (err) {
+      console.error('Error creating ticket:', err);
+      setError(err instanceof Error ? err.message : 'Failed to create ticket');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="max-w-[975px] mx-auto border border-gray-200 overflow-hidden rounded-3xl py-3">
+      {error && (
+        <div className="mx-4 mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600 text-sm">{error}</p>
+        </div>
+      )}
       <CustomPaginationTable
         paginationPage={paginationPage}
         pageCount={pageCount}
