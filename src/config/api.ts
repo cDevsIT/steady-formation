@@ -30,7 +30,20 @@ export const API_CONFIG = {
         BLOGS: {
             LIST: '/blogs',
             DETAIL: (slug: string) => `/blogs/${slug}`,
-        }
+        },
+        STATE_FEES: {
+            BY_FIELD: '/state-fees/by-field',
+            ALL: '/state-fees/all',
+            BY_STATE: (stateName: string) => `/state-fees/state/${stateName}`,
+        },
+               COMPANY_STATUS: {
+                   STATUS: '/company-status/status',
+                   USER_ORDERS: '/company-status/user-orders',
+               },
+               DOCUMENTS: {
+                   USER_DOCUMENTS: '/documents/user-documents',
+                   DOWNLOAD: (orderId: string, type: string) => `/documents/download/${orderId}/${type}`,
+               }
     }
 };
 
