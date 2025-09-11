@@ -57,7 +57,7 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             },
             currentStep: 3
         });
-        
+
         handleFormSubmit({ stepTwo: data, businessType: selected });
     };
 
