@@ -159,7 +159,7 @@ const SupportTicketChat: React.FC<SupportTicketChatProps> = ({ tickets }) => {
                 <div 
                   className="text-sm mb-1"
                   dangerouslySetInnerHTML={{ 
-                    __html: currentTicket.content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') 
+                    __html: (currentTicket.content || '').replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') 
                   }}
                 />
                 <div className="text-xs text-gray-400">
@@ -187,7 +187,7 @@ const SupportTicketChat: React.FC<SupportTicketChatProps> = ({ tickets }) => {
                 <div 
                   className="text-sm mb-1"
                   dangerouslySetInnerHTML={{ 
-                    __html: comment.comment_text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') 
+                    __html: (comment.comment_text || '').replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') 
                   }}
                 />
                 <div className="text-xs text-gray-400">
