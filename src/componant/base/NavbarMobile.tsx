@@ -18,7 +18,7 @@ const NavbarMobile: React.FC<NavbarProps> = ({ }) => {
         { name: "Home", href: "/" },
         { name: "About Us", href: "/about" },
         { name: "Success Stories", href: "/success-stories" },
-        { name: "Contact US", href: "/contact-us" },
+        { name: "Contact Us", href: "/contact-us" },
         { name: "Blog", href: "/blog" },
         { name: "Affiliate", href: "/affiliate" },
     ];
@@ -85,7 +85,7 @@ const NavbarMobile: React.FC<NavbarProps> = ({ }) => {
                             </button>
 
                             {/* Logout Button */}
-                            <button 
+                            <button
                                 onClick={handleLogout}
                                 className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
                             >

@@ -12,7 +12,7 @@ const businessStructures = [
             'Unlimited owners (members) allowed',
             'Board of directors required',
             'Allows strong protection for personal assets',
-            'Subject to double taxation(profits taxed at both corporate & shareholder levels)',
+            'Subject to double taxation (profits taxed at both corporate & shareholder levels)',
             'Best for raising venture capital and issuing stock',
             'Long-term existence (Perpetual)',
             'Suitable for going public'

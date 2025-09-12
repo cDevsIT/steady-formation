@@ -26,7 +26,7 @@ export default function Footer() {
         { name: 'Linkedin', icon: '/icons/linkedin.svg', href: 'https://instagram.com/steadyformation' },
     ];
 
-    if(isClientRoute || hideHeaderFooter) return null;
+    if (isClientRoute || hideHeaderFooter) return null;
 
     return (
         <footer className="bg-gray-50 border-t border-gray-200 px-4 sm:px-6 lg:px-4 lg:pt-10">
@@ -38,7 +38,7 @@ export default function Footer() {
                             <Image className='h-[48px] ' width={200} height={48} url='/steady-formation-logo.svg' alt='Steady Formation Logo' />
                         </div>
                         <p className="text-black text-[16px] leading-relaxed max-w-xs">
-                            Steady Formation is a business formation company that specializes in providing high-quality business formation services.
+                            Steady Formation helps entrepreneurs and companies set up their businesses with precision, speed, and reliable expertise.
                         </p>
                         <div className="flex items-center gap-3">
                             {socialLinks.map((social) => {
