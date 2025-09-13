@@ -1,24 +1,45 @@
 import CarouselSlider from '../../ui/CarouselSlider';
 import { sampleReviews } from '../../data/review';
 import Button from '../../ui/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from '@/componant/ui/Image';
 import Rating from '@/componant/shared/Rating';
+import companyFormationService, { useCompanyFormationData, CompanyFormationData } from '@/lib/companyFormationService';
 
-const orderSummary = [
-    { label: 'Incorporation of Your Company', value: 'Free' },
-    { label: 'Business Address Fee', value: '$0.00' },
-    { label: 'Registered Agent for 1 Year', value: 'Free' },
-    { label: 'Multimember Fee', value: '$100.00' },
-    { label: 'EIN', value: '$0.00' },
-    { label: 'Operating Agreement', value: '$0.00' },
-    { label: 'Expedite Processing', value: '$0.00' },
-    { label: 'State Fee', value: '$100.00' },
-];
+
 
 const FunnelSidebar = () => {
+    const data = useCompanyFormationData();
     const [currentSlide, setCurrentSlide] = useState(0);
     const reviews = sampleReviews.slice(0, 3);
+
+    // Get state name for display
+    const getStateName = (stateName: string) => {
+        return stateName || 'Selected State';
+    };
+
+    // Get state fees with fallback
+    const stateFees = data?.stateFees || {
+        registration_fee: 100,
+        renewal_fee: 50,
+        transfer_fee: 25
+    };
+
+    const orderSummary = [
+        { label: 'Incorporation of Your Company', value: 'Free' },
+        { label: 'Business Address Fee', value: `$${data?.plan?.plan_price?.toFixed(2) ?? '0.00'}` },
+        { label: 'Registered Agent for 1 Year', value: 'Free' },
+        { label: 'Multimember Fee', value: '$0.00' },
+        { label: 'EIN', value: `$${data?.en_amount?.toFixed(2) ?? '0.00'}` },
+        { label: 'Operating Agreement', value: `$${data?.agreement_amount?.toFixed(2) ?? '0.00'}` },
+        { label: 'Expedite Processing', value: `$${data?.rush_processing_amount?.toFixed(2) ?? '0.00'}` },
+        { 
+            label: `State Fee (${getStateName(data?.businessDetails?.stateName || '')})`, 
+            value: `$${stateFees.registration_fee.toFixed(2)}` 
+        },
+    ];
+
+    const totalAmmount = (data?.agreement_amount ?? 0) + (data?.en_amount ?? 0) + (data?.rush_processing_amount ?? 0) + (data?.plan?.plan_price ?? 0) + (stateFees.registration_fee ?? 0)
 
     // Custom arrows for the carousel
     const ArrowButton = ({ direction, onClick, disabled }: { direction: 'left' | 'right'; onClick?: () => void; disabled?: boolean }) => (
@@ -67,7 +88,7 @@ const FunnelSidebar = () => {
                 </div>
                 <div className="flex justify-between font-bold text-[16px] mt-3 pt-2 border-t-2 border-gray-200">
                     <span>Total Order</span>
-                    <span>$0.00</span>
+                    <span>${totalAmmount?.toFixed(2)}</span>
                 </div>
             </div>
 

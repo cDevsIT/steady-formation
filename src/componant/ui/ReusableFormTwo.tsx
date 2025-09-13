@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { useForm, Controller, FieldErrors } from 'react-hook-form';
+import Image from './Image';
 
 // Types
 interface Country {
@@ -32,6 +33,8 @@ interface InputFieldProps {
     className?: string;
     disabled?: boolean;
     belowText?: string;
+    inputClasss?:string;
+    supportingText?:string
 }
 
 // Custom form data interface to avoid conflict with built-in FormData
@@ -82,7 +85,9 @@ export const InputField: React.FC<InputFieldProps> = ({
     rules = {},
     className = '',
     disabled = false,
-    belowText = ''
+    belowText = '',
+    inputClasss = '',
+    supportingText= ''
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
@@ -445,7 +450,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                 // Handlers use top-level state/hooks
                 return (
                     <div
-                        className={`flex flex-col items-center justify-center border-2 ${dragActive ? 'border-[#7856FC]' : 'border-gray-300'} border-dashed rounded-xl py-6 px-4 transition-colors duration-200 bg-white cursor-pointer w-full relative`}
+                        className={`flex flex-col items-center justify-center border ${dragActive ? 'border-[#7856FC]' : 'border-gray-300'}  rounded-xl py-6 px-4 transition-colors duration-200 bg-white cursor-pointer w-full relative`}
                         onClick={() => !disabled && fileInputRef.current?.click()}
                         onDrop={handleDrop(onChange)}
                         onDragOver={handleDragOver}
@@ -464,10 +469,17 @@ export const InputField: React.FC<InputFieldProps> = ({
                         />
                         <div className="flex flex-col items-center">
                             <span className="flex items-center justify-center w-10 h-10 rounded-full bg-[#F4F3FF] mb-2">
-                                <svg width="24" height="24" fill="none" stroke="#7856FC" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 16V4m0 0l-4 4m4-4l4 4" /><rect x="4" y="16" width="16" height="4" rx="2" /></svg>
+                                <Image
+                                    url='/client/file_upload.svg'
+                                    alt='Upload File'
+                                    width={40}
+                                    height={40}
+                                />
                             </span>
-                            <span className="text-[#7856FC] font-medium text-base mb-1">Click to upload</span>
-                            <span className="text-gray-500 text-sm">or drag and drop</span>
+                            <div className='flex flex-col justify-center items-center'>
+                                <p className='text-gray-500 text-sm'><span className="text-[#7856FC] font-medium text-base gap-1">Click to upload</span> or drag and drop</p>
+                                <p className='text-xs font-normal text-gray-600'>{supportingText}</p>
+                            </div>
                             {(fileName || (value && value.name)) && <span className="mt-2 text-gray-700 text-sm">{fileName || (value && value.name)}</span>}
                         </div>
                     </div>
@@ -482,7 +494,7 @@ export const InputField: React.FC<InputFieldProps> = ({
                         onBlur={onBlur}
                         placeholder={placeholder}
                         disabled={disabled}
-                        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${hasError ? 'border-red-500' : 'border-gray-300'
+                        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${inputClasss} ${hasError ? 'border-red-500' : 'border-gray-300'
                             } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : ''}`}
                     />
                 );
@@ -529,6 +541,8 @@ interface ReusableFormProps {
     defaultValues?: CustomFormData;
     onFormStateChange?: (formMethods: any) => void;
     formTitle?: string;
+    isAgree?: boolean;
+    isModal?:boolean
 }
 
 export const ReusableForm: React.FC<ReusableFormProps> = ({
@@ -538,7 +552,9 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     className = '',
     defaultValues = {},
     onFormStateChange,
-    formTitle
+    formTitle,
+    isAgree = false,
+    isModal=false
 }) => {
     // Collect defaultValue from each InputField child
     let mergedDefaultValues = { ...defaultValues };
@@ -615,18 +631,24 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     });
 
     return (
-        <div >
-            <div className='border border-gray-200 rounded-3xl'>
-                {formTitle && <h2 className='text-lg font-semibold text-black m-0 border-b border-gray-200 py-3 pl-4'>{formTitle}</h2>} 
+        <div className='w-full'>
+            <div className={`${isModal ?'': 'border border-gray-200 rounded-3xl'} `}>
+                {formTitle && <h2 className={`text-lg font-semibold text-black m-0 border-b border-gray-200 py-3 pl-4`}>{formTitle}</h2>} 
                 <div className={`space-y-4 grid gap-4 grid-cols-1 lg:grid-cols-2 ${className}  py-3 px-4`}>
                     {enhancedChildren}
+                    {isAgree && (
+                        <div className="flex justify-start items-center gap-2 col-span-2">
+                            <input type="checkbox" id="hireUs" name="hireUs" className="border-gray-300" />
+                            <label htmlFor="hireUs" className='text-gray-600'>I Agree Terms & Conditions Checkbox</label>
+                        </div>
+                    )}
                 </div>
             </div>
-            <div className='py-3 flex justify-end '>
+            <div className='py-3 flex justify-end'>
                 <button
                     onClick={handleSubmit(onFormSubmit)}
                     disabled={isSubmitting}
-                    className="bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-2 px-3 rounded-md shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-2 px-3 rounded-md shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${isModal ? 'mr-4' : ''}`}
                 >
                     {isSubmitting ? 'Submitting...' : submitText}
                 </button>

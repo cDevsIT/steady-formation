@@ -4,6 +4,20 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from '@/componant/ui/Image';
 import NextImage from 'next/image';
+import { useRouter } from 'next/navigation';
+import { API_CONFIG } from '@/config/api';
+import { CompanyProvider, useCompany } from '@/contexts/CompanyContext';
+
+interface User {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    role: number;
+    active: boolean;
+    full_name: string;
+}
 
 const menu = [
     { name: 'Dashboard', path: '/client', icon: '/client/dashboard-icon.svg' },
@@ -12,39 +26,19 @@ const menu = [
     { name: 'Company', path: '/client/company', icon: '/client/company-icon.svg' },
     { name: 'Documents', path: '/client/documents', icon: '/client/documents-icon.svg' },
     { name: 'Tax Filing', path: '/client/tax-filing', icon: '/client/tax-filing-icon.svg' },
-    { name: 'Services', path: '/services', icon: '/client/tax-filing-icon.svg' },
+    { name: 'Services', path: '/client/services', icon: '/client/tax-filing-icon.svg' },
     { name: 'Payment History', path: '/client/payment', icon: '/client/payment-icon.svg' },
     { name: 'Support / Help', path: '/client/support-help', icon: '/client/support-help-icon.svg' },
     { name: 'Affiliate', path: '/client/affiliate', icon: '/client/affiliate-icon.svg' },
 ];
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
-    // Example companies
-    const companies = [
-        {
-            name: 'Fission',
-            address: 'wyoming, Cheyenne, 82007',
-            icon: '/client/dropdown-icon1.svg',
-        },
-        {
-            name: 'Propovoice',
-            address: 'wyoming, Cheyenne, 82007',
-            icon: '/client/dropdown-icon2.svg',
-        },
-        {
-            name: 'Kidency',
-            address: 'wyoming, Cheyenne, 82007',
-            icon: '/client/dropdown-icon3.svg',
-        },
-        {
-            name: 'Decorative',
-            address: 'wyoming, Cheyenne, 82007',
-            icon: '/client/dropdown-icon4.svg',
-        },
-    ];
-    const [selectedCompany, setSelectedCompany] = useState(companies[0]);
+function ClientLayoutContent({ children }: { children: React.ReactNode }) {
+    const { companies, selectedCompany, setSelectedCompany, loading: companiesLoading } = useCompany();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     // Prevent background scroll when mobile menu is open
     useEffect(() => {
@@ -58,6 +52,70 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         };
     }, [mobileMenuOpen]);
 
+    // Authentication check
+    useEffect(() => {
+        const checkAuth = async () => {
+            const token = localStorage.getItem('auth_token');
+
+            if (!token) {
+                router.push('/login');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.USER}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    localStorage.removeItem('auth_token');
+                    router.push('/login');
+                    return;
+                }
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    setUser(result.data);
+                } else {
+                    localStorage.removeItem('auth_token');
+                    router.push('/login');
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                localStorage.removeItem('auth_token');
+                router.push('/login');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAuth();
+    }, [router]);
+
+    const handleLogout = async () => {
+        const token = localStorage.getItem('auth_token');
+
+        if (token) {
+            try {
+                await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGOUT}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        localStorage.removeItem('auth_token');
+        router.push('/login');
+    };
+
     // Get current path for active menu highlight
     let currentPath = '';
     if (typeof window !== 'undefined') {
@@ -66,8 +124,23 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
     const pathname = usePathname();
 
+    if (loading || companiesLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!user ) {
+        return null;
+    }
+
     return (
-        <div className="w-full flex justify-center bg-white mb-3 pt-[70px] min-h-screen">
+        <div className="w-full flex justify-center bg-white mb-3 pt-[40px] min-h-screen mt-[65px]">
             {/* Floating Menu Button - left edge, vertically centered, mobile only, always visible except when sidebar is open */}
             {(!mobileMenuOpen) && (
                 <button
@@ -75,7 +148,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     onClick={() => setMobileMenuOpen(true)}
                     aria-label="Open menu"
                 >
-                    <img src="/client/menu-button-icon.svg" alt="Open Menu" className="w-7 h-7" />
+                    <Image url="/client/menu-button-icon.svg" alt="Open Menu" className="w-7 h-7" />
                 </button>
             )}
             {/* Floating Sidebar for Mobile */}
@@ -92,15 +165,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                             {/* Logo and Company Info */}
                             <div className="flex flex-col pt-6 pb-4 border-b border-[#ececec] px-6">
                                 <div className="flex mb-2">
-                                    <NextImage src={selectedCompany.icon} alt="Company Logo" width={56} height={56} className="w-14 h-14 rounded-full bg-[#240D68] object-cover" />
+                                    <NextImage src={selectedCompany?.icon || '/client/dropdown-icon1.svg'} alt="Company Logo" width={56} height={56} className="w-14 h-14 rounded-full bg-[#240D68] object-cover" />
                                 </div>
                                 <button
                                     className="flex items-center w-full focus:outline-none cursor-pointer justify-between"
                                     onClick={() => setDropdownOpen((open) => !open)}
                                 >
                                     <div className="flex flex-col text-left">
-                                        <span className="font-semibold text-lg text-black leading-7">{selectedCompany.name}</span>
-                                        <span className="text-[#7C8493] font-normal text-xs leading-4">{selectedCompany.address}</span>
+                                        <span className="font-semibold text-lg text-black leading-7">{selectedCompany?.name || 'Loading...'}</span>
+                                        <span className="text-[#7C8493] font-normal text-xs leading-4">{selectedCompany?.address || 'Loading...'}</span>
                                     </div>
                                     <div className="flex-shrink-0 ml-2">
                                         <NextImage
@@ -124,12 +197,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                                         {companies.map((company, idx) => (
                                             <button
                                                 key={company.name}
-                                                className={`flex items-center w-full px-4 py-2 gap-3 hover:bg-[#f4f4f7] transition-colors ${selectedCompany.name === company.name ? 'bg-[#f9fafb]' : ''}`}
+                                                className={`flex items-center w-full px-4 py-2 gap-3 hover:bg-[#f4f4f7] transition-colors ${selectedCompany?.name === company.name ? 'bg-[#f9fafb]' : ''}`}
                                                 onClick={() => { setSelectedCompany(company); setDropdownOpen(false); }}
                                             >
                                                 <NextImage src={company.icon} alt={company.name + ' icon'} width={32} height={32} className="w-8 h-8 rounded-full border border-[#ececec]" />
                                                 <div className="flex flex-col text-left">
-                                                    <span className={`font-medium text-sm ${selectedCompany.name === company.name ? 'text-[#7856FC]' : 'text-[#23272E]'}`}>{company.name}</span>
+                                                    <span className={`font-medium text-sm ${selectedCompany?.name === company.name ? 'text-[#7856FC]' : 'text-[#23272E]'}`}>{company.name}</span>
                                                     <span className="text-xs font-normal text-[#7C8493]">{company.address}</span>
                                                 </div>
                                             </button>
@@ -155,7 +228,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                         </div>
                         {/* Log Out */}
                         <div className="border-t border-[#ececec] px-6 py-4">
-                            <button className="flex items-center gap-3 text-[#344054] text-base font-medium hover:text-[#7856FC] w-full">
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center gap-3 text-[#344054] text-base font-medium hover:text-[#7856FC] w-full"
+                            >
                                 <Image url="/client/log-out-icon.svg" alt="Log Out Icon" className="w-5 h-5" width={20} height={20} />
                                 Log Out
                             </button>
@@ -172,14 +248,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 </>
             )}
             {/* Desktop Sidebar (unchanged) */}
-            <div className="max-w-[1280px] w-full flex">
-                <aside className="w-[282px] bg-white border border-[#ececec] rounded-[16px] flex-col justify-between min-h-[calc(100vh-70px)] p-0 hidden md:flex">
+
+            <div className="max-w-[1280px] w-full flex justify-center">
+                {(!pathname?.includes('/client/services/order-confirmed') && !pathname?.includes('/client/services/payment') && !pathname?.includes('/client/services/info-submitted')) && <aside className="w-[282px] bg-white border border-[#ececec] rounded-[16px] flex-col justify-between h-[calc(100vh-140px)] p-0 hidden md:flex">
                     <div>
                         {/* User Info with Dropdown */}
                         <div className="pt-6 pb-4 border-b border-[#ececec] px-6">
                             {/* Icon row */}
                             <div className="flex mb-3">
-                                <NextImage src={selectedCompany.icon} alt="User Icon" width={56} height={56} className="w-14 h-14 rounded-full" />
+                                <NextImage src={selectedCompany?.icon ?? ''} alt="User Icon" width={56} height={56} className="w-14 h-14 rounded-full" />
                             </div>
                             {/* Info and dropdown row */}
                             <div className="relative">
@@ -188,8 +265,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                                     onClick={() => setDropdownOpen((open) => !open)}
                                 >
                                     <div className="flex flex-col text-left">
-                                        <span className="font-bold text-lg text-black leading-tight truncate">{selectedCompany.name}</span>
-                                        <span className="text-[#7C8493] text-xs leading-tight truncate">{selectedCompany.address}</span>
+                                        <span className="font-bold text-lg text-black leading-tight truncate">{selectedCompany?.name}</span>
+                                        <span className="text-[#7C8493] text-xs leading-tight truncate">{selectedCompany?.address}</span>
                                     </div>
                                     <div className="flex-shrink-0 ml-2">
                                         <NextImage
@@ -213,12 +290,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                                         {companies.map((company, idx) => (
                                             <button
                                                 key={company.name}
-                                                className={`flex items-center w-full px-4 py-2 gap-3 hover:bg-[#f4f4f7] transition-colors ${selectedCompany.name === company.name ? 'bg-[#f9fafb]' : ''}`}
+                                                className={`flex items-center w-full px-4 py-2 gap-3 hover:bg-[#f4f4f7] transition-colors ${selectedCompany?.name === company.name ? 'bg-[#f9fafb]' : ''}`}
                                                 onClick={() => { setSelectedCompany(company); setDropdownOpen(false); }}
                                             >
                                                 <NextImage src={company.icon} alt={company.name + ' icon'} width={36} height={36} className="w-9 h-9 rounded-full border border-[#ececec]" />
                                                 <div className="flex flex-col text-left">
-                                                    <span className={`font-medium leading-7 text-sm ${selectedCompany.name === company.name ? 'text-[#7856FC]' : 'text-[#23272E]'}`}>{company.name}</span>
+                                                    <span className={`font-medium leading-7 text-sm ${selectedCompany?.name === company.name ? 'text-[#7856FC]' : 'text-[#23272E]'}`}>{company.name}</span>
                                                     <span className="text-xs leading-4 font-normal text-[#7C8493]">{company.address}</span>
                                                 </div>
                                             </button>
@@ -244,19 +321,23 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                     </div>
                     {/* Log Out */}
                     <div className="border-t border-[#ececec] px-6 py-4">
-                        <button className="flex items-center gap-3 text-[#344054] text-base font-semibold hover:text-[#7856FC] w-full">
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-3 text-[#344054] text-base font-semibold hover:text-[#7856FC] w-full"
+                        >
                             <Image url="/client/log-out-icon.svg" alt="Log Out Icon" className="w-5 h-5" width={20} height={20} />
                             Log Out
                         </button>
                     </div>
-                </aside>
+                </aside>}
+
                 {/* Gap between sidebar and content */}
                 <div className="w-[23px] hidden md:block" />
                 {/* Main Content */}
-                <main className="flex-1 max-w-[975px] w-full bg-white rounded-[16px] min-h-[calc(100vh-70px)]">
+                <main className={`flex-1 ${!pathname?.includes('/client/services/payment') && 'max-w-[975px]'} w-full bg-white rounded-[16px] min-h-[calc(100vh-70px)]`}>
 
                     {/* Hello Bar Section*/}
-                    {!(pathname?.includes('/client/tax-filing/step1') || pathname?.includes('/client/tax-filing/step2')) && (
+                    {!(pathname?.includes('/client/tax-filing/step1') || pathname?.includes('/client/tax-filing/step2') || pathname?.includes('/client/affiliate')) || pathname?.includes('/client/services') && (
                         <div
                             className="bg-[#240D68] rounded-2xl px-10 py-6 md:px-12 text-white relative overflow-hidden mb-5 mx-4 md:mx-0"
                         >
@@ -271,9 +352,11 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                             ></div>
                             <div className="relative z-10">
                                 <h1 className="font-inter font-medium text-2xl md:text-[36px] leading-tight md:leading-[44px] mb-[5px]">
-                                    Hi, Nasir!
+                                    Hi, {user?.first_name || 'User'}!
                                 </h1>
-                                <p className="font-normal text-base md:text-[18px] leading-relaxed md:leading-[28px]">Here's your company status & quick actions.</p>
+                                <p className="font-normal text-base md:text-[18px] leading-relaxed md:leading-[28px]">
+                                    Here&apos;s your company status &amp; quick actions.
+                                </p>
                             </div>
                         </div>
                     )}
@@ -282,5 +365,13 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                 </main>
             </div>
         </div>
+    );
+}
+
+export default function ClientLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <CompanyProvider>
+            <ClientLayoutContent>{children}</ClientLayoutContent>
+        </CompanyProvider>
     );
 } 

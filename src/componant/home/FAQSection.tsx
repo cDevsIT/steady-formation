@@ -37,8 +37,8 @@ const faqData: FAQItem[] = [
 const FAQSection = () => {
     return (
         <section className="pb-20 px-4 bg-white">
-            <div className="max-w-[980px] xl:max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 justify-items-center items-center">
-                <div className="flex flex-col justify-between">
+            <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16 justify-items-center items-start">
+                <div className="flex flex-col justify-between self-start">
                    <div className="mx-auto">
                         <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6  text-center lg:text-start max-w-[807px] ">Frequently asked questions</h2>
                         <p className="text-[16px] leading-[24px] max-w-[692px] text-center lg:text-start text-[#475467]">Once you register your U.S. company, you`ll gain access to your personalized dashboard—designed to make managing your business effortless from anywhere in the world.</p>

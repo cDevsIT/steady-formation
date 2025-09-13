@@ -2,90 +2,10 @@
 import React, { useState } from 'react';
 import Button from '@/componant/ui/Button';
 import Image from '@/componant/ui/Image';
+import { useDocuments } from '@/hooks/useDocuments';
+import { useCompany } from '@/contexts/CompanyContext';
+import { API_CONFIG } from '@/config/api';
 
-const documents = [
-    {
-        id: 1,
-        name: 'EIN Confirmation Letter',
-        icon: '/client/ein-confirmation-letter-icon.svg',
-        issuedDate: 'Jun 22, 2025',
-        status: 'Verify',
-        statusColor: 'bg-green-100 text-green-600',
-        action: 'Download',
-    },
-    {
-        id: 2,
-        name: 'Certificate of formation',
-        icon: '/client/formation-icon.svg',
-        issuedDate: 'Jun 22, 2025',
-        status: 'Verify',
-        statusColor: 'bg-green-100 text-green-600',
-        action: 'Download',
-    },
-    {
-        id: 3,
-        name: 'Operation Agreement',
-        icon: '/client/operation-agreement-icon.svg',
-        issuedDate: 'Jun 22, 2025',
-        status: 'Verify',
-        statusColor: 'bg-green-100 text-green-600',
-        action: 'Download',
-    },
-    {
-        id: 4,
-        name: 'Registered agent Agreement',
-        icon: '/client/registered-agent-agreement-icon.svg',
-        issuedDate: 'Jun 22, 2025',
-        status: 'Verify',
-        statusColor: 'bg-green-100 text-green-600',
-        action: 'Download',
-    },
-    {
-        id: 5,
-        name: 'Annual Filling Receipt (2024)',
-        icon: '/client/annual-filing-receipt-icon.svg',
-        issuedDate: 'Jun 22, 2025',
-        status: 'Verify',
-        statusColor: 'bg-green-100 text-green-600',
-        action: 'Download',
-    },
-    {
-        id: 6,
-        name: 'Business Address Letter',
-        icon: '/client/business-address-letter-icon.svg',
-        issuedDate: 'Jun 22, 2025',
-        status: 'Verify',
-        statusColor: 'bg-green-100 text-green-600',
-        action: 'Download',
-    },
-    {
-        id: 7,
-        name: 'Certificate of formation',
-        icon: '/client/formation-icon.svg',
-        issuedDate: 'Jun 22, 2025',
-        status: 'Verify',
-        statusColor: 'bg-green-100 text-green-600',
-        action: 'Download',
-    },
-    {
-        id: 8,
-        name: 'Operation Agreement',
-        icon: '/client/operation-agreement-icon.svg',
-        issuedDate: 'Jun 22, 2025',
-        status: 'Verify',
-        statusColor: 'bg-green-100 text-green-600',
-        action: 'Download',
-    },
-    {
-        id: 9,
-        name: 'Registered agent Agreement',
-        icon: '/client/registered-agent-agreement-icon.svg',
-        issuedDate: 'Jun 22, 2025',
-        status: 'Verify',
-        statusColor: 'bg-green-100 text-green-600',
-        action: 'Download',
-    },
-];
 
 interface FullScreenImageModalProps {
     open: boolean;
@@ -93,9 +13,11 @@ interface FullScreenImageModalProps {
     imageUrl: string;
     alt: string;
     document: any;
+    previewUrl: string | null;
+    showImagePreview: boolean;
 }
 
-function FullScreenImageModal({ open, onClose, imageUrl, alt, document }: FullScreenImageModalProps) {
+function FullScreenImageModal({ open, onClose, imageUrl, alt, document, previewUrl, showImagePreview }: FullScreenImageModalProps) {
     if (!open) return null;
     return (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
@@ -125,17 +47,48 @@ function FullScreenImageModal({ open, onClose, imageUrl, alt, document }: FullSc
                                 </div>
                             </div>
                         </div>
-                        <Button className="bg-[#7856FC] text-white px-6 py-2 rounded-lg hover:bg-[#6840e0] w-full md:w-auto">Download PDF</Button>
+                        {document?.file_path ? (
+                            <a 
+                                href={`${API_CONFIG.BASE_URL}/documents/file/${document.file_path.split('/').pop()}`}
+                                download={document.file_path.split('/').pop()}
+                                className="bg-[#7856FC] text-white px-6 py-2 rounded-lg hover:bg-[#6840e0] w-full md:w-auto inline-block text-center no-underline"
+                            >
+                                Download
+                            </a>
+                        ) : (
+                            <span className="bg-[#7856FC] text-white px-6 py-2 rounded-lg w-full md:w-auto inline-block text-center opacity-50">
+                                Download
+                            </span>
+                        )}
                     </div>
                 </div>
-                {/* Image Preview (below) */}
-                <div className="flex-1 min-h-0 flex justify-center items-center w-full bg-[#F9FAFB] p-4 overflow-auto">
-                    <img
-                        src={imageUrl}
-                        alt={alt}
-                        className="max-h-full max-w-full object-contain rounded shadow-lg"
-                    />
-                </div>
+                {/* Image Preview (below) - Only show for image files */}
+                {showImagePreview ? (
+                    <div className="flex-1 min-h-0 flex justify-center items-center w-full bg-[#F9FAFB] p-4 overflow-auto">
+                        <Image
+                            url={previewUrl || ''}
+                            alt={alt}
+                            width={200}
+                            className="max-h-full max-w-full object-contain rounded shadow-lg"
+                        />
+                    </div>
+                ) : (
+                    <div className="flex-1 min-h-0 flex justify-center items-center w-full bg-[#F9FAFB] p-4">
+                        <div className="text-center">
+                            <div className="w-32 h-32 mx-auto mb-4 bg-gray-200 rounded-lg flex items-center justify-center">
+                                <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <p className="text-[#667085] text-sm font-medium">
+                                {document?.name || 'Document Preview'}
+                            </p>
+                            <p className="text-[#667085] text-xs mt-2">
+                                Click Download to view this document
+                            </p>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -144,15 +97,40 @@ function FullScreenImageModal({ open, onClose, imageUrl, alt, document }: FullSc
 export default function Documents() {
     const [openModal, setOpenModal] = useState(false);
     const [selectedDoc, setSelectedDoc] = useState<any>(null);
+    const { selectedCompany } = useCompany();
+    
+    // Use API data only
+    const { documents, isLoading, error, downloadDocument } = useDocuments(selectedCompany?.user_id || 3);
 
     const handleRowClick = (doc: any) => {
         setSelectedDoc(doc);
         setOpenModal(true);
     };
 
-    // Use the custom image for EIN Confirmation Letter
-    const isEIN = selectedDoc?.name === 'EIN Confirmation Letter';
-    const previewUrl = isEIN ? '/client/EIN-Confirmation-letter.png' : (selectedDoc?.previewUrl || '/blog-details/steady-formations-blog-details.png');
+
+
+    // Check if the file is an image and get the preview URL
+    const isImageFile = (filename: string) => {
+        if (!filename) return false;
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg'];
+        return imageExtensions.some(ext => filename.toLowerCase().endsWith(ext));
+    };
+
+    const getPreviewUrl = (doc: any) => {
+        if (!doc?.file_path) return null;
+        
+        const filename = doc.file_path.split('/').pop();
+        if (isImageFile(filename)) {
+            // Use the actual file URL for image preview (same as download link)
+            return doc.file_path;
+        }
+        
+        // For non-image files, use a default document icon
+        return '/client/document-icon.svg';
+    };
+
+    const previewUrl = getPreviewUrl(selectedDoc);
+    const showImagePreview = selectedDoc?.file_path && isImageFile(selectedDoc.file_path.split('/').pop());
 
     return (
         <div className="w-full max-w-5xl bg-white rounded-2xl shadow border border-[#E4E7EC] pt-4 pb-10">
@@ -200,43 +178,89 @@ export default function Documents() {
                     <Button className="ml-2 px-4 py-2 bg-[#7856FC] text-white rounded-lg hover:bg-[#6a4ee6]">Add Document</Button>
                 </div>
             </div>
-            {/* Desktop & Mobile Table (responsive, simple table) */}
-            <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-[#7856FC] scrollbar-track-[#E4E7EC]">
-                <table className="min-w-full w-full divide-y divide-[#E4E7EC]">
-                    <thead>
-                        <tr className="bg-[#F9FAFB] text-[#667085] text-sm">
-                            <th className="py-3 px-6 text-left font-medium">Document name</th>
-                            <th className="py-3 px-6 text-center font-medium">Issued Date</th>
-                            <th className="py-3 px-6 text-center font-medium">Status</th>
-                            <th className="py-3 px-6 text-center font-medium">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-[#E4E7EC]">
-                        {documents.map((doc) => (
-                            <tr
-                                key={doc.id}
-                                className="hover:bg-[#F5F5F7] transition-colors cursor-pointer"
-                                onClick={() => handleRowClick(doc)}
-                            >
-                                <td className="py-3 px-6 flex items-center gap-3 whitespace-nowrap">
-                                    <Image url={doc.icon} alt="icon" className="w-8 h-8" />
-                                    <span className="text-[#344054] py-6 text-[15px] leading-5 text-center font-medium whitespace-nowrap">{doc.name}</span>
-                                </td>
-                                <td className="py-3 px-6 text-[#667085] text-[15px] leading-5 text-center whitespace-nowrap">{doc.issuedDate}</td>
-                                <td className="py-3 px-6 text-center">
-                                    <span className={`px-3 py-1 rounded-lg text-xs leading-5 font-medium ${doc.statusColor}`}>{doc.status}</span>
-                                </td>
-                                <td className="py-3 px-6 text-center">
-                                    <Button className="bg-[#F5F5F7] text-[#7856FC] px-4 py-2 rounded-lg hover:bg-[#ece9fa]" theme="secondary">
-                                        {doc.action}
-                                    </Button>
-                                </td>
+            {/* Loading State */}
+            {isLoading && (
+                <div className="flex justify-center items-center py-12">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7856FC] mx-auto mb-4"></div>
+                        <p className="text-[#667085]">Loading documents...</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Error State */}
+            {error && !isLoading && (
+                <div className="flex justify-center items-center py-12">
+                    <div className="text-center">
+                        <p className="text-red-600 mb-4">Error loading documents: {error}</p>
+                        <Button 
+                            className="bg-[#7856FC] text-white px-4 py-2 rounded-lg hover:bg-[#6840e0]"
+                            onClick={() => window.location.reload()}
+                        >
+                            Retry
+                        </Button>
+                    </div>
+                </div>
+            )}
+
+            {/* Documents Table */}
+            {!isLoading && !error && (
+                <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-[#7856FC] scrollbar-track-[#E4E7EC]">
+                    <table className="min-w-full w-full divide-y divide-[#E4E7EC]">
+                        <thead>
+                            <tr className="bg-[#F9FAFB] text-[#667085] text-sm">
+                                <th className="py-3 px-6 text-left font-medium">Document name</th>
+                                <th className="py-3 px-6 text-center font-medium">Issued Date</th>
+                                <th className="py-3 px-6 text-center font-medium">Status</th>
+                                <th className="py-3 px-6 text-center font-medium">Action</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            <FullScreenImageModal open={openModal} onClose={() => setOpenModal(false)} imageUrl={previewUrl} alt={selectedDoc?.name || ''} document={selectedDoc} />
+                        </thead>
+                        <tbody className="bg-white divide-y divide-[#E4E7EC]">
+                            {documents.map((doc) => (
+                                <tr
+                                    key={doc.id}
+                                    className="hover:bg-[#F5F5F7] transition-colors cursor-pointer"
+                                    onClick={() => handleRowClick(doc)}
+                                >
+                                    <td className="py-3 px-6 flex items-center gap-3 whitespace-nowrap">
+                                        <Image url={doc.icon} alt="icon" className="w-8 h-8" />
+                                        <span className="text-[#344054] py-6 text-[15px] leading-5 text-center font-medium whitespace-nowrap">{doc.name}</span>
+                                    </td>
+                                    <td className="py-3 px-6 text-[#667085] text-[15px] leading-5 text-center whitespace-nowrap">{doc.issuedDate}</td>
+                                    <td className="py-3 px-6 text-center">
+                                        <span className={`px-3 py-1 rounded-lg text-xs leading-5 font-medium ${doc.statusColor}`}>{doc.status}</span>
+                                    </td>
+                                    <td className="py-3 px-6 text-center">
+                                        {doc.file_path ? (
+                                            <a 
+                                                href={`${API_CONFIG.BASE_URL}/documents/file/${doc.file_path.split('/').pop()}`}
+                                                download={doc.file_path.split('/').pop()}
+                                                className="bg-[#F5F5F7] text-[#7856FC] px-4 py-2 rounded-lg hover:bg-[#ece9fa] inline-block text-center no-underline"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                {doc.action}
+                                            </a>
+                                        ) : (
+                                            <span className="bg-[#F5F5F7] text-[#7856FC] px-4 py-2 rounded-lg inline-block text-center opacity-50">
+                                                {doc.action}
+                                            </span>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+            <FullScreenImageModal 
+                open={openModal} 
+                onClose={() => setOpenModal(false)} 
+                imageUrl={previewUrl || ''} 
+                alt={selectedDoc?.name || ''} 
+                document={selectedDoc}
+                previewUrl={previewUrl}
+                showImagePreview={showImagePreview}
+            />
         </div>
     );
 } 

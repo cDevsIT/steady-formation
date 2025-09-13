@@ -12,7 +12,7 @@ const businessStructures = [
             'Unlimited owners (members) allowed',
             'Board of directors required',
             'Allows strong protection for personal assets',
-            'Subject to double taxation(profits taxed at both corporate & shareholder levels)',
+            'Subject to double taxation (profits taxed at both corporate & shareholder levels)',
             'Best for raising venture capital and issuing stock',
             'Long-term existence (Perpetual)',
             'Suitable for going public'
@@ -62,7 +62,7 @@ const businessStructures = [
 export default function PricingSection() {
     return (
         <section className="pb-20 px-4 bg-white">
-            <div className="max-w-[980px] xl:max-w-[1280px] mx-auto">
+            <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto">
                 {/* Header */}
                 <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6  text-center max-w-[807px] mx-auto">
                     Find the Right Business Structure for Your Success
@@ -120,7 +120,7 @@ export default function PricingSection() {
                 </div>
 
                 {/* Additional Info Section */}
-                <div className="mt-16 text-center flex justify-between items-center">
+                <div className="mt-16 text-center flex justify-center items-center">
                     <p className="text-gray-600 max-w-[314px] text-start font-bold">
                         👉 Still unsure which structure fits your business best?
                     </p>

@@ -1,6 +1,11 @@
+"use client";
+
 import React from 'react';
+import { useRouter } from 'next/navigation';
+import Image from '@/componant/ui/Image';
 
 export default function Compliance() {
+    const router = useRouter();
     return (
         <div>
 
@@ -93,13 +98,13 @@ export default function Compliance() {
                 <div className="flex flex-col z-10 mb-4 md:mb-0">
                     <span className="text-[24px] leading-8 font-semibold mb-3">Need Help from expert?</span>
                     <div className="flex items-center space-x-[-12px] mt-2">
-                        <img src="/client/expert-icon1.svg" alt="Expert 1" className="w-10 h-10 rounded-full border-2 border-white shadow" />
-                        <img src="/client/expert-icon2.svg" alt="Expert 2" className="w-10 h-10 rounded-full border-2 border-white shadow" />
-                        <img src="/client/expert-icon3.svg" alt="Expert 3" className="w-10 h-10 rounded-full border-2 border-white shadow" />
-                        <img src="/client/expert-icon4.svg" alt="Expert 4" className="w-10 h-10 rounded-full border-2 border-white shadow" />
+                        <Image url="/client/expert-icon1.svg" alt="Expert 1" className="w-10 h-10 rounded-full border-2 border-white shadow"  />
+                        <Image url="/client/expert-icon2.svg" alt="Expert 2" className="w-10 h-10 rounded-full border-2 border-white shadow"  />
+                        <Image url="/client/expert-icon3.svg" alt="Expert 3" className="w-10 h-10 rounded-full border-2 border-white shadow"  />
+                        <Image url="/client/expert-icon4.svg" alt="Expert 4" className="w-10 h-10 rounded-full border-2 border-white shadow"  />
                     </div>
                 </div>
-                <button className="z-10 bg-[#7856FC] hover:bg-[#6840e0] text-white px-8 py-3 rounded-lg font-medium text-base transition-colors duration-200 w-full md:w-auto mt-4 md:mt-0">
+                <button onClick={() => router.push('/client/support-help?new=1')} className="z-10 bg-[#7856FC] hover:bg-[#6840e0] text-white px-8 py-3 rounded-lg font-medium text-base transition-colors duration-200 w-full md:w-auto mt-4 md:mt-0">
                     Create a Support Ticket
                 </button>
             </div>

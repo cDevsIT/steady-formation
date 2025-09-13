@@ -1,7 +1,7 @@
 export default function StatisticsSection() {
     return (
         <section className="w-full bg-white py-16 px-4">
-            <div className="max-w-[980px] xl:max-w-[1280px] mx-auto">
+            <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto">
                 <div className="flex flex-col lg:flex-row lg:flex lg:items-center justify-between gap-12">
                     {/* Stats Grid - Left Side */}
                     <div className="grid grid-cols-2 gap-6 flex-shrink-0 w-full lg:w-1/2">
@@ -15,7 +15,7 @@ export default function StatisticsSection() {
 
                         {/* Total Satisfied Customers */}
                         <div className="bg-[#ECFDFF] p-4 lg:p-8 rounded-2xl">
-                            <div className="text-[36px] lg:text-[48px] leading-[44px] lg:leading-[60px] font-bold text-[#06AED4] mb-2">500+</div>
+                            <div className="text-[36px] lg:text-[48px] leading-[44px] lg:leading-[60px] font-bold text-[#06AED4] mb-2">1000+</div>
                             <div className="text-black font-medium leading-tight">
                                 Total Satisfied<br />Customers Worldwide
                             </div>
@@ -42,10 +42,7 @@ export default function StatisticsSection() {
                             Empowering Nationwide Entrepreneurs to Start and Scale U.S. Companies
                         </h2>
                         <p className="text-gray-600 leading-relaxed text-lg">
-                            At Clearly Formation, our philosophy is driven by a commitment to dismantling
-                            barriers for global business owners. With over seven years of expertise in strategy,
-                            taxation, and information law, we make U.S. company formation seamless and
-                            enable entrepreneurs to flourish on a worldwide scale.
+                            At Steady Formation, our philosophy is driven by a commitment to dismantling barriers for global business owners. With over seven years of expertise in strategy, taxation, and information law, we make U.S. company formation seamless and enable entrepreneurs to flourish on a worldwide scale.
                         </p>
                     </div>
                 </div>

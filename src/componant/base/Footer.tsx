@@ -1,9 +1,14 @@
+"use client";
 import Link from 'next/link';
 import Image from '../ui/Image';
 import Button from '../ui/Button';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
+    const pathname = usePathname();
+    const isClientRoute = pathname.startsWith('/client');
+    const hideHeaderFooter = pathname.startsWith('/login') || pathname.startsWith('/sign-up');
 
     const links = [
         { name: 'About Us', href: '/about' },
@@ -21,17 +26,19 @@ export default function Footer() {
         { name: 'Linkedin', icon: '/icons/linkedin.svg', href: 'https://instagram.com/steadyformation' },
     ];
 
+    if (isClientRoute || hideHeaderFooter) return null;
+
     return (
         <footer className="bg-gray-50 border-t border-gray-200 px-4 sm:px-6 lg:px-4 lg:pt-10">
-            <div className="max-w-[980px] xl:max-w-[1280px] mx-auto py-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+            <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto py-12">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-8">
                     {/* Company Info */}
-                    <div className="space-y-4 lg:col-span-2">
+                    <div className="space-y-4 max-w-[283px]">
                         <div className="flex items-center space-x-2">
                             <Image className='h-[48px] ' width={200} height={48} url='/steady-formation-logo.svg' alt='Steady Formation Logo' />
                         </div>
                         <p className="text-black text-[16px] leading-relaxed max-w-xs">
-                            Steady Formation is a business formation company that specializes in providing high-quality business formation services.
+                            Steady Formation helps entrepreneurs and companies set up their businesses with precision, speed, and reliable expertise.
                         </p>
                         <div className="flex items-center gap-3">
                             {socialLinks.map((social) => {
@@ -51,7 +58,7 @@ export default function Footer() {
                     </div>
 
                     {/* Links */}
-                    <div className="space-y-4 lg:col-span-1">
+                    <div className="space-y-4 max-w-[150px]">
                         <h3 className="text-[16px] font-medium text-gray-600 uppercase tracking-wider">LINKS</h3>
                         <ul className="space-y-3">
                             {links.map((link) => (
@@ -68,7 +75,7 @@ export default function Footer() {
                     </div>
 
                     {/* Info */}
-                    <div className="space-y-4 lg:col-span-1">
+                    <div className="space-y-4 max-w-[271px]">
                         <h3 className="text-[16px] font-medium text-gray-600 uppercase tracking-wider">INFO</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
@@ -90,7 +97,7 @@ export default function Footer() {
                     </div>
 
                     {/* Newsletter */}
-                    <div className="space-y-4 lg:col-span-1">
+                    <div className="space-y-4 max-w-[260px]">
                         <h3 className="text-[16px] font-medium text-gray-600 uppercase tracking-wider">NEWSLETTER</h3>
                         <p className="text-[16px] font-medium text-black">
                             Sign up to get updates & news.

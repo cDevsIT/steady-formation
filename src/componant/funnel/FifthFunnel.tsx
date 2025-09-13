@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChildComponentProps } from "./SecondFunnel";
 import { FunnelHeading, FunnelSubHeading } from "../ui/FunnelHeading";
 import Image from "../ui/Image";
+import companyFormationService, { CompanyFormationData, useCompanyFormationData } from "@/lib/companyFormationService";
 
 // Custom Check Icon Component
 const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => {
@@ -15,22 +16,58 @@ const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => {
 };
 
 const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
+  const data = useCompanyFormationData();
   // State for EIN option and express EIN option
-  const [einOption, setEinOption] = useState<string>("");
+  const [einOption, setEinOption] = useState<string>( 'skip');
   const [expressOption, setExpressOption] = useState<string>("");
   const [ssn, setSSN] = useState("");
 
-  // Helper to check if 'No, Skip' is selected
-  const isSkip = einOption === "skip";
 
   // Only show express EIN and SSN if 'add' or 'expedite' is selected
   const showExpressSection = einOption === "add" || einOption === "expedite";
 
+  useEffect(() => {
+    // Set EIN option based on existing data
+    if (data?.en_amount === 69) {
+      setEinOption("add");
+    } else if (data?.en_amount === 149) {
+      setEinOption("expedite");
+    } else if (data?.en_amount === 0 || !data?.en_amount) {
+      setEinOption("skip");
+    }
+  }, [data?.en_amount]);
+
   // Handle continue (for demo, just calls handleFormSubmit if provided)
   const handleContinue = () => {
-    if (handleFormSubmit) handleFormSubmit({ stepFive: { einOption: einOption, expressOption: expressOption, ssn: ssn } });
+    let price = 0
+    if (einOption === "add") {
+      price = 69
+    } else if (einOption === "expedite") {
+      price = 149
+    }
+
+    if (handleFormSubmit) handleFormSubmit({ stepFive: { einOption: einOption, expressOption: expressOption, ssn: ssn }, en_amount: price });
   };
 
+
+  // Handle plan selection and save to localStorage
+  const handlePlanSelection = (option: string) => {
+    let price = 0
+    if (option === "add") {
+      price = 69
+    } else if (option === "expedite") {
+      price = 149
+    } else if (option === "skip") {
+      price = 0
+    }
+    setEinOption(option);
+    
+
+    companyFormationService.saveToLocalStorage({
+      ...data,
+      en_amount: price
+    });
+  };
   return (
     <div className=" bg-white max-w-[728px] flex flex-col gap-8">
       <div>
@@ -43,9 +80,9 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
           </FunnelSubHeading>
           <div className="flex flex-col gap-4">
             {/* Option 1 */}
-            <div 
+            <div
               className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-150 ${einOption === "add" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
-              onClick={() => setEinOption("add")}
+              onClick={() => handlePlanSelection("add")}
             >
               <CheckIcon isSelected={einOption === "add"} />
               <div>
@@ -54,9 +91,9 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
               </div>
             </div>
             {/* Option 2 */}
-            <div 
+            <div
               className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-150 ${einOption === "expedite" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
-              onClick={() => setEinOption("expedite")}
+              onClick={() => handlePlanSelection("expedite")}
             >
               <CheckIcon isSelected={einOption === "expedite"} />
               <div>
@@ -65,9 +102,9 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
               </div>
             </div>
             {/* Option 3 */}
-            <div 
+            <div
               className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-150 ${einOption === "skip" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
-              onClick={() => setEinOption("skip")}
+              onClick={() => handlePlanSelection("skip")}
             >
               <CheckIcon isSelected={einOption === "skip"} />
               <div>
@@ -86,7 +123,7 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
               If you are a U.S resident, you can get express EIN, within 2-4 business days. And it&apos;s free from us.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-3">
-              <div 
+              <div
                 className={`flex items-center gap-4 p-[20px] w-full h-[120px] rounded-xl border-2 cursor-pointer transition-all duration-150 ${expressOption === "yes" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
                 onClick={() => setExpressOption("yes")}
               >
@@ -96,7 +133,7 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                   <span className="text-sm text-gray-600">You have to provide SS number for free express EIN</span>
                 </div>
               </div>
-              <div 
+              <div
                 className={`flex items-center gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${expressOption === "no" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
                 onClick={() => setExpressOption("no")}
               >

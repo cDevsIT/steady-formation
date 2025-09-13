@@ -8,7 +8,7 @@ export default function HeroSection() {
 
   return (
     <section className="bg-[#f4f3ff] pt-[70px] px-4">
-      <div className="max-w-[980px] xl:max-w-[1280px] mx-auto flex flex-col justify-center gap-3">
+      <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto flex flex-col justify-center gap-3">
         {/* Desktop Grid Layout */}
         <div className="flex flex-col lg:flex-row gap-[50px] justify-between items-center lg:pt-16">
           {/* Top Left - Heading and Form */}
@@ -16,7 +16,7 @@ export default function HeroSection() {
             <div className="flex flex-col gap-3">
               <h1 className="text-[36px] leading-[44px] lg:text-[60px] lg:leading-[78px] font-bold text-gray-900 m-0 max-w-[700px]">
                 Launch Business in Any State —
-                <span className="text-[#7856FC] bg-[#aaf0c4] px-3 rounded-full mx-2 whitespace-nowrap"> 0 Cost </span>
+                <span className="text-[#7856FC] bg-[#aaf0c4] px-3 rounded-full mx-2"> 0 Cost </span>
                 for U.S. Residents
               </h1>
               <p className="text-[16px] lg:text-[18px] text-gray-600 leading-relaxed max-w-lg">
@@ -51,7 +51,7 @@ export default function HeroSection() {
           <div className="max-w-700px col-span-2 lg:col-span-1 self-end mb-[10px]">
             <div className="text-center lg:text-left">
               <p className="text-gray-600 text-[20px] leading-[175%]">
-                <span className=" font-bold text-[#7856FC]">500+</span>
+                <span className=" font-bold text-[#7856FC]">1000+</span>
                 Total Satisfied Customers Worldwide
               </p>
             </div>

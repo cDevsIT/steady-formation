@@ -1,0 +1,101 @@
+'use client';
+import React from 'react';
+import { ReusableForm, InputField } from '../../../ui/ReusableFormTwo';
+import Image from '@/componant/ui/Image';
+import { useRouter } from 'next/navigation';
+
+const USBankAccount = () => {
+    const router = useRouter();
+
+
+    const handleSubmit = (data: any) => {
+        console.log('Form Data:', data);
+        router.push("/client/services/info-submitted");
+    };
+
+    const handleBack = () => {
+        router.back();
+    };
+
+    return (
+        <div className="">
+            <button
+                onClick={handleBack}
+                className="cursor-pointer flex items-center justify-center gap-2"
+                aria-label="Go back"
+            >
+
+                <Image
+                    className="w-full"
+                    url="/icons/arrow_left_two.svg"
+                    alt="Arrow Left"
+                    width={5}
+                    height={10}
+                />
+                <span className='text-[16px] font-medium'>Back</span>
+            </button>
+            <ReusableForm formTitle="U.S. Business Bank Account" onSubmit={handleSubmit} submitText="Submit" isAgree={true}>
+
+
+                <InputField
+                    name="company_document"
+                    label="Company Document"
+                    type="file"
+                    required
+                />
+
+                <InputField
+                    name="ein_official_letter"
+                    label="EIN Official Letter"
+                    type="file"
+                    required
+                />
+
+                <InputField
+                    name="ein_number"
+                    label="EIN Number"
+                    type="text"
+                    required
+                />
+
+                <InputField
+                    name="proof_residential_address"
+                    label="Proof of Residential Address"
+                    type="text"
+                    required
+                />
+
+                <InputField
+                    name="complete_website_link"
+                    label="Complete Website Link"
+                    type="text"
+                    required
+                />
+
+                <InputField
+                    name="usa_phone_number"
+                    label="USA Phone Number"
+                    type="text"
+                    required
+                />
+
+                <InputField
+                    name="web_or_bus_mail_address"
+                    label="Webmail or Business Mail Address"
+                    type="text"
+                    inputClasss='h-[120px] rounded-xl'
+                />
+
+                <InputField
+                    name="personal_identification_document"
+                    label="Personal Identification Document"
+                    type="file"
+                    required
+                />
+
+            </ReusableForm>
+        </div>
+    );
+};
+
+export default USBankAccount;

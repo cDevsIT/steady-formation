@@ -5,6 +5,7 @@ interface ProgressBarProps {
     totalSteps: number;
     currentStep: number;
     onBack?: () => void;
+    onStartOver?: () => void;
     className?: string;
 }
 
@@ -12,6 +13,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     totalSteps,
     currentStep,
     onBack,
+    onStartOver,
     className = ''
 }) => {
     // Calculate progress percentage
@@ -22,23 +24,37 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
     return (
         <div className={`w-full ${className}`}>
-            {/* Header with back button and step counter */}
+            {/* Header with back button, step counter, and start over button */}
             <div className="flex items-center justify-between mb-2">
-                <button
-                    onClick={onBack}
-                    className="cursor-pointer flex items-center justify-center gap-2"
-                    aria-label="Go back"
-                >
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={onBack}
+                        className="cursor-pointer flex items-center justify-center gap-2"
+                        aria-label="Go back"
+                    >
+                        <Image
+                            className="w-full"
+                            url="/icons/arrow_left_two.svg"
+                            alt="Arrow Left"
+                            width={5}
+                            height={10}
+                        />
+                        <span className='text-[16px] font-medium'>Back</span>
+                    </button>
 
-                    <Image
-                        className="w-full"
-                        url="/icons/arrow_left_two.svg"
-                        alt="Arrow Left"
-                        width={5}
-                        height={10}
-                    />
-                    <span className='text-[16px] font-medium'>Back</span>
-                </button>
+                    {onStartOver && currentStep > 1 && (
+                        <button
+                            onClick={onStartOver}
+                            className="cursor-pointer flex items-center justify-center gap-2 text-red-600 hover:text-red-700 transition-colors"
+                            aria-label="Start over"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            <span className='text-[14px] font-medium'>Start Over</span>
+                        </button>
+                    )}
+                </div>
 
                 <span className="text-[12px] font-medium text-gray-600 hidden lg:block">
                     Step {safeCurrentStep} of {totalSteps}

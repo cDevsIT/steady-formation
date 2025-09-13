@@ -49,7 +49,7 @@ const services: Service[] = [
     id: 'expedite-filing',
     icon: '/icons/service_filing_delivery.svg',
     title: 'Expedite Filing Service',
-    description: 'Accelerate your business formation with our expedited filing service for faster processing.',
+    description: 'Accelerate your business formation with our expedite filing service for faster processing.',
     bgColor: 'bg-[#FDF2FA]'
   }
 ];
@@ -58,12 +58,11 @@ export default function ServicesSection() {
 
   return (
     <section className="pb-20 bg-white">
-      <div className="max-w-[1020px] xl:max-w-[1392px] mx-auto">
+      <div className="max-w-[1020px] lg:max-w-[1150px] xl:max-w-[1392px] mx-auto">
         {/* Header */}
         <div className="text-center rounded-xl lg:rounded-3xl pt-13 pb-50 px-[38px] md:px-[150px] lg:px-[200px] bg-[#F2F4F7]">
           <h2 className="text-[27px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6 ">
-            All-in-One Formation Services
-            Designed for U.S Resident Founders
+            All-in-One Formation Services Designed for U.S. Resident Founders
           </h2>
         </div>
 

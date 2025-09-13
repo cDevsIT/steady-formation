@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from '@/componant/ui/Image';
+import PageHeader from '@/componant/ui/PageHeader';
 
 // Data for small cards
 const smallCards = [
@@ -135,25 +136,17 @@ type BlogCard = {
 
 export default function BlogPage() {
 
-  return (
+  return <div>
+    <PageHeader
+      title="Resources and Insights"
+      subTitle="The latest industry news, interviews, technologies, and resources."
+      page="Blog"
+    />
     <main className="w-full max-w-[390px] md:max-w-[1512px] mx-auto min-h-screen bg-white text-black">
-
-      {/* Banner Section */}
-      <div className="w-full bg-[#F4F3FF] pt-[70px]">
-        <div className="w-full max-w-[360px] md:max-w-[980px] xl:max-w-[1293px] mx-auto py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-[16px] md:text-[16px] font-semibold text-[#7856FC] mb-[16px] font-inter leading-[20px] md:leading-[24px] text-center">Blog</p>
-          <h1 className="text-[30px] md:text-[48px] font-semibold mb-4 font-inter leading-[38px] md:leading-[60px] tracking-[-0.02em] text-center">
-            Resources and Insights
-          </h1>
-          <p className="text-[16px] md:text-[20px] text-[#475467] font-normal font-inter leading-[24px] md:leading-[30px] text-center">
-            The latest industry news, interviews, technologies, and resources.
-          </p>
-        </div>
-      </div>
 
       {/* Blog Cards Section - New Design */}
       {/* Desktop/Tablet Only */}
-      <section className="w-full max-w-[980px] xl:max-w-[1280px] mx-auto mt-24 mb-[80px] grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 hidden md:grid">
+      <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mt-24 mb-[80px] grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 hidden md:grid">
         {/* Featured Post (Left) */}
         <Link href={`/blog/${mainBlogCards[0].slug}`} className="bg-white rounded-xl p-0 flex flex-col cursor-pointer hover:shadow-lg transition-shadow">
           <Image
@@ -263,7 +256,7 @@ export default function BlogPage() {
       {/* Business Ideas and Tips Section */}
 
       {/* Desktop/Tablet Only */}
-      <section className="w-full max-w-[980px] xl:max-w-[1280px] mx-auto mb-[60px] px-4 md:px-0 hidden md:block">
+      <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mb-[60px] px-4 md:px-0 hidden md:block">
         <h2 className="text-[28px] font-bold mb-6 ml-2">Business Ideas and Tips</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
           {businessIdeas.map((card, idx) => (
@@ -371,7 +364,7 @@ export default function BlogPage() {
         </nav>
       </div>
 
-      <section className="w-full max-w-[980px] xl:max-w-[1280px] mx-auto mt-[96px] mb-[130px] md:px-0">
+      <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mt-[96px] mb-[130px] md:px-0">
         <div className="flex flex-col md:flex-row gap-[21px]">
           {/* Left Column */}
           <div className="w-full md:w-[66%]">
@@ -412,7 +405,7 @@ export default function BlogPage() {
         </div>
       </section>
     </main>
-  );
+  </div>
 }
 
 function MobileBlogSlider({ cards }: { cards: BlogCard[] }) {

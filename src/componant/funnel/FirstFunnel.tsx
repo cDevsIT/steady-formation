@@ -4,22 +4,20 @@ import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
 import Rating from "../shared/Rating";
 import { dataState } from "./Funnel";
+import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 
 interface ChildComponentProps {
     handleFormSubmit: (data: CustomFormData) => void;
   }
 
 const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-    const [data, setData] = useState<dataState>({});
+    const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
     const [formMethods, setFormMethods] = useState<any>(null);
 
-    // Load initial data from localStorage
+    // Load initial data from localStorage using the new service
     useEffect(() => {
-        const localData = localStorage.getItem('companyData');
-        if (localData) {
-            const parsedData = JSON.parse(localData);
-            setData(parsedData);
-        }
+        const localData = companyFormationService.getFromLocalStorage();
+        setData(localData);
     }, []);
 
 
@@ -27,18 +25,31 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         if (formMethods) {
             formMethods.reset({
                 companyName: data.companyName || "",
-                //remove This
-                fullName: "SHIKHOR",
-                email: "demo@email.com",
-                primaryPhone: "2345678901",
-                secondaryPhone: "2345678901",
+                fullName: "",
+                email: "",
+                primaryPhone: "2222222222",
+                secondaryPhone: "2222222222",
             });
         }
     }, [data, formMethods]);
 
     const handleSubmit = (data: CustomFormData) => {
-        handleFormSubmit({stepOne: data})
+        // Transform the data to match API expectations
+        const userInfo = {
+            first_name: data.fullName?.split(' ')[0] || '',
+            last_name: data.fullName?.split(' ').slice(1).join(' ') || '',
+            email: data.email || '',
+            phone_number: data.primaryPhone || ''
+        };
 
+        // Save the data to localStorage with correct structure
+        companyFormationService.saveToLocalStorage({
+            companyName: data.companyName,
+            userInfo: userInfo,
+            currentStep: 2
+        });
+        
+        handleFormSubmit({stepOne: data})
     };
 
     // Handle form state changes and set up watchers
