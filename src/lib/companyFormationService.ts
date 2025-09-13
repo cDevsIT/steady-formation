@@ -98,6 +98,9 @@ export interface CompanyFormationData {
   registrationConfrim?: boolean;
   isOwnersInfoComplete?: boolean;
   
+  // Temporary login token for auto-login after payment
+  tempLoginToken?: string;
+  
   // Metadata
   createdAt?: string;
   updatedAt?: string;
