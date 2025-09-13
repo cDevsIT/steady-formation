@@ -27,7 +27,7 @@ const tabsData: TabContent[] = [
         subTitle: 'Bridging Dreams and Realities',
         items: [
             'We’re here to make building a U.S. business feel less like a maze and more like momentum.',
-            'With over seven years of experience and 500+ successful client journeys behind us, our mission is simple: empower entrepreneurs to launch, scale, and succeed without friction.',
+            'With over seven years of experience and 1000+ successful client journeys behind us, our mission is simple: empower entrepreneurs to launch, scale, and succeed without friction.',
             'We don’t just guide—we walk beside you, turning big visions into solid wins.'
         ]
     },
