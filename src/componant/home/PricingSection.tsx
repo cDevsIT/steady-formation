@@ -12,7 +12,7 @@ const businessStructures = [
             'Unlimited owners (members) allowed',
             'Board of directors required',
             'Allows strong protection for personal assets',
-            'Subject to double taxation(profits taxed at both corporate & shareholder levels)',
+            'Subject to double taxation (profits taxed at both corporate & shareholder levels)',
             'Best for raising venture capital and issuing stock',
             'Long-term existence (Perpetual)',
             'Suitable for going public'
@@ -120,7 +120,7 @@ export default function PricingSection() {
                 </div>
 
                 {/* Additional Info Section */}
-                <div className="mt-16 text-center flex justify-between items-center">
+                <div className="mt-16 text-center flex justify-center items-center">
                     <p className="text-gray-600 max-w-[314px] text-start font-bold">
                         👉 Still unsure which structure fits your business best?
                     </p>

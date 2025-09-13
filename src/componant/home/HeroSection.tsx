@@ -51,7 +51,7 @@ export default function HeroSection() {
           <div className="max-w-700px col-span-2 lg:col-span-1 self-end mb-[10px]">
             <div className="text-center lg:text-left">
               <p className="text-gray-600 text-[20px] leading-[175%]">
-                <span className=" font-bold text-[#7856FC]">500+</span>
+                <span className=" font-bold text-[#7856FC]">1000+</span>
                 Total Satisfied Customers Worldwide
               </p>
             </div>

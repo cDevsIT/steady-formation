@@ -55,7 +55,7 @@ export default function AffiliatePage() {
     return (
         <div className="w-full min-h-screen bg-white pt-[100px]">
             <div className="max-w-[975px] mx-auto px-4 py-8">
-                
+
                 <div
                     className="bg-[#240D68] rounded-2xl p-6 md:p-12 text-white relative overflow-hidden"
                 >
@@ -99,7 +99,7 @@ export default function AffiliatePage() {
                                 { icon: 'resgister-icon.svg', label: 'Register', color: 'bg-[#EBE8FF]' },
                                 { icon: 'refer-icon.svg', label: 'Refer', color: 'bg-[#ECFDFF]' },
                                 { icon: 'earn-icon.svg', label: 'Earn', color: 'bg-[#FEFBE8]' },
-                                { icon: 'paid.svg', label: 'Paid', color: 'bg-[#EDFCF2]' }
+                                { icon: 'paid.svg', label: 'Get Paid', color: 'bg-[#EDFCF2]' }
                             ].map((step, index) => (
                                 <div key={index} className="flex flex-col items-center gap-4 w-full md:w-1/4">
                                     <div className={`relative ${step.color} rounded-full w-24 h-24 md:w-28 md:h-28 flex items-center justify-center`}>

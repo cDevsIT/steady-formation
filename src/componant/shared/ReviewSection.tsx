@@ -163,7 +163,7 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
                         }`}
                 >
                     <h2 className="text-[27px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6 ">
-                        Trusted by 26,000+ customers
+                        Trusted by 1000+ customers
                     </h2>
                 </div>
 

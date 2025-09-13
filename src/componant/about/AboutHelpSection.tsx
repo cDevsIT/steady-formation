@@ -19,7 +19,7 @@ const AboutHelpSection = () => {
                         </p>
 
                         <p className='py-3 text-[#475467] text-[16px]'>
-                            For over seven years, we’ve stood beside startups and scaling brands, guiding them through formation, compliance, and beyond. With 500+ success stories under our belt, we’re here to turn your vision into a well-formed, well-run business. Simple. Secure. Strategic.
+                            For over seven years, we’ve stood beside startups and scaling brands, guiding them through formation, compliance, and beyond. With 1000+ success stories under our belt, we’re here to turn your vision into a well-formed, well-run business. Simple. Secure. Strategic.
                         </p>
                     </div>
                 </div>
