@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import Image from '@/componant/ui/Image';
 import Rating from '@/componant/shared/Rating';
 import companyFormationService, { useCompanyFormationData, CompanyFormationData } from '@/lib/companyFormationService';
+import { FunnelSidebarHeaderText } from '@/lib/funnelSidebarHeaderText';
 
 
 
@@ -12,6 +13,10 @@ const FunnelSidebar = () => {
     const data = useCompanyFormationData();
     const [currentSlide, setCurrentSlide] = useState(0);
     const reviews = sampleReviews.slice(0, 3);
+
+    const headerText = FunnelSidebarHeaderText.find(item => item.step === data.currentStep);
+
+    console.log(headerText);
 
     // Get state name for display
     const getStateName = (stateName: string) => {
@@ -74,7 +79,9 @@ const FunnelSidebar = () => {
 
     return (
         <div className="hidden lg:flex flex-col gap-6 max-w-[452px]">
-            <Image className='w-[452px]' url="/funnel/funnel-sidebar-head.svg" alt="stars" width={452} height={195} />
+            <div className='w-[452px]'>
+                <Image  url="/funnel/funnel-sidebar-head.png" alt="stars" width={452} height={195} />
+            </div>
             {/* Order Summary Section */}
             <div className="bg-gray-100 rounded-xl shadow p-4 mb-2">
                 <div className="font-bold text-[20px]">Order Summary</div>
