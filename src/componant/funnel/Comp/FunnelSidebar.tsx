@@ -79,7 +79,17 @@ const FunnelSidebar = () => {
 
     return (
         <div className="hidden lg:flex flex-col gap-6 max-w-[452px]">
-            <div className='w-[452px]'>
+            <div className='w-[452px] relative'>
+                {headerText && (
+                    <div className='absolute top-5 left-[30px] text-white '>
+                        <h3 className='text-[20px] font-bold mb-2'>{headerText.title}</h3>
+                        <ul style={{ listStyleType: "disc", paddingLeft: "20px" }}>
+                            {headerText.point.map((p, index) => (
+                                <li className='text-[14px] font-medium' key={index}>{p}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
                 <Image  url="/funnel/funnel-sidebar-head.png" alt="stars" width={452} height={195} />
             </div>
             {/* Order Summary Section */}
