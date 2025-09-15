@@ -13,25 +13,25 @@ const COMPANY_TYPES = [
     key: 's_corp',
     title: 'S Corp',
     description:
-      `Well known for tax benefits and operational flexibility, maintaining your business's growth momentum while enjoying certain corporate structures without double taxation....`,
+      `Well known for tax benefits and operational flexibility, and enjoy certain corporate structures without double taxation. (U.S. citizens only)`,
   },
   {
     key: 'c_corp',
     title: 'C Crop',
     description:
-      'Offers advanced business growth and funding opportunities, ensures strong legal separation between company and personal assets, and simplifies access to investment capital.',
+      'Provides strong liability protection, easier access to investors, and flexible share options, but comes with double taxation on profits and dividends.',
   },
   {
     key: 'non_profit',
     title: 'Non Profit',
     description:
-      'Offers advanced business growth and funding opportunities, ensures strong legal separation between company and personal assets, and simplifies access to investment capital.',
+      'Formed to serve public or community goals, eligible for tax-exempt status, and allows reinvestment of surplus funds into its mission instead of profit.',
   },
   {
     key: 'partnership',
     title: 'Partnership',
     description:
-      'Offers advanced business growth and funding opportunities, ensures strong legal separation between company and personal assets, and simplifies access to investment capital.',
+      'Built on shared ownership, simple to start and manage, with profits taxed directly on partners’ returns, but personal liability often applies.',
   },
 ];
 

@@ -23,6 +23,8 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
     const companyType = selected === 'llc' || selected === 'multiLLC' ? llcTypes : selected === 's_corp' ? [{ label: 'S Corporation (Owners must be U.S Resident)', value: 's_corp' }] : selected === 'c_corp' ? [{ label: 'C Corporation', value: 'c_corp' }] : selected === 'partnership' ? [{ label: 'Partnership', value: 'partnership' }] : [];
 
+    const llcType = selected === 'llc' ? 'singleLLC' : selected === 's_corp' ? 's_corp' : selected === 'c_corp' ? 'c_corp' : selected === 'partnership' ? 'partnership' : selected === 'non_profit' && 'non_profit'
+
     // Load initial data from localStorage using the new service
     useEffect(() => {
         const localData = companyFormationService.getFromLocalStorage();
@@ -32,16 +34,17 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
 
     useEffect(() => {
-        if (formMethods && usStates.length > 0) {
+        
+        if (formMethods) {
             formMethods.reset({
                 //remove This
-                llcType: "singleLLC",
+                llcType: llcType,
                 industryType: "technology",
                 stateName: usStates[0]?.value || "Colorado",
                 numOfOwnerShip: 1,
             });
         }
-    }, [data, formMethods, usStates]);
+    }, [data, formMethods, usStates, llcType]);
 
     const handleSubmit = (data: CustomFormData) => {
         // Save the business details to localStorage
