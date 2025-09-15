@@ -24,15 +24,19 @@ export interface CompanyResponse {
     data: CompanyData;
 }
 
-export const getCompanyData = async (): Promise<CompanyData> => {
+export const getCompanyData = async (companyId?: number): Promise<CompanyData> => {
     const token = localStorage.getItem('auth_token');
     
     if (!token) {
         throw new Error('Authentication token not found');
     }
 
+    const url = companyId 
+        ? `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USER.COMPANY}?company_id=${companyId}`
+        : `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USER.COMPANY}`;
+
     const response = await fetchApi<CompanyResponse>(
-        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USER.COMPANY}`,
+        url,
         {
             headers: {
                 'Authorization': `Bearer ${token}`,

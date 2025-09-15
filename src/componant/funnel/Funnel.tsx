@@ -66,6 +66,7 @@ const FunnelContent = () => {
         const orderId = searchParams.get('order_id');
         const token = searchParams.get('token');
         const payerId = searchParams.get('PayerID');
+        const tempLoginToken = searchParams.get('temp_login_token');
 
         console.log('Payment URL parameters:', {
             payment,
@@ -73,7 +74,8 @@ const FunnelContent = () => {
             userId,
             orderId,
             token,
-            payerId
+            payerId,
+            tempLoginToken
         });
 
         // Check if we have payment parameters (either success or cancel)
@@ -99,7 +101,7 @@ const FunnelContent = () => {
                         setPaymentStatus('success');
                         setPaymentData(result);
                         
-                        // Update localStorage to mark payment as complete
+                        // Update localStorage to mark payment as complete and store temp login token
                         const localData = companyFormationService.getFromLocalStorage();
                         console.log('Current localStorage data:', localData);
                         companyFormationService.saveToLocalStorage({
@@ -110,7 +112,8 @@ const FunnelContent = () => {
                                 status: 'completed'
                             },
                             isPaymentComplete: true,
-                            currentStep: 10 // Move to next step
+                            currentStep: 10, // Move to next step
+                            tempLoginToken: tempLoginToken // Store the temporary login token
                         });
                         
                     } else if (payment === 'cancel') {
