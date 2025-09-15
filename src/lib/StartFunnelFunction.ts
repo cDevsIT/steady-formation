@@ -2,8 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import companyFormationService from './companyFormationService';
 
-export function useCustomNavigation() {
+export function useStartFunnelFunction() {
     const router = useRouter();
 
     return (e: React.FormEvent, businessType: string, companyName: string) => {
@@ -16,10 +17,12 @@ export function useCustomNavigation() {
             companyName,
             currentStep: 1,
         };
-        // Clear previous value
-        localStorage.removeItem('companyData');
-        // Save to localStorage
-        localStorage.setItem('companyData', JSON.stringify(setupData));
-        router.push('/setup-company')
+       // Clear any existing data and start fresh
+        companyFormationService.clearLocalStorage();
+       
+        // Save initial data to localStorage
+        companyFormationService.saveToLocalStorage(setupData);
+       
+        router.push('/setup-company');
     };
 }
