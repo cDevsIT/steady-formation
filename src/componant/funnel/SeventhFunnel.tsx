@@ -11,20 +11,20 @@ const SeventhFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     useEffect(() => {
           // Set EIN option based on existing data
         if (data?.rush_processing_amount === 99) {
-            setProcessing("Expedited Processing");
+            setProcessing("Expedite Processing");
           } else if (data?.rush_processing_amount === 0 || !data?.rush_processing_amount) {
             setProcessing("Standard Processing");
           }
         }, [data?.rush_processing_amount]);
 
     const handleContinue = () => {
-        const price = processing === 'Expedited Processing' ? 99 : 0
+        const price = processing === 'Expedite Processing' ? 99 : 0
         if (handleFormSubmit) handleFormSubmit({ stepSeven: { processing: processing }, rush_processing_amount: price });
     };
 
     const handlePlanSelection = (option: string) => {
           let price = 0
-        if (option === "Expedited Processing") {
+        if (option === "Expedite Processing") {
             price = 99
         } else if (option === "Standard Processing") {
             price = 0
@@ -38,23 +38,23 @@ const SeventhFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     return (
         <div className="max-w-[728px]">
             <FunnelHeading>
-                Expedited Filing
+                Expedite Filing
             </FunnelHeading>
-            <p className="text-base font-normal text-gray-600 mb-4 mt-2">Get the fastest filing with our Expedited Filing service when you need it urgently. Standard processing may require more days or weeks. </p>
+            <p className="text-base font-normal text-gray-600 mb-4 mt-2">Get the fastest filing with our Expedite Filing service when you need it urgently. Standard processing may require more days or weeks. </p>
             <p className="text-base font-normal text-gray-600">
-                Jumpstart your business with our Expedited Filing! Get legal fast, skip the wait, and dive into the market. Quick, easy, and ready for success. Let&apos;s go!</p>
+                Jumpstart your business with our Expedite Filing! Get legal fast, skip the wait, and dive into the market. Quick, easy, and ready for success. Let&apos;s go!</p>
             <p className="text-base font-normal text-black bg-gray-50 rounded-2xl mt-4 p-7">
                 Note: Expedited filing service includes company formation, operating agreement, and registered agent within 1-3 business days. EIN form submission will be done within this timeframe; processing depends on the IRS.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-3 mt-6">
                 <div
-                    className={`flex items-center gap-4 p-[20px] w-full h-[120px] rounded-xl border-2 cursor-pointer transition-all duration-150 ${processing === "Expedited Processing" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
-                    onClick={() => handlePlanSelection("Expedited Processing")}
+                    className={`flex items-center gap-4 p-[20px] w-full h-[120px] rounded-xl border-2 cursor-pointer transition-all duration-150 ${processing === "Expedite Processing" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
+                    onClick={() => handlePlanSelection("Expedite Processing")}
                 >
-                    <CheckIcon isSelected={processing === "Expedited Processing"} />
+                    <CheckIcon isSelected={processing === "Expedite Processing"} />
                     <div className="flex flex-col">
-                        <h5 className="font-semibold text-base">Expedited Processing  $99</h5>
+                        <h5 className="font-semibold text-base">Expedite Processing  $99</h5>
                         <ul className="list-disc ml-6 text-[16px] font-normal text-gray-600">
                             <li>1-3 business days</li>
                             <li>Company formation only</li>
@@ -74,7 +74,7 @@ const SeventhFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                     </div>
                 </div>
             </div>
-            <span className="text-sm font-normal text-gray-600">Note: Service Provider Expedited Service. State level Expedited service is not included here.</span>
+            <span className="text-sm font-normal text-gray-600">Note: Service Provider Expedite Service. State level Expedite service is not included here.</span>
 
             <p className="text-base font-medium text-black my-5">The processing times will be determined based on the current state turnaround times and are subject to change based on state processing.</p>
 
