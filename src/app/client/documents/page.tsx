@@ -100,7 +100,7 @@ export default function Documents() {
     const { selectedCompany } = useCompany();
     
     // Use API data only
-    const { documents, isLoading, error, downloadDocument } = useDocuments(selectedCompany?.user_id || 3);
+    const { documents, isLoading, error, downloadDocument } = useDocuments(selectedCompany?.id);
 
     const handleRowClick = (doc: any) => {
         setSelectedDoc(doc);

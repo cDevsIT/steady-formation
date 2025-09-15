@@ -24,10 +24,10 @@ export const documentsService = {
     /**
      * Get user documents
      */
-    async getUserDocuments(userId: number): Promise<DocumentsResponse> {
+    async getUserDocuments(companyId: number): Promise<DocumentsResponse> {
         try {
             const response = await fetchApi<DocumentsResponse>(
-                `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.DOCUMENTS.USER_DOCUMENTS}?user_id=${userId}`
+                `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.DOCUMENTS.USER_DOCUMENTS}?company_id=${companyId}`
             );
             return response;
         } catch (error) {

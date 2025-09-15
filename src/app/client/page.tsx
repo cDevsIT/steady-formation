@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 export default function ClientDashboard() {
     const { selectedCompany } = useCompany();
     const { statusData, isLoading, error } = useCompanyStatus({ 
-        user_id: selectedCompany?.user_id || 3 
+        company_id: selectedCompany?.id 
     });
     const router = useRouter();
     return (
