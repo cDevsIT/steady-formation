@@ -46,22 +46,22 @@ const tabsData: TabContent[] = [
         title: 'EIN',
         items: [
             {
-                icon: '/homepage/icons/advantage_protection.svg',
+                icon: '/homepage/icons/us_business_operation.png',
                 title: 'Required for U.S. Business Operations',
                 description: 'Needed for taxes, hiring, and running your business legally in the U.S.'
             },
             {
-                icon: '/homepage/icons/advantage_protection.svg',
+                icon: '/homepage/icons/build_business.png',
                 title: 'Builds Business Identity',
                 description: 'Separates personal and business identity — adds credibility and trust.'
             },
             {
-                icon: '/homepage/icons/advantage_protection.svg',
+                icon: '/homepage/icons/bank_payment.png',
                 title: 'Bank & Payment Gateway Access',
                 description: 'Open U.S. bank accounts and activate Stripe, PayPal, Amazon, and more.'
             },
             {
-                icon: '/homepage/icons/advantage_protection.svg',
+                icon: '/homepage/icons/hire_employees.png',
                 title: 'Hire Employees Legally',
                 description: 'Essential for payroll setup and employee tax filings.'
             }
