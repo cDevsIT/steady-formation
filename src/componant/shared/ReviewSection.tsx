@@ -184,7 +184,7 @@ const ReviewsSection = ({ reviews, variant }: ReviewsSectionProps) => {
                         onTouchEnd={handleTouchEnd}
                     >
                         {displayReviews.map((review, i) => (
-                            <div key={i}>
+                            <div key={i} className="flex">
                                 <ReviewCard review={review} />
                             </div>
                         ))}

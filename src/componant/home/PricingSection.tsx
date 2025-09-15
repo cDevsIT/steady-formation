@@ -1,6 +1,8 @@
-
+'use client'
+import companyFormationService from '@/lib/companyFormationService';
 import Button from '../ui/Button';
 import Image from '../ui/Image';
+import { useRouter } from 'next/navigation';
 
 const businessStructures = [
     {
@@ -60,6 +62,18 @@ const businessStructures = [
 ];
 
 export default function PricingSection() {
+    const router = useRouter();
+    const handleSubmit = () => {
+            // Clear any existing data and start fresh
+            companyFormationService.clearLocalStorage();
+    
+            // Save initial data to localStorage
+            companyFormationService.saveToLocalStorage({
+                currentStep: 1
+            });
+    
+            router.push('/setup-company');
+        };
     return (
         <section className="pb-20 px-4 bg-white">
             <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto">
@@ -114,7 +128,7 @@ export default function PricingSection() {
                             </div>
 
                             {/* CTA Button */}
-                            <Button className='w-full' theme={`${structure.highlighted ? 'primary' : 'secondary'}`}>Start with $0 Cost</Button>
+                            <Button onClick={handleSubmit} className='w-full cursor-pointer' theme={`${structure.highlighted ? 'primary' : 'secondary'}`}>Start with $0 Cost</Button>
                         </div>
                     ))}
                 </div>

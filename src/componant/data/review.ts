@@ -5,7 +5,7 @@ export const sampleReviews: Review[] = [
     {
         id: '1',
         type: 'trustpilot',
-        profileImage: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+        profileImage: '/homepage/client_headshot/harry_davies.png',
         name: 'Harry Davies',
         position: 'Founder, Nexora',
         title: 'They handled every detail of my U.S',
@@ -16,7 +16,7 @@ export const sampleReviews: Review[] = [
     {
         id: '2',
         type: 'trustpilot',
-        profileImage: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+        profileImage: '/homepage/client_headshot/adam_smith.png',
         name: 'Adam Smith',
         position: 'CEO, Velora Dynamics',
         title: 'They made the process of registering my…',
@@ -27,7 +27,7 @@ export const sampleReviews: Review[] = [
     {
         id: '3',
         type: 'trustpilot',
-        profileImage: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+        profileImage: '/homepage/client_headshot/olieweya.png',
         name: 'Olieweya',
         position: 'Co-founder, Aurevia',
         title: 'Great experience overall',
@@ -38,7 +38,7 @@ export const sampleReviews: Review[] = [
     {
         id: '4',
         type: 'trustpilot',
-        profileImage: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+        profileImage: '/homepage/client_headshot/dominic.png',
         name: 'Dominic',
         position: 'Founder, Quantara',
         title: 'Super grateful for the team',
@@ -49,7 +49,7 @@ export const sampleReviews: Review[] = [
     {
         id: '5',
         type: 'trustpilot',
-        profileImage: 'https://images.pexels.com/photos/1024311/pexels-photo-1024311.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+        profileImage: '/homepage/client_headshot/dalia_matt.png',
         name: 'Dalia Maat',
         position: 'Co-founder, Erynova',
         title: 'From the moment I contacted them',
@@ -60,7 +60,7 @@ export const sampleReviews: Review[] = [
     {
         id: '6',
         type: 'trustpilot',
-        profileImage: 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+        profileImage: '/homepage/client_headshot/mason.jpg',
         name: 'Mason',
         position: 'Co-founder, Novatrax',
         title: 'The customer support staff was so…',
@@ -71,7 +71,7 @@ export const sampleReviews: Review[] = [
     {
         id: '7',
         type: 'trustpilot',
-        profileImage: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+        profileImage: '/homepage/client_headshot/henry.png',
         name: 'Henry',
         position: 'CEO, Thryveon',
         title: 'What I loved most was how responsive…',
@@ -82,7 +82,7 @@ export const sampleReviews: Review[] = [
     {
         id: '8',
         type: 'trustpilot',
-        profileImage: 'https://images.pexels.com/photos/1674752/pexels-photo-1674752.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+        profileImage: '/homepage/client_headshot/maxon_jed.jpg',
         name: 'Maxon Jed',
         position: 'CEO, BloomBites',
         title: 'Their registered agent service is…',
@@ -93,7 +93,7 @@ export const sampleReviews: Review[] = [
     {
         id: '9',
         type: 'trustpilot',
-        profileImage: 'https://images.pexels.com/photos/1040880/pexels-photo-1040880.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop',
+        profileImage: '/homepage/client_headshot/morgan.jpg',
         name: 'Morgan',
         position: 'Founder, SpiceHaven',
         title: 'International clients',
