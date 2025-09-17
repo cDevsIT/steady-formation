@@ -226,7 +226,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
               <p className="font-inter text-[16px] leading-[24px] md:text-[20px] md:leading-[30px] font-normal text-[#475467] mb-6">
                 {blog.description}
               </p>
-              <div className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6" 
+              <div className="blog-content font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6" 
                    dangerouslySetInnerHTML={{ __html: blog.content }} />
             </>
           ) : (
