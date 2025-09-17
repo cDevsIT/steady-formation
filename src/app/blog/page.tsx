@@ -1,9 +1,10 @@
-"use client";
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from '@/componant/ui/Image';
 import PageHeader from '@/componant/ui/PageHeader';
 import { blogService, Blog, getBaseUrl } from '@/lib/blogService';
+import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 
 type BlogCard = {
   img: string;
@@ -14,47 +15,105 @@ type BlogCard = {
   slug: string;
 };
 
-export default function BlogPage() {
-  // State for blogs data
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalBlogs, setTotalBlogs] = useState(0);
+interface BlogPageProps {
+  searchParams: Promise<{
+    page?: string;
+  }>;
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({ searchParams }: BlogPageProps): Promise<Metadata> {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseInt(resolvedSearchParams?.page || '1', 10);
+  
+  try {
+    const response = await blogService.getAllBlogs(currentPage);
+    const blogs = response.data.data;
+    const totalPages = response.data.last_page;
+    
+    const pageTitle = currentPage > 1 ? `Blog - Page ${currentPage}` : 'Blog';
+    const pageDescription = `Discover the latest industry news, interviews, technologies, and resources. ${blogs.length > 0 ? `Featured: ${blogs[0].title}` : ''}`;
+    
+    return {
+      title: pageTitle,
+      description: pageDescription,
+      openGraph: {
+        title: pageTitle,
+        description: pageDescription,
+        type: 'website',
+        images: blogs.length > 0 ? [`${getBaseUrl()}/storage/uploads/blog/${blogs[0].feature_image}`] : [],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: pageTitle,
+        description: pageDescription,
+        images: blogs.length > 0 ? [`${getBaseUrl()}/storage/uploads/blog/${blogs[0].feature_image}`] : [],
+      },
+      alternates: {
+        canonical: currentPage > 1 ? `/blog?page=${currentPage}` : '/blog',
+      },
+    };
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Blog',
+      description: 'Discover the latest industry news, interviews, technologies, and resources.',
+    };
+  }
+}
+
+// Generate static params for pagination
+export async function generateStaticParams() {
+  try {
+    // Get the first page to determine total pages
+    const response = await blogService.getAllBlogs(1);
+    const totalPages = response.data.last_page;
+    
+    // Generate params for all pages
+    const params = [];
+    for (let page = 1; page <= totalPages; page++) {
+      params.push({ page: page.toString() });
+    }
+    
+    return params;
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    // Fallback to just the first page
+    return [{ page: '1' }];
+  }
+}
+
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseInt(resolvedSearchParams?.page || '1', 10);
   const baseUrl = getBaseUrl();
 
-  // Fetch blogs data when component mounts
-  useEffect(() => {
-    const fetchBlogsData = async () => {
-      try {
-        setLoading(true);
-        // Fetch all blogs
-        const response = await blogService.getAllBlogs(currentPage);
-        
-        if (response.status === 'success' && response.data) {
-          setBlogs(response.data.data);
-          setTotalPages(response.data.last_page);
-          setTotalBlogs(response.data.total);
-        } else {
-          throw new Error(response.message || 'Failed to fetch blogs');
-        }
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-        console.error('❌ Error fetching blogs:', errorMessage);
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fetch blogs data at build time
+  let blogs: Blog[] = [];
+  let totalPages = 1;
+  let totalBlogs = 0;
+  let error: string | null = null;
 
-    fetchBlogsData();
-  }, [currentPage]);
+  try {
+    const response = await blogService.getAllBlogs(currentPage);
+    
+    if (response.status === 'success' && response.data) {
+      blogs = response.data.data;
+      totalPages = response.data.last_page;
+      totalBlogs = response.data.total;
+    } else {
+      throw new Error(response.message || 'Failed to fetch blogs');
+    }
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+    console.error('❌ Error fetching blogs:', errorMessage);
+    error = errorMessage;
+  }
 
-  // Handle pagination
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  // If there's an error or no blogs, show 404 for invalid pages
+  if (error || (currentPage > 1 && blogs.length === 0)) {
+    notFound();
+  }
 
   // Convert API blog data to component format
   const convertBlogToCard = (blog: Blog) => ({
@@ -85,30 +144,53 @@ export default function BlogPage() {
   // Get main blog cards (featured + small cards)
   const mainBlogCards = featuredBlog ? [featuredBlog, ...smallCards] : smallCards;
 
+  // Generate structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Steady Formation Blog",
+    "description": "The latest industry news, interviews, technologies, and resources",
+    "url": `${baseUrl}/blog`,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Steady Formation",
+      "url": baseUrl
+    },
+    "blogPost": blogs.map(blog => ({
+      "@type": "BlogPosting",
+      "headline": blog.title,
+      "description": blog.description,
+      "url": `${baseUrl}/blog/${blog.slug}`,
+      "datePublished": blog.created_at,
+      "author": {
+        "@type": "Person",
+        "name": blog.author.name
+      },
+      "image": `${baseUrl}/storage/uploads/blog/${blog.feature_image}`,
+      "publisher": {
+        "@type": "Organization",
+        "name": "Steady Formation"
+      }
+    }))
+  };
+
   return <div>
+    {/* Structured Data for SEO */}
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(structuredData)
+      }}
+    />
+    
     <PageHeader
       title="Resources and Insights"
       subTitle="The latest industry news, interviews, technologies, and resources."
       page="Blog"
     />
     <main className="w-full max-w-[390px] md:max-w-[1512px] mx-auto min-h-screen bg-white text-black">
-      {/* Loading State */}
-      {loading && (
-        <div className="flex items-center justify-center py-8">
-          <div className="text-[#7856FC] text-[16px] leading-[24px] font-medium">Loading blogs...</div>
-        </div>
-      )}
-
-      {/* Error State */}
-      {error && (
-        <div className="flex items-center justify-center py-8">
-          <div className="text-red-500 text-[16px] leading-[24px] font-medium">Error: {error}</div>
-        </div>
-      )}
-
       {/* Blog Cards Section - New Design */}
       {/* Desktop/Tablet Only */}
-      {!loading && !error && (
         <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mt-24 mb-[80px] grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 hidden md:grid">
         {/* Featured Post (Left) */}
         {featuredBlog && (
@@ -176,8 +258,7 @@ export default function BlogPage() {
             </Link>
           ))}
         </div>
-        </section>
-      )}
+      </section>
       {/* Mobile Only Slider */}
       <section className="block md:hidden w-full max-w-[390px] mx-auto mt-8 mb-12 px-4">
         <MobileBlogSlider cards={mainBlogCards} />
@@ -294,26 +375,31 @@ export default function BlogPage() {
         </div>
       </section>
       {/* Pagination Section */}
-      {!loading && !error && totalPages > 1 && (
+      {totalPages > 1 && (
         <div className="w-full flex justify-center mb-[96px] px-4 md:px-0">
           <nav className="inline-flex items-center gap-1 rounded-md border border-[#EFF1F5] bg-white px-2 py-1 md:px-2 md:py-1">
-            <button 
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="flex items-center cursor-pointer gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span className="text-lg mr-2 md:text-lg md:mr-2">&#8592;</span> Previous
-            </button>
+            {currentPage > 1 ? (
+              <Link 
+                href={`/blog?page=${currentPage - 1}`}
+                className="flex items-center cursor-pointer gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition"
+              >
+                <span className="text-lg mr-2 md:text-lg md:mr-2">&#8592;</span> Previous
+              </Link>
+            ) : (
+              <span className="flex items-center gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md opacity-50 cursor-not-allowed">
+                <span className="text-lg mr-2 md:text-lg md:mr-2">&#8592;</span> Previous
+              </span>
+            )}
             {/* Mobile: short pagination, Desktop: full pagination */}
             <span className="flex md:hidden">
               {Array.from({ length: Math.min(3, totalPages) }, (_, i) => i + 1).map((item) => (
-                <button
+                <Link
                   key={`mobile-${item}`}
-                  onClick={() => handlePageChange(item)}
+                  href={`/blog?page=${item}`}
                   className={`px-3 py-2 text-sm font-medium rounded-md ${item === currentPage ? 'bg-[#F9FAFB] text-[#344054]' : 'text-[#475467] hover:bg-[#F9FAFB]'} transition`}
                 >
                   {item}
-                </button>
+                </Link>
               ))}
               {totalPages > 3 && <span className="px-3 py-2 text-sm text-[#475467]">...</span>}
             </span>
@@ -324,22 +410,27 @@ export default function BlogPage() {
                 if (currentPage >= totalPages - 3) return totalPages - 6 + i;
                 return currentPage - 3 + i;
               }).map((item, idx) => (
-                <button
+                <Link
                   key={`desktop-${item}-${idx}`}
-                  onClick={() => handlePageChange(item)}
+                  href={`/blog?page=${item}`}
                   className={`px-2 py-1 text-[16px] font-medium rounded-md ${item === currentPage ? 'bg-[#F9FAFB] text-[#344054]' : 'text-[#475467] hover:bg-[#F9FAFB]'} transition`}
                 >
                   {item}
-                </button>
+                </Link>
               ))}
             </span>
-            <button 
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="flex items-center cursor-pointer gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next <span className="text-lg ml-2 md:text-lg md:ml-2">&#8594;</span>
-            </button>
+            {currentPage < totalPages ? (
+              <Link 
+                href={`/blog?page=${currentPage + 1}`}
+                className="flex items-center cursor-pointer gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition"
+              >
+                Next <span className="text-lg ml-2 md:text-lg md:ml-2">&#8594;</span>
+              </Link>
+            ) : (
+              <span className="flex items-center gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md opacity-50 cursor-not-allowed">
+                Next <span className="text-lg ml-2 md:text-lg md:ml-2">&#8594;</span>
+              </span>
+            )}
           </nav>
         </div>
       )}
@@ -389,8 +480,8 @@ export default function BlogPage() {
 }
 
 function MobileBlogSlider({ cards }: { cards: BlogCard[] }) {
-  const [current, setCurrent] = useState(0);
-  const goTo = (idx: number) => setCurrent(idx);
+  // For SSG, we'll show the first card by default
+  const current = 0;
 
   return (
     <div className="w-full">
@@ -419,17 +510,6 @@ function MobileBlogSlider({ cards }: { cards: BlogCard[] }) {
       <button className="w-full bg-white text-[#6C3EF5] font-medium rounded-md px-6 py-3 mb-10 shadow hover:bg-[#f3f0ff] transition">
         Book A Free Call
       </button>
-      <div className="flex justify-center gap-2">
-        {cards.map((_, idx: number) => (
-          <button
-            key={idx}
-            className={`w-2 h-2 rounded-full ${idx === current ? 'bg-[#6C3EF5]' : 'bg-[#E4E7EC]'} transition`}
-            style={{ outline: 'none', border: 'none' }}
-            onClick={() => goTo(idx)}
-            aria-label={`Go to slide ${idx + 1}`}
-          />
-        ))}
-      </div>
     </div>
   );
 }

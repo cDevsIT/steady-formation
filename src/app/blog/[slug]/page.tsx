@@ -1,9 +1,9 @@
-"use client";
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import React from 'react';
+import { notFound } from 'next/navigation';
 import LaunchCompanyPopup from "@/componant/shared/LaunchCompanyPopup";
 import Image from '@/componant/ui/Image';
 import { blogService, Blog } from '@/lib/blogService';
+import { Metadata } from 'next';
 
 function slugToTitle(slug: string): string {
   if (!slug) return '';
@@ -81,45 +81,96 @@ const latestBlogsData = [
   },
 ];
 
-export default function BlogPost() {
-  const params = useParams();
-  const slug = params.slug as string;
+// Generate static params for all blog pages
+export async function generateStaticParams() {
+  try {
+    // Get all blogs to generate static pages
+    const response = await blogService.getAllBlogs(1);
+    const totalPages = response.data.last_page;
+    
+    // Collect all blog slugs from all pages
+    const allSlugs: string[] = [];
+    
+    for (let page = 1; page <= totalPages; page++) {
+      const pageResponse = await blogService.getAllBlogs(page);
+      const slugs = pageResponse.data.data.map(blog => blog.slug);
+      allSlugs.push(...slugs);
+    }
+    
+    return allSlugs.map(slug => ({
+      slug: slug,
+    }));
+  } catch (error) {
+    console.error('Error generating static params for blog pages:', error);
+    // Fallback to empty array - pages will be generated on-demand
+    return [];
+  }
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  try {
+    const { slug } = await params;
+    const response = await blogService.getBlogBySlug(slug);
+    
+    if (response.status === 'success' && response.data) {
+      const blog = response.data;
+      return {
+        title: blog.title,
+        description: blog.description,
+        openGraph: {
+          title: blog.title,
+          description: blog.description,
+          type: 'article',
+          publishedTime: blog.created_at,
+          authors: [blog.author.name],
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title: blog.title,
+          description: blog.description,
+        },
+      };
+    }
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+  }
+  
+  return {
+    title: 'Blog Post',
+    description: 'Read our latest blog post',
+  };
+}
+
+interface BlogPostProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function BlogPost({ params }: BlogPostProps) {
+  const { slug } = await params;
   const blogTitle = slugToTitle(slug);
   
-  // State for blog data
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Fetch blog data when component mounts
-  useEffect(() => {
-    const fetchBlogData = async () => {
-      try {
-        setLoading(true);
-        console.log('🔍 Fetching blog data for slug:', slug);
-        
-        // Fetch single blog by slug
-        const response = await blogService.getBlogBySlug(slug);
-        console.log('📖 Single Blog Response:', response);
-        
-        if (response.status === 'success' && response.data) {
-          setBlog(response.data);
-        } else {
-          throw new Error(response.message || 'Failed to fetch blog');
-        }
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-        console.error('❌ Error fetching blog:', errorMessage);
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (slug) {
-      fetchBlogData();
+  // Fetch blog data at build time
+  let blog: Blog | null = null;
+  let error: string | null = null;
+  
+  try {
+    const response = await blogService.getBlogBySlug(slug);
+    
+    if (response.status === 'success' && response.data) {
+      blog = response.data;
+    } else {
+      error = response.message || 'Failed to fetch blog';
     }
-  }, [slug]);
+  } catch (err) {
+    error = err instanceof Error ? err.message : 'Unknown error occurred';
+    console.error('❌ Error fetching blog:', error);
+  }
+  
+  // If blog not found, return 404
+  if (!blog && !error) {
+    notFound();
+  }
 
 
   return (
@@ -156,11 +207,7 @@ export default function BlogPost() {
 
         {/* Main Blog Content (Center) - 55% */}
         <main className="w-full md:w-[55%]">
-          {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="text-[#7856FC] text-[16px] leading-[24px] font-medium">Loading blog...</div>
-            </div>
-          ) : error ? (
+          {error ? (
             <div className="flex items-center justify-center py-8">
               <div className="text-red-500 text-[16px] leading-[24px] font-medium">Error: {error}</div>
             </div>

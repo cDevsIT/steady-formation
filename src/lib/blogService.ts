@@ -102,6 +102,58 @@ class BlogService {
   }
 
   /**
+   * Get blog content by slug
+   */
+  async getBlogContent(slug: string): Promise<string> {
+    try {
+      const response = await this.getBlogBySlug(slug);
+      return response.data.content;
+    } catch (error) {
+      console.error('Error fetching blog content:', error);
+      return ''; // Return empty string as fallback
+    }
+  }
+
+  /**
+   * Get blog author by slug
+   */
+  async getBlogAuthor(slug: string): Promise<string> {
+    try {
+      const response = await this.getBlogBySlug(slug);
+      return response.data.author.name;
+    } catch (error) {
+      console.error('Error fetching blog author:', error);
+      return ''; // Return empty string as fallback
+    }
+  }
+
+  /**
+   * Get blog category by slug
+   */
+  async getBlogCategory(slug: string): Promise<string> {
+    try {
+      const response = await this.getBlogBySlug(slug);
+      return response.data.category.name;
+    } catch (error) {
+      console.error('Error fetching blog category:', error);
+      return ''; // Return empty string as fallback
+    }
+  }
+
+  /**
+   * Get blog tags by slug
+   */
+  async getBlogTags(slug: string): Promise<string[]> {
+    try {
+      const response = await this.getBlogBySlug(slug);
+      return response.data.tags.map(tag => tag.name);
+    } catch (error) {
+      console.error('Error fetching blog tags:', error);
+      return []; // Return empty array as fallback
+    }
+  }
+
+  /**
    * Get total number of blogs
    */
   async getTotalBlogs(): Promise<number> {
@@ -114,55 +166,44 @@ class BlogService {
     }
   }
 
+  /**
+   * Get blogs by category (if API supports filtering)
+   */
+  async getBlogsByCategory(categoryName: string, page: number = 1): Promise<BlogListResponse> {
+    try {
+      const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.BLOGS.LIST}?category=${categoryName}&page=${page}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching blogs by category:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Search blogs by title or content (if API supports search)
+   */
+  async searchBlogs(query: string, page: number = 1): Promise<BlogListResponse> {
+    try {
+      const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.BLOGS.LIST}?search=${encodeURIComponent(query)}&page=${page}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error searching blogs:', error);
+      throw error;
+    }
+  }
 }
 
 export const blogService = new BlogService();
 export default blogService;
-
-// Console examples for testing
-console.log('=== Blog Service Examples ===');
-
-// Example 1: Get all blogs
-blogService.getAllBlogs(1)
-  .then(response => {
-    console.log('📚 All Blogs (Page 1):', response);
-    console.log(`Total blogs: ${response.data.total}`);
-    console.log(`Current page: ${response.data.current_page}`);
-    console.log(`Blogs per page: ${response.data.per_page}`);
-    console.log(`First blog title: ${response.data.data[0]?.title || 'No blogs found'}`);
-  })
-  .catch(error => {
-    console.error('❌ Error fetching all blogs:', error);
-  });
-
-// Example 2: Get a single blog (replace 'example-blog-slug' with actual slug)
-const exampleSlug = 'example-blog-slug';
-blogService.getBlogBySlug(exampleSlug)
-  .then(response => {
-    console.log('📖 Single Blog:', response);
-    console.log(`Blog title: ${response.data.title}`);
-    console.log(`Blog author: ${response.data.author.name}`);
-    console.log(`Blog category: ${response.data.category.name}`);
-    console.log(`Blog tags: ${response.data.tags.map(tag => tag.name).join(', ')}`);
-  })
-  .catch(error => {
-    console.error(`❌ Error fetching blog with slug "${exampleSlug}":`, error);
-  });
-
-// Example 3: Get specific blog information
-blogService.getBlogTitle(exampleSlug)
-  .then(title => {
-    console.log('📝 Blog Title:', title);
-  })
-  .catch(error => {
-    console.error('❌ Error fetching blog title:', error);
-  });
-
-// Example 4: Get total number of blogs
-blogService.getTotalBlogs()
-  .then(total => {
-    console.log('📊 Total Blogs:', total);
-  })
-  .catch(error => {
-    console.error('❌ Error fetching total blogs:', error);
-  });
