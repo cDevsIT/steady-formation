@@ -4,78 +4,11 @@ import Button from "@/componant/ui/Button";
 import Image from "@/componant/ui/Image";
 import { generateInvoicePDF } from "@/lib/pdfGenerator";
 
-const paymentHistory = [
-    {
-        id: 1,
-        date: "Apr 15, 2025",
-        description: "Company Formation (LLC - Delaware)",
-        amount: "$10",
-        status: "Paid",
-        statusColor: "bg-green-100 text-green-600",
-        action: "Download PDF",
-        actionType: "download",
-    },
-    {
-        id: 2,
-        date: "Apr 15, 2025",
-        description: "Company Formation (LLC - Delaware)",
-        amount: "$10",
-        status: "Paid",
-        statusColor: "bg-green-100 text-green-600",
-        action: "Download PDF",
-        actionType: "download",
-    },
-    {
-        id: 3,
-        date: "Apr 15, 2025",
-        description: "Company Formation (LLC - Delaware)",
-        amount: "$10",
-        status: "Pending",
-        statusColor: "bg-gray-100 text-gray-500",
-        action: "Pay Now",
-        actionType: "pay",
-    },
-    {
-        id: 4,
-        date: "Apr 15, 2025",
-        description: "Company Formation (LLC - Delaware)",
-        amount: "$10",
-        status: "Paid",
-        statusColor: "bg-green-100 text-green-600",
-        action: "Download PDF",
-        actionType: "download",
-    },
-    {
-        id: 5,
-        date: "Apr 15, 2025",
-        description: "Company Formation (LLC - Delaware)",
-        amount: "$10",
-        status: "Fail",
-        statusColor: "bg-red-100 text-red-500",
-        action: "Retry Payment",
-        actionType: "retry",
-    },
-    {
-        id: 6,
-        date: "Apr 15, 2025",
-        description: "Company Formation (LLC - Delaware)",
-        amount: "$10",
-        status: "Paid",
-        statusColor: "bg-green-100 text-green-600",
-        action: "Download PDF",
-        actionType: "download",
-    },
-    {
-        id: 7,
-        date: "Apr 15, 2025",
-        description: "Company Formation (LLC - Delaware)",
-        amount: "$10",
-        status: "Paid",
-        statusColor: "bg-green-100 text-green-600",
-        action: "Download PDF",
-        actionType: "download",
-    },
-];
+import { useEffect } from 'react';
+import { paymentService, PaymentHistoryItem } from '@/lib/paymentService';
+import { useCompany } from '@/contexts/CompanyContext';
+
+const paymentHistoryStatic: any[] = [];
 
 const invoiceData = [
     { id: 1, invoiceId: "INV 2514", date: "Apr 15, 2025", description: "Company Formation (LLC - Delaware)", amount: "$10", status: "Paid", statusColor: "bg-green-100 text-green-600" },
@@ -85,6 +18,21 @@ const invoiceData = [
     { id: 5, invoiceId: "INV 2514", date: "Apr 15, 2025", description: "Company Formation (LLC - Delaware)", amount: "$10", status: "Paid", statusColor: "bg-green-100 text-green-600" },
 ];
 
+
+type PaymentModalData = {
+    status: string;
+    date: string;
+    amount: string;
+    paymentMethod?: string;
+    paymentGateway?: string;
+    transactionId?: string;
+    companyName?: string;
+    entityType?: string;
+    userEmail?: string;
+    userId?: number | string;
+    billingName?: string;
+    invoiceId?: string;
+};
 
 function RemoveCardModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     if (!open) return null;
@@ -117,40 +65,23 @@ function RemoveCardModal({ open, onClose }: { open: boolean; onClose: () => void
                         <Image url="/client/cross-icon.svg" alt="Close" width={20} height={20} />
                     </button>
                 </div>
-                {/* Icon */}
-                <div className="flex justify-center w-full mt-2 mb-4">
-                    <Image url="/client/gift-icon.svg" alt="Gift" className="w-14 h-14" width={65} height={65} />
+                {/* Body text */}
+                <div className="px-6 pt-3 pb-6 text-center">
+                    <p className="text-[#475467] text-[14px] leading-6">Are you sure you want to remove this card? You can add it again later.</p>
                 </div>
-                {/* Headline and subheadline */}
-                <h2 className="text-lg md:text-xl leading-7 font-bold text-center mb-1 px-6">Before you remove your card...</h2>
-                <div className="text-[#667085] text-center text-[14px] leading-5 font-normal mb-7 px-6">Hey Nasir, did you know?</div>
-                {/* Bullet points */}
-                <ul className="text-left space-y-3 mb-8 px-8 w-full max-w-[480px]">
-                    <li className="flex items-start gap-2">
-                        <span className="mt-1"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="#7856FC" /><path d="M6.5 9.5l2 2 3-4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                        <span className="font-normal leading-[20px] text-[14px]">Keep your card and get <span className="text-[#7856FC] font-semibold">20% off your next renewal.</span></span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                        <span className="mt-1"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="#7856FC" /><path d="M6.5 9.5l2 2 3-4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                        <span className="font-normal leading-[20px] text-[14px]">Enjoy <span className="text-[#7856FC] font-semibold">priority support</span> & <span className="text-[#7856FC] font-semibold">automatic reminders</span> for deadlines.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                        <span className="mt-1"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="#7856FC" /><path d="M6.5 9.5l2 2 3-4" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                        <span className="font-normal leading-[20px] text-[14px]">Never worry about missing compliance dates—let us handle the stress for you!</span>
-                    </li>
-                </ul>
-                {/* Action buttons at the very bottom */}
-                <div className="w-full flex flex-col gap-3 px-6 pb-6 mt-auto">
-                    <button className="w-full bg-[#7856FC] text-white text-[16px] leading-6 font-semibold rounded-lg py-3 hover:bg-[#6840e0] transition cursor-pointer">Yes, Keep My Card & Claim Perks</button>
-                    <button className="w-full bg-white border border-[#E4E7EC] text-[#344054] text-[16px] leading-6 font-semibold rounded-lg py-3 hover:bg-[#F5F5F7] transition cursor-pointer">No, I still want to remove my card</button>
+                {/* Action buttons */}
+                <div className="w-full flex items-center justify-end gap-3 px-6 pb-6">
+                    <button className="text-[#475467] text-[15px] font-semibold px-5 py-2 rounded-lg hover:bg-[#F9FAFB] h-10 min-w-[90px] cursor-pointer" onClick={onClose}>Cancel</button>
+                    <button className="bg-[#F97066] text-white text-[15px] font-semibold px-5 py-2 rounded-lg hover:bg-[#F04438] h-10 min-w-[90px] cursor-pointer">Remove</button>
                 </div>
             </div>
         </div>
     );
 }
 
-function PaymentDetailsModal({ open, onClose, onDownloadPDF }: { open: boolean; onClose: () => void; onDownloadPDF: () => void }) {
-    if (!open) return null;
+function PaymentDetailsModal({ open, onClose, onDownloadPDF, data }: { open: boolean; onClose: () => void; onDownloadPDF: () => void; data: PaymentModalData | null }) {
+    if (!open || !data) return null;
+    const paid = data.status === 'Paid';
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
             {/* Responsive border radius and width/height: full viewport for mobile, maxWidth for desktop */}
@@ -191,29 +122,30 @@ function PaymentDetailsModal({ open, onClose, onDownloadPDF }: { open: boolean; 
                     <div className="flex-1 flex justify-center items-center">
                         <span className="text-[16px] leading-6 font-semibold text-[#101828] text-center">Payment Details</span>
                     </div>
-                    {/* Paid tag right */}
-                    <span className="px-2 py-1 bg-[#ECFDF3] text-[#12B76A] text-xs rounded font-medium ml-auto">Paid</span>
+                    {/* Paid/Pending/Fail tag right */}
+                    <span className={`px-2 py-1 text-xs rounded font-medium ml-auto ${paid ? 'bg-[#ECFDF3] text-[#12B76A]' : data.status === 'Pending' ? 'bg-[#F2F4F7] text-[#667085]' : 'bg-[#FEF3F2] text-[#F04438]'}`}>{data.status}</span>
                 </div>
                 {/* Payment Summary Card */}
                 <div className="w-full px-5 pt-4 pb-2">
                     <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
                         <div className="text-[18px] leading-7 font-bold mb-2">Payment Summary Card</div>
-                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Transaction ID:</span> <span>#TXN-20250415-01</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Date & Time:</span> <span>April 15, 2025 at 11:30 AM</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Amount Paid:</span> <span>$10.00</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Payment Method:</span> <span>Visa ending in 2345</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Payment Gateway:</span> <span>Stripe</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Invoice ID:</span> <span>{data.invoiceId || '-'}</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Transaction ID:</span> <span>{data.transactionId || '-'}</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Date & Time:</span> <span>{data.date}</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Amount Paid:</span> <span>{data.amount}</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Payment Method:</span> <span>{data.paymentMethod || '-'}</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Payment Gateway:</span> <span>{data.paymentGateway || 'Stripe'}</span></div>
                     </div>
                     <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-4">
                         <div className="text-[18px] leading-7 font-bold mb-2">Company Details</div>
-                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Company Name:</span> <span>Fission</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Entity Type:</span> <span>LLC - Delaware</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>User Email:</span> <span>fassionstorage@gmail.com</span></div>
-                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>User ID:</span> <span>#11554882</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Company Name:</span> <span>{data.companyName || '-'}</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Entity Type:</span> <span>{data.entityType || '-'}</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>User Email:</span> <span>{data.userEmail || '-'}</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>User ID:</span> <span>{data.userId || '-'}</span></div>
                     </div>
                     <div className="bg-white rounded-xl border border-[#E4E7EC] p-5 mb-18 md:mb-4">
                         <div className="text-[18px] leading-7 font-bold mb-2">Billing Address</div>
-                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Name:</span> <span>Steady Formation</span></div>
+                        <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Name:</span> <span>{data.billingName || 'Steady Formation'}</span></div>
                         <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Location:</span> <span>2218 Baker Street, Suite 400</span></div>
                         <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>City, State ZIP:</span> <span>San Francisco, CA 94115</span></div>
                         <div className="text-[15px] font-normal leading-6 mb-2 md:mb-3 flex justify-between"><span>Country:</span> <span>United States</span></div>
@@ -400,44 +332,30 @@ function RetryPaymentModal({ open, onClose }: { open: boolean; onClose: () => vo
 
 export default function Payment() {
     const [paymentMethod, setPaymentMethod] = useState(true); // true = Payment History, false = Invoice
+    const { selectedCompany } = useCompany();
+    const [history, setHistory] = useState<PaymentHistoryItem[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [showRemoveModal, setShowRemoveModal] = useState(false);
     const [showPaymentDetails, setShowPaymentDetails] = useState(false);
     const [showPayNowProcessing, setShowPayNowProcessing] = useState(false);
     const [showRetryPayment, setShowRetryPayment] = useState(false);
-    const [selectedPaymentData, setSelectedPaymentData] = useState<any>(null);
+    const [selectedPaymentData, setSelectedPaymentData] = useState<PaymentModalData | null>(null);
 
-    const generateInvoiceData = (item: any) => {
+    const generateInvoiceData = (item: any): PaymentModalData => {
         return {
-            invoiceNumber: item.invoiceId || `#${String(item.id).padStart(6, '0')}`,
+            invoiceId: item.invoiceId || `INV ${String(item.id).padStart(4, '0')}`,
+            status: item.status,
             date: item.date,
-            clientName: "Mauro Sicard",
-            clientEmail: "contact@maurosicard.com",
-            clientAddress: "Pablo Alto, San Francisco, CA 92102, United States of America",
-            companyName: "Steady Formation",
-            companyAddress: "1095 Sugar View Dr Ste 500, Sheridan, WY, United States, Wyoming",
-            status: item.status as 'Paid' | 'Pending' | 'Failed',
-            items: [
-                {
-                    item: item.description,
-                    price: item.amount,
-                    qty: "1",
-                    total: item.amount
-                }
-            ],
-            subtotal: item.amount,
-            discount: "$ 0.00",
-            tax: "$ 0.00",
-            total: item.amount,
-            transactionId: `#TXN-${item.date.replace(/\s/g, '').replace(',', '')}-${String(item.id).padStart(2, '0')}`,
-            paymentMethod: "Visa ending in 2345",
-            paymentGateway: "Stripe",
-            userEmail: "fassionstorage@gmail.com",
-            userId: "#11554882",
-            entityType: "LLC - Delaware",
-            billingName: "Steady Formation",
-            billingLocation: "2218 Baker Street, Suite 400",
-            billingCityState: "San Francisco, CA 94115",
-            billingCountry: "United States"
+            amount: item.amount,
+            paymentMethod: item.paymentMethod,
+            paymentGateway: item.paymentGateway || 'Stripe',
+            transactionId: item.transactionId,
+            companyName: item.companyName,
+            entityType: item.entityType,
+            userEmail: item.userEmail,
+            userId: item.userId,
+            billingName: item.billingName,
         };
     };
 
@@ -446,11 +364,71 @@ export default function Payment() {
         setShowPaymentDetails(true);
     };
 
+    const toInvoiceNumber = (invoiceId?: string) => (invoiceId ? invoiceId.replace('#', '').trim() : `INV ${String(Date.now()).slice(-6)}`);
+    const parseAmount = (amount: string) => {
+        const n = Number((amount || '0').replace(/[^0-9.]/g, ''));
+        return isNaN(n) ? 0 : n;
+    };
+    const buildInvoiceForPdf = (data: PaymentModalData) => {
+        return {
+            invoiceNumber: toInvoiceNumber(data.invoiceId),
+            date: data.date,
+            companyName: 'Steady Formations LLC',
+            companyEmail: 'support@steadyformation.com',
+            companyAddress: '2218 Baker Street, Suite 400, San Francisco, CA 94115, United States',
+            clientName: data.companyName || 'Customer',
+            clientEmail: data.userEmail || '',
+            clientAddress: '—',
+            items: [
+                {
+                    description: data.companyName ? `Payment for ${data.companyName}` : 'Company Payment',
+                    quantity: 1,
+                    price: parseAmount(data.amount),
+                },
+            ],
+            subtotal: parseAmount(data.amount),
+            tax: 0,
+            discount: 0,
+            total: parseAmount(data.amount),
+            notes: `Payment Method: ${data.paymentMethod || '-'} | Transaction: ${data.transactionId || '-'}`,
+        };
+    };
+
     const handleDownloadPDF = () => {
         if (selectedPaymentData) {
-            generateInvoicePDF(selectedPaymentData);
+            const invoice = buildInvoiceForPdf(selectedPaymentData);
+            generateInvoicePDF(invoice as any);
         }
     };
+
+    useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                console.log('Fetching payment history for company_id:', selectedCompany?.id);
+                const res = await paymentService.getHistory({ company_id: selectedCompany?.id });
+                console.log('Payment history response:', res);
+                if (res.status === 'success' && res.data) {
+                    console.log('Setting history:', res.data.history);
+                    setHistory(res.data.history as any);
+                } else {
+                    console.log('No data or error:', res.message);
+                    setHistory([]);
+                    setError(res.message || 'Failed to load payment history');
+                }
+            } catch (e: any) {
+                console.error('Error fetching payment history:', e);
+                setError(e.message || 'Failed to load payment history');
+                setHistory([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        if (selectedCompany?.id) {
+            fetchHistory();
+        }
+    }, [selectedCompany?.id]);
 
     return (
         <div className="max-w-5xl mx-4 md:mx-auto">
@@ -484,34 +462,34 @@ export default function Payment() {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-[#E4E7EC]">
-                                {paymentHistory.map((item) => (
-                                    <tr key={item.id} className="hover:bg-[#F5F5F7] transition-colors cursor-pointer">
-                                        <td className="py-3 px-6 text-[#344054] text-[14px] leading-5 font-medium whitespace-nowrap">{item.date}</td>
-                                        <td className="py-3 px-6 text-[#344054] text-[14px] leading-5 font-normal whitespace-nowrap">{item.description}</td>
-                                        <td className="py-3 px-6 text-[#344054] text-[14px] leading-5 text-center font-medium whitespace-nowrap">{item.amount}</td>
+                                {(loading ? [] : history).map((item) => (
+                                    <tr key={(item as any).id} className="hover:bg-[#F5F5F7] transition-colors cursor-pointer">
+                                        <td className="py-3 px-6 text-[#344054] text-[14px] leading-5 font-medium whitespace-nowrap">{(item as any).date}</td>
+                                        <td className="py-3 px-6 text-[#344054] text-[14px] leading-5 font-normal whitespace-nowrap">{(item as any).description}</td>
+                                        <td className="py-3 px-6 text-[#344054] text-[14px] leading-5 text-center font-medium whitespace-nowrap">{(item as any).amount}</td>
                                         <td className="py-3 px-6 text-center">
-                                            <span className={`px-3 py-1 rounded-lg text-xs leading-5 font-medium ${item.statusColor}`}>{item.status}</span>
+                                            <span className={`px-3 py-1 rounded-lg text-xs leading-5 font-medium ${(item as any).statusColor}`}>{(item as any).status}</span>
                                         </td>
                                         <td className="py-3 px-6 text-center flex items-center justify-center gap-2">
-                                            {item.actionType === 'download' ? (
+                                            {(item as any).actionType === 'download' ? (
                                                 <Button
                                                     className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer"
                                                     theme="secondary"
                                                     onClick={() => handleOpenPaymentDetails(item)}
                                                 >
-                                                    {item.action}
+                                                    {(item as any).action}
                                                 </Button>
-                                            ) : item.actionType === 'pay' ? (
+                                            ) : (item as any).actionType === 'pay' ? (
                                                 <Button className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer" theme="secondary" onClick={() => setShowPayNowProcessing(true)}>
-                                                    {item.action}
+                                                    {(item as any).action}
                                                 </Button>
-                                            ) : item.actionType === 'retry' ? (
+                                            ) : (item as any).actionType === 'retry' ? (
                                                 <Button className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer" theme="secondary" onClick={() => setShowRetryPayment(true)}>
-                                                    {item.action}
+                                                    {(item as any).action}
                                                 </Button>
                                             ) : (
                                                 <Button className="border border-[#E4E7EC] bg-transparent text-[#7856FC] text-[15px] font-semibold px-[14px] py-[6px] rounded-lg hover:bg-[#F5F5F7] cursor-pointer" theme="secondary">
-                                                    {item.action}
+                                                    {(item as any).action}
                                                 </Button>
                                             )}
                                             <button className="ml-2 p-2 rounded-full hover:bg-gray-100 focus:outline-none cursor-pointer" aria-label="More options">
@@ -524,6 +502,13 @@ export default function Payment() {
                                         </td>
                                     </tr>
                                 ))}
+                                {!loading && history.length === 0 && (
+                                    <tr><td colSpan={5} className="py-6 text-center text-[#667085] text-sm">
+                                        No payment history found. 
+                                        {error && <div className="text-red-500 mt-2">Error: {error}</div>}
+                                        <div className="text-xs mt-2">Company ID: {selectedCompany?.id || 'None'}</div>
+                                    </td></tr>
+                                )}
                             </tbody>
                         </table>
                     ) : (
@@ -595,7 +580,7 @@ export default function Payment() {
             {paymentMethod && (
                 <RemoveCardModal open={showRemoveModal} onClose={() => setShowRemoveModal(false)} />
             )}
-            <PaymentDetailsModal open={showPaymentDetails} onClose={() => setShowPaymentDetails(false)} onDownloadPDF={handleDownloadPDF} />
+            <PaymentDetailsModal open={showPaymentDetails} onClose={() => setShowPaymentDetails(false)} onDownloadPDF={handleDownloadPDF} data={selectedPaymentData} />
             <PayNowProcessingModal open={showPayNowProcessing} onClose={() => setShowPayNowProcessing(false)} />
             <RetryPaymentModal open={showRetryPayment} onClose={() => setShowRetryPayment(false)} />
         </div>
