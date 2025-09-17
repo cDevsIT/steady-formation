@@ -130,7 +130,7 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 <CheckIcon isSelected={expressOption === "yes"} />
                 <div className="flex flex-col">
                   <h5 className="font-semibold text-base">Yes</h5>
-                  <span className="text-sm text-gray-600">You have to provide SS number for free express EIN</span>
+                  <span className="text-sm text-gray-600">You have to provide SSN number for free express EIN</span>
                 </div>
               </div>
               <div

@@ -525,7 +525,7 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
             <button
                 onClick={handleSubmit(onFormSubmit)}
                 disabled={isSubmitting}
-                className="col-span-1 lg:col-span-2 flex-1 bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-xl shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="col-span-2 flex-1 bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-xl shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 {isSubmitting ? 'Submitting...' : submitText}
             </button>

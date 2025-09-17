@@ -14,7 +14,7 @@ import EasyStepsSection from "./EasyStepsSection";
 import StatisticsSection from "./StatisticsSection";
 import WhatYouGetSection from "./WhatYouGetSection";
 
-const HomePage = () => {
+const HomePage = async () => {
   return (
     <>
 
