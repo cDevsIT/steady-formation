@@ -113,7 +113,7 @@ const FunnelContent = () => {
                             },
                             isPaymentComplete: true,
                             currentStep: 10, // Move to next step
-                            tempLoginToken: tempLoginToken // Store the temporary login token
+                            tempLoginToken: tempLoginToken ?? undefined // Store the temporary login token (coerce null to undefined)
                         });
                         
                     } else if (payment === 'cancel') {
