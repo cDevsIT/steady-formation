@@ -1,8 +1,9 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import LaunchCompanyPopup from "@/componant/shared/LaunchCompanyPopup";
 import Image from '@/componant/ui/Image';
+import { blogService, Blog } from '@/lib/blogService';
 
 function slugToTitle(slug: string): string {
   if (!slug) return '';
@@ -84,6 +85,42 @@ export default function BlogPost() {
   const params = useParams();
   const slug = params.slug as string;
   const blogTitle = slugToTitle(slug);
+  
+  // State for blog data
+  const [blog, setBlog] = useState<Blog | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch blog data when component mounts
+  useEffect(() => {
+    const fetchBlogData = async () => {
+      try {
+        setLoading(true);
+        console.log('🔍 Fetching blog data for slug:', slug);
+        
+        // Fetch single blog by slug
+        const response = await blogService.getBlogBySlug(slug);
+        console.log('📖 Single Blog Response:', response);
+        
+        if (response.status === 'success' && response.data) {
+          setBlog(response.data);
+        } else {
+          throw new Error(response.message || 'Failed to fetch blog');
+        }
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+        console.error('❌ Error fetching blog:', errorMessage);
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (slug) {
+      fetchBlogData();
+    }
+  }, [slug]);
+
 
   return (
     <div className="w-full min-h-screen bg-white pt-[70px]">
@@ -110,7 +147,7 @@ export default function BlogPost() {
                     : 'font-semibold text-black'
                     } text-[18px] leading-[28px] hover:underline`}
                 >
-                  {index === 0 ? blogTitle : item.title}
+                  {index === 0 ? (blog?.title || blogTitle) : item.title}
                 </a>
               </li>
             ))}
@@ -119,120 +156,37 @@ export default function BlogPost() {
 
         {/* Main Blog Content (Center) - 55% */}
         <main className="w-full md:w-[55%]">
-          <p className="text-[#7856FC] text-[16px] leading-[24px] font-medium mb-3">Published 13 Jan 2024</p>
-          <h2 className="font-inter text-[30px] leading-[38px] md:text-[48px] md:leading-[60px] font-semibold tracking-[-0.02em] text-black mb-6">A conversation with Lucy Bond</h2>
-          <p className="font-inter text-[16px] leading-[24px] md:text-[20px] md:leading-[30px] font-normal text-[#475467] mb-6">Lucy Bond is an interior designer who started her career in New Zealand, working for large architectural firms. We chatted to her about design and life.</p>
-          <h3 className="font-inter text-[24px] leading-[32px] md:text-[30px] md:leading-[38px] font-semibold text-black mb-6" id="section1">Introduction</h3>
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-4">Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam suspendisse morbi eleifend faucibus eget vestibulum felis. Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi, tellus tincidunt. At feugiat sapien varius id.</p>
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">Eget quis mi enim, leo lacinia pharetra, semper. Eget in volutpat mollis at volutpat lectus velit, sed auctor. Porttitor fames arcu quis fusce augue enim. Quis at habitant diam at. Suscipit tristique risus, at donec. In turpis vel et quam imperdiet. Ipsum molestie aliquet sodales id est ac volutpat.</p>
-          <Image
-            url="/blog-details/steady-formations-blog-details.png"
-            alt="Steady Formations Blog Details"
-            className="rounded-xl mb-6 w-full object-cover max-h-[350px]"
-          />
-          <div className="mb-12 pl-6 border-l-2 border-[#7856FC]">
-            <p className="font-inter text-[24px] leading-[32px] font-medium italic text-black mb-4">
-              &quot;In a world older and more complete than ours they move finished and complete, gifted with extensions of the senses we have lost or never attained, living by voices we shall never hear.&quot;
-            </p>
-            <div className="flex items-center gap-3">
-              <Image
-                url="/blog-details/designer-1-icon.png"
-                alt="Olivia Rhye"
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <p className="font-inter text-[16px] leading-[24px] font-semibold text-black">Olivia Rhye</p>
-                <p className="font-inter text-[16px] leading-[24px] font-normal text-[#475467]">Product Designer</p>
-              </div>
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-[#7856FC] text-[16px] leading-[24px] font-medium">Loading blog...</div>
             </div>
-          </div>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum, nulla odio nisi vitae. In aliquet pellentesque aenean hac vestibulum turpis mi bibendum diam. Tempor integer aliquam in vitae malesuada fringilla.
-          </p>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Elit nisi in eleifend sed nisi. Pulvinar at orci, proin imperdiet commodo consectetur convallis risus. Sed condimentum enim dignissim adipiscing faucibus consequat, urna. Viverra purus et erat auctor aliquam. Risus, volutpat vulputate posuere purus sit congue convallis aliquet. Arcu id augue ut feugiat donec porttitor neque. Mauris, neque ultricies eu vestibulum, bibendum quam lorem id. Dolor lacus, eget nunc lectus in tellus, pharetra, porttitor.
-          </p>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Ipsum sit mattis nulla quam nulla. Gravida id gravida ac enim mauris id. Non pellentesque congue eget consectetur turpis. Sapien, dictum molestie sem tempor. Diam elit, orci, tincidunt aenean tempus. Quis velit eget ut tortor tellus. Sed vel, congue felis elit erat nam nibh orci.
-          </p>
-
-          <h3 className="font-inter text-[24px] leading-[32px] md:text-[30px] md:leading-[38px] font-semibold text-black mb-6">Software and tools</h3>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam suspendisse morbi eleifend faucibus eget vestibulum felis. Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi, tellus tincidunt. At feugiat sapien varius id.
-          </p>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Eget quis mi enim, leo lacinia pharetra, semper. Eget in volutpat mollis at volutpat lectus velit, sed auctor. Porttitor fames arcu quis fusce augue enim. Quis at habitant diam at. Suscipit tristique risus, at donec. In turpis vel et quam imperdiet. Ipsum molestie aliquet sodales id est ac volutpat.
-          </p>
-
-          <h3 className="font-inter text-[24px] leading-[32px] md:text-[30px] md:leading-[38px] font-semibold text-black mb-6">Other resources</h3>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Sagittis et eu at elementum, quis in. Proin praesent volutpat egestas sociis sit lorem nunc nunc sit. Eget diam curabitur mi ac. Auctor rutrum lacus malesuada massa ornare et. Vulputate consectetur ac ultrices at diam dui eget fringilla tincidunt. Arcu sit dignissim massa erat cursus vulputate gravida id. Sed quis auctor vulputate hac elementum gravida cursus dis.
-          </p>
-
-          <ol className="list-decimal pl-6 mb-6">
-            <li className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-2">
-              Lectus id duis vitae porttitor enim gravida morbi.
-            </li>
-            <li className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-2">
-              Eu turpis posuere semper feugiat volutpat elit, ultrices suspendisse. Auctor vel in vitae placerat.
-            </li>
-            <li className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-2">
-              Suspendisse maecenas ac donec scelerisque diam sed est duis purus.
-            </li>
-          </ol>
-
-          <Image
-            url="/blog-details/steady-formations-blog-details-image-2.png"
-            alt="Steady Formations Blog Details 2"
-            className="rounded-xl mb-6 w-full object-cover object-right h-[410px] md:max-h-[350px]"
-          />
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Lectus leo massa amet posuere. Malesuada mattis non convallis quisque. Libero sit et imperdiet bibendum quisque dictum vestibulum in non. Pretium ultricies tempor non est diam. Enim ut enim amet amet integer cursus. Sit ac commodo pretium sed etiam turpis suspendisse at.
-          </p>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Tristique odio senectus nam posuere ornare leo metus, ultricies. Blandit duis ultricies vulputate morbi feugiat cras placerat elit. Aliquam tellus lorem sed ac. Montes, sed mattis pellentesque suscipit accumsan. Cursus viverra aenean magna risus elementum faucibus molestie pellentesque. Arcu ultricies sed mauris vestibulum.
-          </p>
-
-          <div className="bg-[#F9FAFB] rounded-2xl p-8 mb-12">
-            <h3 className="font-inter text-[24px] leading-[32px] md:text-[30px] md:leading-[38px] font-semibold tracking-[0px] text-black mb-[30px]">Conclusion</h3>
-
-            <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-              Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies. Duis est sit sed leo nisi, blandit elit sagittis. Quisque tristique consequat quam sed. Nisl at scelerisque amet nulla purus habitasse.
-            </p>
-
-            <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-              Nunc sed faucibus bibendum feugiat sed interdum. Ipsum egestas condimentum mi massa. In tincidunt pharetra consectetur sed duis facilisis metus. Etiam egestas in nec sed et. Quis lobortis at sit dictum eget nibh tortor commodo cursus.
-            </p>
-
-            <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467]">
-              Odio felis sagittis, morbi feugiat tortor vitae feugiat fusce aliquet. Nam elementum urna nisi aliquet erat dolor enim. Ornare id morbi eget ipsum. Aliquam senectus neque ut id eget consectetur dictum. Donec posuere pharetra odio consequat scelerisque et, nunc tortor.
-            </p>
-          </div>
-
-          <div className="bg-[#F9FAFB] rounded-2xl p-6 mb-12">
-            <div className="flex items-start gap-3">
-              <Image
-                url="/blog-details/security-expert-icon.png"
-                alt="Floyd Miles"
-                className="w-[70px] h-[70px] rounded-full"
-              />
-              <div>
-                <div className="flex items-center gap-3 mb-1">
-                  <p className="font-inter text-[18px] leading-[28px] font-semibold text-black">Floyd Miles</p>
-                  <p className="font-inter text-[14px] leading-[20px] font-normal text-[#475467]">Security Expert</p>
-                </div>
-                <p className="font-inter text-[16px] leading-[24px] font-normal text-[#475467]">As a result, this attack would never have worked. Even if axios was a dependency it was still missing as a requirement.</p>
-              </div>
+          ) : error ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-red-500 text-[16px] leading-[24px] font-medium">Error: {error}</div>
             </div>
-          </div>
+          ) : blog ? (
+            <>
+              <p className="text-[#7856FC] text-[16px] leading-[24px] font-medium mb-3">
+                Published {new Date(blog.created_at).toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'short', 
+                  day: 'numeric' 
+                })}
+              </p>
+              <h2 className="font-inter text-[30px] leading-[38px] md:text-[48px] md:leading-[60px] font-semibold tracking-[-0.02em] text-black mb-6">
+                {blog.title}
+              </h2>
+              <p className="font-inter text-[16px] leading-[24px] md:text-[20px] md:leading-[30px] font-normal text-[#475467] mb-6">
+                {blog.description}
+              </p>
+              <div className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6" 
+                   dangerouslySetInnerHTML={{ __html: blog.content }} />
+            </>
+          ) : (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-[#475467] text-[16px] leading-[24px] font-medium">No blog found</div>
+            </div>
+          )}
 
           {/* Navigation Links */}
           <div className="flex justify-between items-center gap-12 mt-8">
