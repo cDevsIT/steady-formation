@@ -13,7 +13,7 @@ import { ticketsService, Ticket, CreateTicketData } from "@/lib/ticketsService";
 // SupportRow type - using Ticket from service
 export type SupportRow = Ticket;
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 5;
 
 const columns: Column<SupportRow>[] = [
   {
@@ -143,8 +143,12 @@ const SupportHelp = () => {
       const ticketData: CreateTicketData = {
         title: formData.subject,
         content: formData.description,
-        attachment: formData.upload_file,
       };
+
+      // Only include attachment if user selected a file
+      if (formData.upload_file) {
+        (ticketData as any).attachment = formData.upload_file;
+      }
 
       const response = await ticketsService.createTicket(ticketData);
 
@@ -255,7 +259,7 @@ const SupportHelp = () => {
               name="upload_file"
               label="Upload File"
               type="file"
-              required
+              // optional file upload
               className="col-span-2! "
               supportingText='SVG, PNG, JPG or GIF (max 4MB. 800x400px)'
             />
