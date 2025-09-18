@@ -295,7 +295,7 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
             <div class="info-column">
               <div class="info-label">Invoice number:</div>
               <div class="info-value">${data.invoiceNumber}</div>
-              <div class="status-badge status-${data.status.toLowerCase()}">${data.status}</div>
+              <div class="status-badge status-${data.status?.toLowerCase() || 'unknown'}">${data.status || 'N/A'}</div>
             </div>
           </div>
           
