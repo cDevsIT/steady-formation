@@ -215,9 +215,9 @@ export default async function BlogPost({ params }: BlogPostProps) {
                   day: 'numeric' 
                 })}
               </p>
-              <h2 className="font-inter text-[30px] leading-[38px] md:text-[48px] md:leading-[60px] font-semibold tracking-[-0.02em] text-black mb-6">
+              <h1 className="font-inter text-[30px] leading-[38px] md:text-[48px] md:leading-[60px] font-semibold tracking-[-0.02em] text-black mb-6">
                 {blog.title}
-              </h2>
+              </h1>
               <p className="font-inter text-[16px] leading-[24px] md:text-[20px] md:leading-[30px] font-normal text-[#475467] mb-6">
                 {blog.description}
               </p>

@@ -67,7 +67,7 @@ export default function TableOfContents({ items, blogTitle }: TableOfContentsPro
                   : 'font-semibold text-black'
                   } text-[18px] leading-[28px] hover:underline cursor-pointer`}
               >
-                {index === 0 ? (blogTitle || item.title) : item.title}
+                {item.title}
               </a>
             </li>
           ))}
