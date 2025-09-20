@@ -2,7 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import LaunchCompanyPopup from "@/componant/shared/LaunchCompanyPopup";
 import Image from '@/componant/ui/Image';
-import { blogService, Blog } from '@/lib/blogService';
+import { blogService, Blog, getBaseUrl } from '@/lib/blogService';
 import { Metadata } from 'next';
 import TableOfContents from './TableOfContents';
 
@@ -161,6 +161,7 @@ interface BlogPostProps {
 export default async function BlogPost({ params }: BlogPostProps) {
   const { slug } = await params;
   const blogTitle = slugToTitle(slug);
+  const baseUrl = getBaseUrl();
   
   // Fetch blog data at build time
   let blog: Blog | null = null;
@@ -218,6 +219,13 @@ export default async function BlogPost({ params }: BlogPostProps) {
               <h1 className="font-inter text-[30px] leading-[38px] md:text-[48px] md:leading-[60px] font-semibold tracking-[-0.02em] text-black mb-6">
                 {blog.title}
               </h1>
+                <Image
+                  url={`${baseUrl}/storage/uploads/blog/${blog.feature_image}`}
+                  alt={blog.feature_image}
+                  width={400}
+                  height={300}
+                  className="w-full h-[400px] object-cover rounded-xl mb-6"
+                />
               <p className="font-inter text-[16px] leading-[24px] md:text-[20px] md:leading-[30px] font-normal text-[#475467] mb-6">
                 {blog.description}
               </p>

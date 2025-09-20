@@ -46,7 +46,8 @@ export function getBaseUrl() {
   if (!apiUrl) throw new Error("NEXT_PUBLIC_API_URL is not defined");
 
   const url = new URL(apiUrl);
-  return `${url.protocol}//${url.host}`;
+  // return `${url.protocol}//${url.host}`;
+  return `${process.env.PROTOCOL}://${process.env.HOSTNAME}`;
 }
 
 class BlogService {
