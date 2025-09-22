@@ -100,7 +100,7 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                         label="Email"
                         placeholder="Enter your email"
                         required
-                        type="text"
+                        type="email"
                         className=''
                     />
 
@@ -115,7 +115,6 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                         name="secondaryPhone"
                         label="Secondary Mobile Number"
                         type="phone"
-                        required
                         placeholder="Enter secondary number"
                         className=""
                     />
