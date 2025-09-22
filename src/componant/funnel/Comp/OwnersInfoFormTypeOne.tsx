@@ -24,15 +24,15 @@ const OwnersInfoFormTypeOne: React.FC<ChildComponentProps> = ({ handleFormSubmit
         if (formMethods) {
             formMethods.reset({
                 //remove this
-                name: "SHIKHOR",
-                email: "demo@email.com",
-                mobile: "2345678901",
-                country: "us",
-                city: 'New York',
-                state: 'Manhattan',
-                zipCode: '22011',
-                streetAddress: '111, manhattan, new work',
-                ownersPercentage: '100',
+                name: '',
+                email: '',
+                mobile: '',
+                country: '',
+                city: '',
+                state: '',
+                zipCode: '',
+                streetAddress: '',
+                ownersPercentage: '',
             });
         }
     }, [data, formMethods]);

@@ -146,7 +146,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 </div>
             </div>
 
-            <div
+            {/* <div
                 className={`flex items-center gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${paymentOption === "balance" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
             >
                 <CheckIcon isSelected={false} />
@@ -154,7 +154,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                     <p className="text-xl font-medium text-black">System Balance</p>
                     <p className="text-xl font-medium text-black">${totalAmmount?.toFixed(2)}</p>
                 </div>
-            </div>
+            </div> */}
 
             {/* Continue Button */}
             <button

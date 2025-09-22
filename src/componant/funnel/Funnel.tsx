@@ -211,8 +211,11 @@ const FunnelContent = () => {
                             </svg>
                         </div>
                         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Payment Successful!</h2>
+                        <p className="text-gray-600 mb-1">
+                            Your company formation has been processed successfully.
+                        </p>
                         <p className="text-gray-600 mb-6">
-                            Your company formation has been processed successfully. You will receive an email with your login credentials shortly.
+                            You will receive an email with your login credentials shortly.
                         </p>
                         
                         {paymentData && (
@@ -221,7 +224,7 @@ const FunnelContent = () => {
                                 <div className="space-y-2 text-sm text-gray-600">
                                     <p><span className="font-medium">Amount:</span> ${paymentData.amount}</p>
                                     <p><span className="font-medium">Payment Method:</span> {paymentData.payment_method}</p>
-                                    <p><span className="font-medium">Transaction ID:</span> {paymentData.payment_id}</p>
+                                    <p><span className="font-medium">Transaction ID:</span> <span className="break-all">{paymentData.payment_id}</span></p>
                                 </div>
                             </div>
                         )}
