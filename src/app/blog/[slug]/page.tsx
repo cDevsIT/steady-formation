@@ -2,8 +2,43 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import LaunchCompanyPopup from "@/componant/shared/LaunchCompanyPopup";
 import Image from '@/componant/ui/Image';
-import { blogService, Blog } from '@/lib/blogService';
+import { blogService, Blog, getBaseUrl } from '@/lib/blogService';
 import { Metadata } from 'next';
+import TableOfContents from './TableOfContents';
+
+// Utility function to extract H2 tags from HTML content (server-side)
+function extractH2Tags(htmlContent: string): Array<{ title: string; id: string; link: string }> {
+  if (!htmlContent) return [];
+  
+  // Use regex to extract H2 tags since DOMParser is not available on server
+  const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi;
+  const matches = htmlContent.match(h2Regex);
+  
+  if (!matches) return [];
+  
+  return matches.map((match, index) => {
+    // Extract text content from H2 tag
+    const textContent = match.replace(/<[^>]*>/g, '').trim();
+    const id = `section-${index + 1}`;
+    return {
+      title: textContent,
+      id,
+      link: `#${id}`
+    };
+  });
+}
+
+// Utility function to add IDs to H2 tags in HTML content (server-side)
+function addIdsToH2Tags(htmlContent: string): string {
+  if (!htmlContent) return '';
+  
+  let index = 1;
+  return htmlContent.replace(/<h2([^>]*)>/gi, (match, attributes) => {
+    const id = `section-${index}`;
+    index++;
+    return `<h2${attributes} id="${id}">`;
+  });
+}
 
 function slugToTitle(slug: string): string {
   if (!slug) return '';
@@ -12,29 +47,6 @@ function slugToTitle(slug: string): string {
     .replace(/\b\w/g, (c: string) => c.toUpperCase());
 }
 
-// This will come from API later
-const tableOfContents = [
-  {
-    title: "Introduction",
-    link: "#section1",
-    isActive: true
-  },
-  {
-    title: "Why Do You Need a B2B Website Design Agency for Your Business?",
-    link: "#section2",
-    isActive: false
-  },
-  {
-    title: "7 Best B2B Website Design Agencies",
-    link: "#section3",
-    isActive: false
-  },
-  {
-    title: "How to Choose the Best B2B Website Design Agency?",
-    link: "#section4",
-    isActive: false
-  }
-];
 
 const latestBlogsData = [
   {
@@ -149,6 +161,7 @@ interface BlogPostProps {
 export default async function BlogPost({ params }: BlogPostProps) {
   const { slug } = await params;
   const blogTitle = slugToTitle(slug);
+  const baseUrl = getBaseUrl();
   
   // Fetch blog data at build time
   let blog: Blog | null = null;
@@ -172,6 +185,12 @@ export default async function BlogPost({ params }: BlogPostProps) {
     notFound();
   }
 
+  // Generate table of contents from blog content
+  const tableOfContents = blog ? extractH2Tags(blog.content) : [];
+  
+  // Add IDs to H2 tags in blog content
+  const processedContent = blog ? addIdsToH2Tags(blog.content) : '';
+
 
   return (
     <div className="w-full min-h-screen bg-white pt-[70px]">
@@ -180,30 +199,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
       </div>
       <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row gap-8">
         {/* Table of Content (Left) - 21.6% */}
-        <aside className="w-full md:w-[21.6%] bg-[#fafbfc] rounded-xl p-5 h-fit border border-[#ececec]">
-          <h2 className="font-inter font-semibold text-[24px] leading-[32px] text-black mb-5">Table Of Content</h2>
-          <ul>
-            {tableOfContents.map((item, index) => (
-              <li
-                key={index}
-                className={`border-b ${item.isActive ? 'border-[#7856FC]' : 'border-[#E4E7EC]'
-                  } ${index === tableOfContents.length - 1 ? '' :
-                    item.isActive ? 'md:pb-[46px] pb-4 mb-4' : 'pb-4 mb-4'
-                  }`}
-              >
-                <a
-                  href={item.link}
-                  className={`font-inter ${item.isActive
-                    ? 'font-semibold text-[#7856FC]'
-                    : 'font-semibold text-black'
-                    } text-[18px] leading-[28px] hover:underline`}
-                >
-                  {index === 0 ? (blog?.title || blogTitle) : item.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </aside>
+        <TableOfContents items={tableOfContents} blogTitle={blog?.title || blogTitle} />
 
         {/* Main Blog Content (Center) - 55% */}
         <main className="w-full md:w-[55%]">
@@ -220,14 +216,21 @@ export default async function BlogPost({ params }: BlogPostProps) {
                   day: 'numeric' 
                 })}
               </p>
-              <h2 className="font-inter text-[30px] leading-[38px] md:text-[48px] md:leading-[60px] font-semibold tracking-[-0.02em] text-black mb-6">
+              <h1 className="font-inter text-[30px] leading-[38px] md:text-[48px] md:leading-[60px] font-semibold tracking-[-0.02em] text-black mb-6">
                 {blog.title}
-              </h2>
+              </h1>
+                <Image
+                  url={`${baseUrl}/storage/uploads/blog/${blog.feature_image}`}
+                  alt={blog.feature_image}
+                  width={400}
+                  height={300}
+                  className="w-full h-[400px] object-cover rounded-xl mb-6"
+                />
               <p className="font-inter text-[16px] leading-[24px] md:text-[20px] md:leading-[30px] font-normal text-[#475467] mb-6">
                 {blog.description}
               </p>
               <div className="blog-content font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6" 
-                   dangerouslySetInnerHTML={{ __html: blog.content }} />
+                   dangerouslySetInnerHTML={{ __html: processedContent }} />
             </>
           ) : (
             <div className="flex items-center justify-center py-8">

@@ -418,8 +418,8 @@ export default function ContactUs() {
                             <h4 className="text-[20px] font-semibold mb-[20px] font-inter leading-[30px]">Visit us</h4>
                             <p className="text-[16px] font-normal text-[#475467] mb-[16px] font-inter leading-[24px]">Visit our office HQ.</p>
                             <p className="text-[16px] text-[#7856FC] font-semibold font-inter leading-[24px]">
-                                100 Smith Street<br />
-                                Collingwood VIC 3066 AU
+                                75 E 3RD ST STE <br />
+                                A70 SHERIDAN, WY 82801
                             </p>
                         </div>
 
@@ -431,7 +431,7 @@ export default function ContactUs() {
                             <h4 className="text-[20px] font-semibold mb-[20px] font-inter leading-[30px]">Call us</h4>
                             <p className="text-[16px] font-normal text-[#475467] mb-[16px] font-inter leading-[24px]">Mon-Fri from 8am to 5pm.</p>
                             <a href="tel:+1555000-0000" className="text-[16px] text-[#7856FC] font-semibold font-inter leading-[24px]">
-                                +1 (555) 000-0000
+                                +1 (307) 400-1051
                             </a>
                         </div>
                     </div>
