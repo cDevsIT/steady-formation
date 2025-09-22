@@ -85,10 +85,6 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             formMethods.reset({
                 country: "USA",
                 //remove This
-                city: 'New York',
-                state: 'Manhattan',
-                zipCode: '22011',
-                streetAddress: '111, manhattan, new work'
             });
         }
     }, [data, formMethods]);

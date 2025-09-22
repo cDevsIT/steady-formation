@@ -252,19 +252,33 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
         }
         
         /* Footer image */
+        .footer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          z-index: 1000; /* stays above other content */
+        }
+
         .footer-image {
           width: 100%;
           display: block;
-          position: absolute;
-          bottom: 0;
-          left: 0;
           object-fit: cover;
-          background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(120, 86, 252, 0.1) 100%);
         }
-        
-        /* Spacer for footer */
-        .footer-spacer {
-          height: 80px;
+
+        .footer-text {
+          position: absolute;
+          top: 35px;      /* adjust spacing from top of image */
+          left: 40px;    /* adjust spacing from left */
+          color: #19213D;  /* black text */
+          font-size: 8px;
+          font-weight: 600;
+          z-index: 2;
+        }
+
+        .footer-text p {
+          color:  #5D6481;
+          font-weight: 400;
         }
       </style>
     </head>
@@ -295,7 +309,7 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
             <div class="info-column">
               <div class="info-label">Invoice number:</div>
               <div class="info-value">${data.invoiceNumber}</div>
-              <div class="status-badge status-${data.status.toLowerCase()}">${data.status}</div>
+              <div class="status-badge status-${data?.status?.toLowerCase()}">${data.status}</div>
             </div>
           </div>
           
@@ -358,7 +372,14 @@ export const generateInvoicePDF = async (data: InvoiceData): Promise<void> => {
         </div>
         
         <!-- Footer image -->
-        <img src="/print/print_footer.jpg" alt="Footer" class="footer-image" onerror="this.style.display='none'">
+        <div class="footer">
+          <img src="/print/footer_print.png" alt="Footer" class="footer-image" onerror="this.style.display='none'">
+          <div class="footer-text">
+            <h3>Steady Formation</h3>
+            <p>www.steadyformation.com</p>
+            <p>info@steadyformation.com / +1 (307) 400-1051</p>
+          </div>
+        </div>
       </div>
     </body>
     </html>
