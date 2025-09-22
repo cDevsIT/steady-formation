@@ -48,13 +48,13 @@ const RegisterAgentOption: React.FC<ChildComponentProps> = ({ handleSubmit }) =>
     useEffect(() => {
         if (formMethods) {
             formMethods.reset({
-                name: 'SHIKHOR',
+                name: '',
                 //remove This
-                country: "USA",
-                city: 'New York',
-                state: 'Manhattan',
-                zipCode: '22011',
-                streetAddress: '111, manhattan, new work'
+                country: "",
+                city: '',
+                state: '',
+                zipCode: '',
+                streetAddress: ''
             });
         }
     }, [data, formMethods]);

@@ -81,17 +81,17 @@ export default function Footer() {
                             <div className="flex items-start gap-3">
                                 <Image className='h-4 w-4 mt-0.5 flex-shrink-0' url='/icons/map_pin.svg' alt='Map Pin' />
                                 <div className="text-[16px] font-medium text-black">
-                                    <div>455 West Orchard Street</div>
-                                    <div>Kings Mountain, NC 28086</div>
+                                    <div>75 E 3RD ST STE </div>
+                                    <div>A70 SHERIDAN, WY 82801</div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
                                 <Image className='h-4 w-4 mt-0.5 flex-shrink-0' url='/icons/call.svg' alt='Call' />
-                                <span className="text-[16px] font-medium text-black">+1 (123) 985 789</span>
+                                <span className="text-[16px] font-medium text-black">+1 (307) 400-1051</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <Image className='h-4 w-4 mt-0.5 flex-shrink-0' url='/icons/mail.svg' alt='Mail' />
-                                <span className="text-[16px] font-medium text-black">help@steadyformation.com</span>
+                                <span className="text-[16px] font-medium text-black">info@steadyformation.com</span>
                             </div>
                         </div>
                     </div>

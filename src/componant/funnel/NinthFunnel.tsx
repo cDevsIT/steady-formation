@@ -28,6 +28,17 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
 
+
+    // Get state fees with fallback
+    const stateFees = data?.stateFees || {
+        registration_fee: 100,
+        renewal_fee: 50,
+        transfer_fee: 25
+    };
+
+    const totalAmmount = (data?.agreement_amount ?? 0) + (data?.en_amount ?? 0) + (data?.rush_processing_amount ?? 0) + (data?.plan?.plan_price ?? 0) + (stateFees.registration_fee ?? 0)
+
+
     // Load initial data from localStorage using the new service
 
 
@@ -55,7 +66,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 ...localStorageData,
                 payment: {
                     method: paymentOption as 'paypal' | 'stripe',
-                    amount: (localStorageData?.agreement_amount ?? 0) + (localStorageData?.en_amount ?? 0) + (localStorageData?.rush_processing_amount ?? 0) + (localStorageData?.plan?.plan_price ?? 0) + 100,
+                    amount: totalAmmount,
                     status: 'pending'
                 },
                 currentStep: 9
@@ -141,7 +152,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 <CheckIcon isSelected={false} />
                 <div className="flex gap-2 items-center w-full justify-between">
                     <p className="text-xl font-medium text-black">System Balance</p>
-                    <p className="text-xl font-medium text-black">$5421.00</p>
+                    <p className="text-xl font-medium text-black">${totalAmmount?.toFixed(2)}</p>
                 </div>
             </div>
 
