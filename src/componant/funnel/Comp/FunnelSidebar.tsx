@@ -16,8 +16,6 @@ const FunnelSidebar = () => {
 
     const headerText = FunnelSidebarHeaderText.find(item => item.step === data.currentStep);
 
-    console.log(headerText);
-
     // Get state name for display
     const getStateName = (stateName: string) => {
         return stateName || 'Selected State';

@@ -191,13 +191,19 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     loadInitialData();
   }, []);
 
+  const stateFees = data?.stateFees || {
+    registration_fee: 100,
+    renewal_fee: 50,
+    transfer_fee: 25
+  };
+
   const feeData = [
     {
       id: 1,
       title: "State Fee",
       subtitle: usStates.find(state => state.value === (data?.businessDetails?.stateName || companyFormationService.getFromLocalStorage()?.businessDetails?.stateName))?.label || (data?.businessDetails?.stateName || companyFormationService.getFromLocalStorage()?.businessDetails?.stateName) || "Select State",
       icon: "/icons/overview-company.svg",
-      price: "$100"
+      price: `$${stateFees.registration_fee}`
     },
     {
       id: 2,
