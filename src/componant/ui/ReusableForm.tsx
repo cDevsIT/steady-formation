@@ -496,7 +496,9 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
         watch,
         setValue,
         getValues,
-        trigger
+        trigger,
+        setError,
+        clearErrors,
     } = formMethods;
 
     useEffect(() => {
@@ -510,6 +512,8 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
                 setValue,
                 getValues,
                 trigger,
+                setError,
+                clearErrors,
                 resetForm: () => reset(),
                 setFieldValue: (name: string, value: any) => setValue(name, value),
                 getFieldValue: (name: string) => getValues(name),
