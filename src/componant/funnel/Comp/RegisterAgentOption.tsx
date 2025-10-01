@@ -4,6 +4,8 @@ import { CustomFormData } from "@/componant/ui/FormSample";
 import { dataState } from "../Funnel";
 import { FunnelHeading, FunnelSubHeading } from "@/componant/ui/FunnelHeading";
 import { InputField, ReusableForm } from "@/componant/ui/ReusableForm";
+import { useStates } from "@/hooks/useStates";
+import { useCompanyFormationData } from "@/lib/companyFormationService";
 
 const options = [
     {
@@ -27,6 +29,8 @@ const RegisterAgentOption: React.FC<ChildComponentProps> = ({ handleSubmit }) =>
     const isIndividual = selected === 'individual';
     const [data, setData] = useState<dataState>({});
     const [formMethods, setFormMethods] = useState<any>(null);
+    const { states: usStates, isLoading: isLoadingStates } = useStates();
+    const formationData = useCompanyFormationData();
 
     // Load initial data from localStorage
     useEffect(() => {
@@ -50,14 +54,14 @@ const RegisterAgentOption: React.FC<ChildComponentProps> = ({ handleSubmit }) =>
             formMethods.reset({
                 name: '',
                 //remove This
-                country: "",
+                country: "USA",
                 city: '',
-                state: '',
+                state: formationData?.businessDetails?.stateName || (data as any)?.businessDetails?.stateName || '',
                 zipCode: '',
                 streetAddress: ''
             });
         }
-    }, [data, formMethods]);
+    }, [data, formMethods, formationData?.businessDetails?.stateName]);
 
     const handleFormSubmit = (data: CustomFormData) => {
 
@@ -166,9 +170,12 @@ const RegisterAgentOption: React.FC<ChildComponentProps> = ({ handleSubmit }) =>
                 <InputField
                     name="state"
                     label="State"
-                    type="text"
+                    type="select"
                     required
-                    placeholder="Enter State"
+                    placeholder={isLoadingStates ? "Loading states..." : "Select State"}
+                    options={usStates}
+                    disabled={isLoadingStates}
+                    defaultValue={formationData?.businessDetails?.stateName || (data as any)?.businessDetails?.stateName}
                 />
                 <InputField
                     name="zipCode"

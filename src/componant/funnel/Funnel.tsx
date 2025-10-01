@@ -53,9 +53,14 @@ const FunnelContent = () => {
     const [totalSteps] = useState(9);
     const [refreshKey, setRefreshKey] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [currentFormState, setCurrentFormState] = useState<{ businessType: string; llcType?: string } | null>(null);
 
     const handleChildSubmitSuccess = () => {
         setRefreshKey(prev => prev + 1); // triggers re-render
+    };
+
+    const handleFormStateChange = (formState: { businessType: string; llcType?: string }) => {
+        setCurrentFormState(formState);
     };
 
     // Handle payment success/cancel
@@ -113,7 +118,7 @@ const FunnelContent = () => {
                             },
                             isPaymentComplete: true,
                             currentStep: 10, // Move to next step
-                            tempLoginToken: tempLoginToken // Store the temporary login token
+                            tempLoginToken: tempLoginToken || undefined // Store the temporary login token
                         });
                         
                     } else if (payment === 'cancel') {
@@ -344,7 +349,7 @@ const FunnelContent = () => {
                 {data?.currentStep !== 1 &&
                     <div className="flex justify-between gap-4 ">
 
-                        {data?.currentStep === 2 && <SecondFunnel handleFormSubmit={handleFormSubmit} />}
+                        {data?.currentStep === 2 && <SecondFunnel handleFormSubmit={handleFormSubmit} onFormStateChange={handleFormStateChange} />}
 
                         {data?.currentStep === 3 && <ThirdFunnel handleFormSubmit={handleFormSubmit} />}
 
@@ -360,7 +365,7 @@ const FunnelContent = () => {
 
                         {data?.currentStep === 9 && <NinthFunnel handleFormSubmit={handleFormSubmit} />}
 
-                        {data?.currentStep < 10 && <FunnelSidebar />}
+                        {data?.currentStep < 10 && <FunnelSidebar currentFormState={currentFormState || undefined} />}
 
                     </div>
                 }

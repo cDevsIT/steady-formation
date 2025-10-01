@@ -1,15 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useForm, Controller, FieldErrors } from 'react-hook-form';
+import { countries, Country } from './countries';
 
 // Types
-interface Country {
-    name: string;
-    code: string;
-    dialCode: string;
-    flag: string;
-    phoneRegex: RegExp;
-    format: string;
-}
 
 interface CompanyType {
     label: string;
@@ -39,20 +32,6 @@ interface CustomFormData {
     [key: string]: any;
 }
 
-// Country data with phone regex patterns and formats
-const countries: Country[] = [
-    { name: 'United States', code: 'US', dialCode: '+1', flag: '🇺🇸', phoneRegex: /^[2-9]\d{2}[2-9]\d{2}\d{4}$/, format: '(XXX) XXX-XXXX' },
-    { name: 'United Kingdom', code: 'GB', dialCode: '+44', flag: '🇬🇧', phoneRegex: /^7\d{9}$/, format: '7XXX XXXXXX' },
-    { name: 'Canada', code: 'CA', dialCode: '+1', flag: '🇨🇦', phoneRegex: /^[2-9]\d{2}[2-9]\d{2}\d{4}$/, format: '(XXX) XXX-XXXX' },
-    { name: 'Australia', code: 'AU', dialCode: '+61', flag: '🇦🇺', phoneRegex: /^4\d{8}$/, format: '4XX XXX XXX' },
-    { name: 'Germany', code: 'DE', dialCode: '+49', flag: '🇩🇪', phoneRegex: /^1[5-7]\d{8,9}$/, format: '1XX XXXX XXXX' },
-    { name: 'France', code: 'FR', dialCode: '+33', flag: '🇫🇷', phoneRegex: /^[67]\d{8}$/, format: 'XX XX XX XX XX' },
-    { name: 'India', code: 'IN', dialCode: '+91', flag: '🇮🇳', phoneRegex: /^[6-9]\d{9}$/, format: 'XXXXX XXXXX' },
-    { name: 'Japan', code: 'JP', dialCode: '+81', flag: '🇯🇵', phoneRegex: /^[789]0\d{8}$/, format: 'XX XXXX XXXX' },
-    { name: 'China', code: 'CN', dialCode: '+86', flag: '🇨🇳', phoneRegex: /^1[3-9]\d{9}$/, format: '1XX XXXX XXXX' },
-    { name: 'Brazil', code: 'BR', dialCode: '+55', flag: '🇧🇷', phoneRegex: /^[1-9]\d{10}$/, format: 'XX XXXXX XXXX' },
-    { name: 'Bangladesh', code: 'BD', dialCode: '+880', flag: '🇧🇩', phoneRegex: /^1[3-9]\d{8}$/, format: '1XXX XXXXXX' }
-];
 
 // Company types data
 const companyTypes: CompanyType[] = [
