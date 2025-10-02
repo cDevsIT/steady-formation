@@ -44,6 +44,9 @@ const OwnersInfoFormTypeThree: React.FC<ChildComponentProps> = ({ handleFormSubm
         companyFormationService.saveToLocalStorage({
             ...currentData,
             businessDetails: {
+                industryType: currentData.businessDetails?.industryType || '',
+                stateName: currentData.businessDetails?.stateName || '',
+                number_of_ownership: currentData.businessDetails?.number_of_ownership || multiMemberInfo.length,
                 ...currentData.businessDetails,
                 multi_member_info: multiMemberInfo
             }

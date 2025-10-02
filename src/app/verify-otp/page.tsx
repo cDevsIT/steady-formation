@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "@/componant/ui/Image";
 import Link from "next/link";
 import { API_CONFIG } from "@/config/api";
 
-export default function VerifyOTPPage() {
+function VerifyOTPContent() {
     const [otp, setOtp] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -139,7 +139,7 @@ export default function VerifyOTPPage() {
                 <div className="flex-1 max-w-[440px] mx-auto text-center md:text-left">
                     <h2 className="text-3xl font-semibold mb-2">Verify your email</h2>
                     <p className="text-[#475467] mb-8 text-[16px] leading-6 font-normal">
-                        We've sent a 6-digit verification code to <strong>{email}</strong>. Please enter the code below.
+                        We&apos;ve sent a 6-digit verification code to <strong>{email}</strong>. Please enter the code below.
                     </p>
                     
                     {error && (
@@ -180,7 +180,7 @@ export default function VerifyOTPPage() {
                         </button>
 
                         <div className="text-center text-sm text-[#475467] mb-4">
-                            Didn't receive the code?{' '}
+                            Didn&apos;t receive the code?{' '}
                             {resendCooldown > 0 ? (
                                 <span className="text-gray-500">Resend in {resendCooldown}s</span>
                             ) : (
@@ -213,5 +213,13 @@ export default function VerifyOTPPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function VerifyOTPPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <VerifyOTPContent />
+        </Suspense>
     );
 }

@@ -54,6 +54,9 @@ const OwnersInfoFormTypeOne: React.FC<ChildComponentProps> = ({ handleFormSubmit
         companyFormationService.saveToLocalStorage({
             ...currentData,
             businessDetails: {
+                industryType: currentData.businessDetails?.industryType || '',
+                stateName: currentData.businessDetails?.stateName || '',
+                number_of_ownership: currentData.businessDetails?.number_of_ownership || 1,
                 ...currentData.businessDetails,
                 multi_member_info: [ownerInfo]
             }

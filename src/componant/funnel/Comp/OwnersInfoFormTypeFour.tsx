@@ -5,6 +5,7 @@ import { CustomFormData } from "@/componant/ui/FormSample";
 import { InputField, ReusableForm } from "@/componant/ui/ReusableForm";
 import { countries, manageTypes } from "../funnel.type";
 import companyFormationService, { useCompanyFormationData } from "@/lib/companyFormationService";
+import ownerDocumentsService from "@/services/ownerDocumentsService";
 
 const OwnersInfoFormTypeFour: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [formMethods, setFormMethods] = useState<any>(null);
@@ -65,6 +66,9 @@ const OwnersInfoFormTypeFour: React.FC<ChildComponentProps> = ({ handleFormSubmi
         companyFormationService.saveToLocalStorage({
             ...currentData,
             businessDetails: {
+                industryType: currentData.businessDetails?.industryType || '',
+                stateName: currentData.businessDetails?.stateName || '',
+                number_of_ownership: currentData.businessDetails?.number_of_ownership || multiMemberInfo.length,
                 ...currentData.businessDetails,
                 multi_member_info: multiMemberInfo
             }

@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "@/componant/ui/Image";
 import Link from "next/link";
 import { API_CONFIG } from "@/config/api";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
     const [formData, setFormData] = useState({
         password: '',
         confirmPassword: ''
@@ -120,7 +120,7 @@ export default function ResetPasswordPage() {
                 <div className="flex-1 max-w-[440px] mx-auto text-center md:text-left">
                     <h2 className="text-3xl font-semibold mb-2">Reset your password</h2>
                     <p className="text-[#475467] mb-8 text-[16px] leading-6 font-normal">
-                        Please enter your new password below. Make sure it's secure and easy for you to remember.
+                        Please enter your new password below. Make sure it&apos;s secure and easy for you to remember.
                     </p>
                     
                     {error && (
@@ -223,3 +223,10 @@ export default function ResetPasswordPage() {
     );
 }
 
+export default function ResetPasswordPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <ResetPasswordContent />
+        </Suspense>
+    );
+}

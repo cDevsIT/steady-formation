@@ -30,7 +30,12 @@ const OwnerFileUploader: React.FC<OwnerFileUploaderProps> = ({
     try {
       const response = await ownerDocumentsService.getDocuments(ownerId);
       if (response.status === 'success' && response.data) {
-        setUploadedFiles(response.data.documents);
+        // Extract URLs from OwnerDocument objects
+        const documents = response.data.documents;
+        setUploadedFiles({
+          scanned_passport_copy: documents.scanned_passport_copy?.url,
+          bank_statement: documents.bank_statement?.url
+        });
       }
     } catch (error) {
       console.error('Error loading existing documents:', error);
