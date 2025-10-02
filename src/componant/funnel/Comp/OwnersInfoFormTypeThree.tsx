@@ -20,31 +20,6 @@ const OwnersInfoFormTypeThree: React.FC<ChildComponentProps> = ({ handleFormSubm
         }
     }, []);
 
-    // Generate initial form data based on number of directors
-    const generateInitialFormData = () => {
-        const initialData: any = {};
-
-        for (let i = 1; i <= numberOfOwners; i++) {
-            const directorPrefix = `director_${i}`;
-            initialData[`${directorPrefix}_name`] = `Director ${i}`;
-            initialData[`${directorPrefix}_email`] = "demo@email.com";
-            initialData[`${directorPrefix}_mobile`] = "2345678901";
-            initialData[`${directorPrefix}_country`] = "us";
-            initialData[`${directorPrefix}_city`] = 'New York';
-            initialData[`${directorPrefix}_state`] = 'Manhattan';
-            initialData[`${directorPrefix}_zipCode`] = '22011';
-            initialData[`${directorPrefix}_streetAddress`] = '111, manhattan, new work';
-        }
-
-        return initialData;
-    };
-
-    useEffect(() => {
-        if (formMethods) {
-            formMethods.reset(generateInitialFormData());
-        }
-    }, [data, formMethods, numberOfOwners]);
-
     const handleSubmit = (data: CustomFormData) => {
         handleFormSubmit({ OwnersInfo: data, isOwnersInfoComplete: true })
     };

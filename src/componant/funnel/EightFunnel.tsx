@@ -197,6 +197,11 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     transfer_fee: 25
   };
 
+  // Calculate multimember fee based on company type and LLC type
+  const isPartnership = data?.businessType === 'partnership';
+  const isMultiLLC = data?.businessDetails?.llcType === 'multiLLC';
+  const multimemberFee = (isPartnership || isMultiLLC) ? 100 : 0;
+
   const feeData = [
     {
       id: 1,
@@ -221,27 +226,34 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     },
     {
       id: 4,
+      title: "Multimember Fee",
+      subtitle: multimemberFee > 0 ? "Yes" : "No",
+      icon: "/icons/overview-free.svg",
+      price: multimemberFee > 0 ? `$${multimemberFee}` : "Free"
+    },
+    {
+      id: 5,
       title: "Registered Agent",
       subtitle: "Free",
       icon: "/icons/overview-free.svg",
       price: "Free"
     },
     {
-      id: 5,
+      id: 6,
       title: "EIN",
       subtitle: `${data?.en_amount === 0 ? 'No' : 'Yes'}`,
       icon: "/icons/overview-ein.svg",
       price: `${data?.en_amount === 0 ? 'Free' : `$${data?.en_amount}`}`
     },
     {
-      id: 6,
+      id: 7,
       title: "Operating Agreement / Bylaws",
       subtitle: `${data?.agreement_amount === 0 ? 'No' : 'Yes'}`,
       icon: "/icons/overview-aggrement.svg",
       price: `${data?.agreement_amount === 0 ? 'Free' : `$${data?.agreement_amount}`}`
     },
     {
-      id: 7,
+      id: 8,
       title: "Expedited Processing",
       subtitle: `${data?.rush_processing_amount === 0 ? 'No' : 'Yes'}`,
       icon: "/icons/overview-processing.svg",
