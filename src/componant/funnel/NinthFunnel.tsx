@@ -36,7 +36,8 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         transfer_fee: 25
     };
 
-    const totalAmmount = (data?.agreement_amount ?? 0) + (data?.en_amount ?? 0) + (data?.rush_processing_amount ?? 0) + (data?.plan?.plan_price ?? 0) + (stateFees.registration_fee ?? 0)
+    const multiLLC = (data?.llcType === 'multiLLC' )|| (data?.llcType === 'partnership') ? 100 : 0;
+    const totalAmmount = (data?.agreement_amount ?? 0) + (data?.en_amount ?? 0) + (data?.rush_processing_amount ?? 0) + (data?.plan?.plan_price ?? 0) + (stateFees.registration_fee ?? 0) + multiLLC
 
 
     // Load initial data from localStorage using the new service

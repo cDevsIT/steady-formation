@@ -85,6 +85,7 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
         companyFormationService.saveToLocalStorage({
             ...data,
             businessType: selected,
+            llcType: data.llcType,
             businessDetails: {
                 industryType: data.industryType,
                 llcType: data.llcType,
@@ -95,7 +96,7 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
             currentStep: 3
         });
 
-        handleFormSubmit({ stepTwo: data, businessType: selected });
+        handleFormSubmit({ stepTwo: data, businessType: selected, llcType: data.llcType });
     };
 
     // Handle form state changes and set up watchers
