@@ -10,7 +10,7 @@ const OwnersInfoFormTypeFour: React.FC<ChildComponentProps> = ({ handleFormSubmi
     const [formMethods, setFormMethods] = useState<any>(null);
     const [watchedValues, setWatchedValues] = useState<any>({});
     const data = useCompanyFormationData();
-    const numberOfOwners = data?.businessDetails?.number_of_ownership || 1;
+    const numberOfOwners = data?.numOfOwnerShip || 1;
 
     // Load initial data from localStorage
     useEffect(() => {
