@@ -15,7 +15,7 @@ export interface CompanyFormationData {
   };
 
   llcType?: string;
-  
+  multimemberFee?: number;
   // Step 3: Business Details
   businessDetails?: {
     industryType: string;

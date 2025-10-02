@@ -259,7 +259,7 @@ const SupportHelp = () => {
               name="upload_file"
               label="Upload File"
               type="file"
-              // optional file upload
+              required
               className="col-span-2! "
               supportingText='SVG, PNG, JPG or GIF (max 4MB. 800x400px)'
             />

@@ -82,10 +82,12 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
 
     const handleSubmit = (data: CustomFormData) => {
         // Save the business details to localStorage
+        console.log(data?.llcType)
         companyFormationService.saveToLocalStorage({
             ...data,
             businessType: selected,
             llcType: data.llcType,
+            multimemberFee: data.llcType === 'multiLLC' || data.llcType === 'partnership' ? 100 : 0,
             businessDetails: {
                 industryType: data.industryType,
                 llcType: data.llcType,
