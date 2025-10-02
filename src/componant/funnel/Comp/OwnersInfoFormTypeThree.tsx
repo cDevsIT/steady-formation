@@ -9,7 +9,7 @@ import companyFormationService, { useCompanyFormationData } from "@/lib/companyF
 const OwnersInfoFormTypeThree: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [formMethods, setFormMethods] = useState<any>(null);
     const data = useCompanyFormationData();
-    const numberOfOwners = data?.businessDetails?.number_of_ownership || 1;
+    const numberOfOwners = data?.numOfOwnerShip || 1;
 
     // Load initial data from localStorage
     useEffect(() => {
