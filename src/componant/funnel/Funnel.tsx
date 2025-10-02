@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback } from "react";
 import ProgressBar from "../ui/ProgressBar";
 import { useRouter, useSearchParams } from "next/navigation";
 import FirstFunnel from "./FirstFunnel";
@@ -55,13 +55,13 @@ const FunnelContent = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [currentFormState, setCurrentFormState] = useState<{ businessType: string; llcType?: string } | null>(null);
 
-    const handleChildSubmitSuccess = () => {
+    const handleChildSubmitSuccess = useCallback(() => {
         setRefreshKey(prev => prev + 1); // triggers re-render
-    };
+    }, []);
 
-    const handleFormStateChange = (formState: { businessType: string; llcType?: string }) => {
+    const handleFormStateChange = useCallback((formState: { businessType: string; llcType?: string }) => {
         setCurrentFormState(formState);
-    };
+    }, []);
 
     // Handle payment success/cancel
     useEffect(() => {
@@ -159,18 +159,18 @@ const FunnelContent = () => {
     }, [data?.currentStep]);
 
     // Custom setter: updates localStorage
-    const updateCompanyData = (newData: Partial<CompanyFormationData>) => {
+    const updateCompanyData = useCallback((newData: Partial<CompanyFormationData>) => {
         const updatedData = { ...data, ...newData };
         companyFormationService.saveToLocalStorage(updatedData);
-    };
+    }, [data]);
 
-    const handleFormSubmit = (formData: CustomFormData) => {
+    const handleFormSubmit = useCallback((formData: CustomFormData) => {
         updateCompanyData({ ...formData, currentStep: currentStep + 1 });
         setCurrentStep(currentStep + 1);
         handleChildSubmitSuccess();
-    };
+    }, [currentStep, updateCompanyData, handleChildSubmitSuccess]);
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         if (currentStep > 1) {
             const newStep = currentStep - 1;
             setCurrentStep(newStep);
@@ -178,13 +178,13 @@ const FunnelContent = () => {
         } else {
             router.back();
         }
-    };
+    }, [currentStep, updateCompanyData, router]);
 
-    const handleStartOver = () => {
+    const handleStartOver = useCallback(() => {
         // Clear all data and redirect to home
         companyFormationService.clearLocalStorage();
         router.push('/');
-    };
+    }, [router]);
 
 
     // Show loading state while data is being loaded
