@@ -111,6 +111,20 @@ const OwnersInfoFormTypeThree: React.FC<ChildComponentProps> = ({ handleFormSubm
                     placeholder="Enter Street Address"
                     className="lg:col-span-2"
                 />
+
+                <InputField
+                    name={`${directorPrefix}_scanned_passport_copy`}
+                    label="Scanned Passport Copy"
+                    type="file"
+                    required
+                />
+
+                <InputField
+                    name={`${directorPrefix}_bank_statement`}
+                    label="Local Bank Statement (last 3 months)"
+                    type="file"
+                    required
+                />
             </React.Fragment>
         );
     };

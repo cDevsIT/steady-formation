@@ -116,12 +116,6 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
         router.push('/login');
     };
 
-    // Get current path for active menu highlight
-    let currentPath = '';
-    if (typeof window !== 'undefined') {
-        currentPath = window.location.pathname;
-    }
-
     const pathname = usePathname();
 
     if (loading || companiesLoading) {
@@ -216,7 +210,11 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
                                     <Link
                                         key={item.name}
                                         href={item.path}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg text-[#23272E] text-base font-medium transition-colors ${currentPath === item.path ? 'bg-[#F3F4F6]' : 'hover:bg-[#f4f4f7]'} ${currentPath === item.path ? 'font-bold' : ''}`}
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                                            pathname === item.path 
+                                                ? 'bg-[#F3F4F6] text-[#7856FC] font-bold' 
+                                                : 'text-[#23272E] hover:bg-[#f4f4f7] hover:text-[#7856FC]'
+                                        }`}
                                         prefetch={false}
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
@@ -310,7 +308,11 @@ function ClientLayoutContent({ children }: { children: React.ReactNode }) {
                                 <Link
                                     key={item.name}
                                     href={item.path}
-                                    className="flex items-center gap-3 px-4 py-2 rounded-lg text-[#344054] text-base font-semibold hover:bg-[#f4f4f7] hover:text-[#7856FC] transition-colors"
+                                    className={`flex items-center gap-3 px-4 py-2 rounded-lg text-base font-semibold transition-colors ${
+                                        pathname === item.path 
+                                            ? 'bg-[#F3F4F6] text-[#7856FC] font-bold' 
+                                            : 'text-[#344054] hover:bg-[#f4f4f7] hover:text-[#7856FC]'
+                                    }`}
                                     prefetch={false}
                                 >
                                     <Image url={item.icon} alt={item.name + ' icon'} className="w-5 h-5" width={20} height={20} />

@@ -6,6 +6,7 @@ import NavLinks from "./NavLinks";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useLogout } from "@/lib/useLogout";
+import { useCompany } from "@/contexts/CompanyContext";
 
 interface NavbarProps { }
 
@@ -15,6 +16,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
   const hideHeaderFooter = pathname.startsWith('/login') || pathname.startsWith('/sign-up');
   const [isScrolled, setIsScrolled] = useState(false);
   const { handleLogout } = useLogout();
+      const { companies, selectedCompany, setSelectedCompany, loading: companiesLoading } = useCompany();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,9 +70,9 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                 {/* Profile Button */}
                 <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
                   <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">JD</span>
+                    <Image url={selectedCompany?.icon ?? ''} alt="User Icon" width={56} height={56} className="w-14 h-14 rounded-full" />
                   </div>
-                  <span className="text-sm font-medium">John Doe</span>
+                  <span className="text-sm font-medium">{selectedCompany?.name}</span>
                 </button>
 
                 {/* Logout Button */}

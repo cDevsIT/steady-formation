@@ -13,7 +13,9 @@ export interface CompanyFormationData {
     email: string;
     phone_number: string;
   };
-  
+
+  llcType?: string;
+  multimemberFee?: number;
   // Step 3: Business Details
   businessDetails?: {
     industryType: string;
