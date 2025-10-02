@@ -112,7 +112,7 @@ export default function LoginPage() {
                                 />
                                 Remember for 30 days
                             </label>
-                            <Link href="#" className="text-sm text-[#7856FC] hover:underline font-semibold">Forgot password</Link>
+                            <Link href="/forgot-password" className="text-sm text-[#7856FC] hover:underline font-semibold">Forgot password</Link>
                         </div>
                         <button
                             type="submit"
@@ -121,17 +121,17 @@ export default function LoginPage() {
                         >
                             {loading ? 'Signing in...' : 'Sign in'}
                         </button>
-                        <button
+                        {/* <button
                             type="button"
                             className="w-full flex items-center justify-center border border-gray-300 rounded-md py-2.5 font-medium text-gray-700 bg-white hover:bg-gray-50 mb-4 transition-colors"
                         >
                             <Image url="/google-icon.svg" alt="Google" width={20} height={20} className="mr-2" />
                             Sign in with Google
-                        </button>
-                        <div className="text-center text-sm text-[#475467]">
+                        </button> */}
+                        {/* <div className="text-center text-sm text-[#475467]">
                             Don&apos;t have an account?{' '}
                             <Link href="/sign-up" className="text-[#7856FC] hover:underline font-medium">Sign up</Link>
-                        </div>
+                        </div> */}
                     </form>
                 </div>
                 {/* Right: Image */}
