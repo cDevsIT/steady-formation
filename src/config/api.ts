@@ -2,7 +2,7 @@
 export const API_CONFIG = {
     BASE_URL: process.env.NEXT_PUBLIC_API_URL || 
         (process.env.NODE_ENV === 'production' 
-            ? 'https://api.cdevs.com.bd/api' 
+            ? 'https://app.steadyformation.com/api' 
             : 'http://localhost:8000/api'),
     ENDPOINTS: {
         AUTH: {
