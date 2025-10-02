@@ -3,6 +3,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import Footer from '@/componant/base/Footer';
 import { Toaster } from 'react-hot-toast';
+import { CompanyProvider } from '@/contexts/CompanyContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -102,7 +103,10 @@ export default function RootLayout({ children }) {
       </head>
       <body  >
         <main>
-          <Navbar />
+          <CompanyProvider>
+            <Navbar />
+          </CompanyProvider>
+          
           <div className='mt-[-65px]'>{children}</div>
           <Footer />
           <Toaster
