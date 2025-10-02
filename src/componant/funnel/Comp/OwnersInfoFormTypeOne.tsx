@@ -4,6 +4,8 @@ import { dataState } from "../Funnel";
 import { CustomFormData } from "@/componant/ui/FormSample";
 import { InputField, ReusableForm } from "@/componant/ui/ReusableForm";
 import { countries } from "../funnel.type";
+import companyFormationService from "@/lib/companyFormationService";
+import ownerDocumentsService from "@/services/ownerDocumentsService";
 
 const OwnersInfoFormTypeOne: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [formMethods, setFormMethods] = useState<any>(null);
@@ -21,7 +23,7 @@ const OwnersInfoFormTypeOne: React.FC<ChildComponentProps> = ({ handleFormSubmit
 
 
 
-    const handleSubmit = (data: CustomFormData) => {
+    const handleSubmit = async (data: CustomFormData) => {
         if (!formMethods) return;
         const value = parseFloat(String(data.ownersPercentage));
         if (Number.isNaN(value)) {
@@ -33,6 +35,81 @@ const OwnersInfoFormTypeOne: React.FC<ChildComponentProps> = ({ handleFormSubmit
             formMethods.setError('ownersPercentage', { type: 'manual', message: 'Ownership percentage must be exactly 100%' });
             return;
         }
+
+        // Transform and save owner data to businessDetails.multi_member_info
+        const ownerInfo = {
+            name: data.name as string,
+            email: data.email as string,
+            phone: data.mobile as string,
+            ownership_percentage: parseFloat(String(data.ownersPercentage)),
+            street_address: data.streetAddress as string,
+            city: data.city as string,
+            state: data.state as string,
+            zip_code: data.zipCode as string,
+            country: data.country as string,
+        };
+
+        // Update localStorage with owner data
+        const currentData = companyFormationService.getFromLocalStorage();
+        companyFormationService.saveToLocalStorage({
+            ...currentData,
+            businessDetails: {
+                ...currentData.businessDetails,
+                multi_member_info: [ownerInfo]
+            }
+        });
+
+        // Call API to create owners in the database
+        const companyId = currentData.company_id;
+        if (companyId) {
+            try {
+                const response = await ownerDocumentsService.storeOwners(companyId, [ownerInfo]);
+                if (response.status === 'success') {
+                    console.log('Owners created successfully:', response.data);
+                    
+                    // Upload documents if files are provided
+                    const ownerIds = response.data?.owner_ids || [];
+                    if (ownerIds.length > 0 && (data.owners_scanned_passport_copy || data.owners_bank_statement)) {
+                        try {
+                            const files: { scanned_passport_copy?: File; bank_statement?: File } = {};
+                            
+                            if (data.owners_scanned_passport_copy instanceof File) {
+                                files.scanned_passport_copy = data.owners_scanned_passport_copy;
+                            }
+                            
+                            if (data.owners_bank_statement instanceof File) {
+                                files.bank_statement = data.owners_bank_statement;
+                            }
+
+                            if (Object.keys(files).length > 0) {
+                                const uploadResponse = await ownerDocumentsService.uploadDocuments(ownerIds[0], files);
+                                if (uploadResponse.status === 'success') {
+                                    console.log('Documents uploaded successfully:', uploadResponse.data);
+                                } else {
+                                    console.warn('Failed to upload documents:', uploadResponse.message);
+                                }
+                            }
+                        } catch (uploadError) {
+                            console.error('Error uploading documents:', uploadError);
+                            // Don't block the flow if document upload fails
+                        }
+                    }
+                } else {
+                    console.error('Failed to create owners:', response.message);
+                    alert('Failed to save owner information. Please try again.');
+                    return;
+                }
+            } catch (error) {
+                console.error('Error creating owners:', error);
+                alert('An error occurred while saving owner information. Please try again.');
+                return;
+            }
+        } else {
+            console.error('Company ID not found in localStorage');
+            alert('Company information not found. Please contact support.');
+            return;
+        }
+
         handleFormSubmit({ OwnersInfo: data, isOwnersInfoComplete: true })
     };
 
@@ -137,14 +214,12 @@ const OwnersInfoFormTypeOne: React.FC<ChildComponentProps> = ({ handleFormSubmit
                     name={`owners_scanned_passport_copy`}
                     label="Scanned Passport Copy"
                     type="file"
-                    required
                 />
 
                 <InputField
                     name={`owners_bank_statement`}
                     label="Local Bank Statement (last 3 months)"
                     type="file"
-                    required
                 />
 
             </ReusableForm>

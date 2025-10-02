@@ -29,6 +29,28 @@ export interface OwnerDocumentsResponse {
   };
 }
 
+export interface OwnerInfo {
+  name: string;
+  email: string;
+  phone: string;
+  ownership_percentage: number;
+  street_address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  country: string;
+}
+
+export interface StoreOwnersResponse {
+  status: 'success' | 'error';
+  message: string;
+  data?: {
+    company_id: number;
+    owner_ids: number[];
+    count: number;
+  };
+}
+
 class OwnerDocumentsService {
   /**
    * Upload owner documents (passport copy and bank statement)
@@ -92,6 +114,38 @@ class OwnerDocumentsService {
       return {
         status: 'error',
         data: undefined
+      };
+    }
+  }
+
+  /**
+   * Store/update owners for a company
+   */
+  async storeOwners(companyId: number, owners: OwnerInfo[]): Promise<StoreOwnersResponse> {
+    try {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/owner-documents/store-owners`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          company_id: companyId,
+          owners: owners
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to store owners');
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Error storing owners:', error);
+      return {
+        status: 'error',
+        message: error instanceof Error ? error.message : 'Failed to store owners'
       };
     }
   }
