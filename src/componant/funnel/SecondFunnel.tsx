@@ -18,6 +18,7 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
     const [selected, setSelected] = useState(data?.businessType || 'llc');
     const [formMethods, setFormMethods] = useState<any>(null);
     const [isLoadingFees, setIsLoadingFees] = useState(false);
+    const [multimemberFee, setMultimemberFee] = useState(0);
     const { states: usStates, isLoading: isLoadingStates } = useStates();
 
     const [watchedValues, setWatchedValues] = useState<any>({});
@@ -37,6 +38,11 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
         const localData = companyFormationService.getFromLocalStorage();
         setData(localData);
         setSelected(localData?.businessType || 'llc');
+        
+        // Calculate initial multimemberFee based on existing llcType
+        const initialFee = localData?.multimemberFee || 
+            (localData?.businessDetails?.llcType === 'multiLLC' || localData?.businessDetails?.llcType === 'partnership' ? 100 : 0);
+        setMultimemberFee(initialFee);
     }, []);
 
 
@@ -80,6 +86,23 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
         }
     }, [selected, llcTypeComputed]);
 
+    // Update multimemberFee when business type changes
+    useEffect(() => {
+        const newFee = llcTypeComputed === 'multiLLC' || llcTypeComputed === 'partnership' ? 100 : 0;
+        setMultimemberFee(newFee);
+        
+        // Persist the updated fee to localStorage
+        try {
+            const currentData = companyFormationService.getFromLocalStorage();
+            companyFormationService.saveToLocalStorage({
+                ...currentData,
+                multimemberFee: newFee,
+            });
+        } catch (err) {
+            console.error('Failed to persist multimemberFee', err);
+        }
+    }, [llcTypeComputed]);
+
     const handleSubmit = (data: CustomFormData) => {
         // Save the business details to localStorage
         console.log(data?.llcType)
@@ -87,7 +110,7 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
             ...data,
             businessType: selected,
             llcType: data.llcType,
-            multimemberFee: data.llcType === 'multiLLC' || data.llcType === 'partnership' ? 100 : 0,
+            multimemberFee: multimemberFee,
             businessDetails: {
                 industryType: data.industryType,
                 llcType: data.llcType,
@@ -137,11 +160,16 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
 
             // Persist llcType changes immediately for reload persistence
             if (name === 'llcType') {
+                // Calculate multimemberFee based on llcType
+                const newMultimemberFee = value.llcType === 'multiLLC' || value.llcType === 'partnership' ? 100 : 0;
+                setMultimemberFee(newMultimemberFee);
+                
                 try {
                     const currentData = companyFormationService.getFromLocalStorage();
                     const payload: Partial<CompanyFormationData> = {
                         ...currentData,
                         businessType: selected,
+                        multimemberFee: newMultimemberFee,
                     };
                     if (currentData.businessDetails) {
                         payload.businessDetails = {
