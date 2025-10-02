@@ -21,35 +21,28 @@ const OwnersInfoFormTypeTwo: React.FC<ChildComponentProps> = ({ handleFormSubmit
         }
     }, []);
 
-    // Generate initial form data based on number of owners
-    const generateInitialFormData = () => {
-        const initialData: any = {
-            who_manage: "member_manage",
-        };
-
-        for (let i = 1; i <= numberOfOwners; i++) {
-            const ownerPrefix = `owner_${i}`;
-            initialData[`${ownerPrefix}_name`] = `Owner ${i}`;
-            initialData[`${ownerPrefix}_email`] = "demo@email.com";
-            initialData[`${ownerPrefix}_mobile`] = "2345678901";
-            initialData[`${ownerPrefix}_country`] = "us";
-            initialData[`${ownerPrefix}_city`] = 'New York';
-            initialData[`${ownerPrefix}_state`] = 'Manhattan';
-            initialData[`${ownerPrefix}_zipCode`] = '22011';
-            initialData[`${ownerPrefix}_streetAddress`] = '111, manhattan, new work';
-            initialData[`${ownerPrefix}_ownersPercentage`] = String(Math.floor(100 / numberOfOwners));
-        }
-
-        return initialData;
-    };
-
-    useEffect(() => {
-        if (formMethods) {
-            formMethods.reset(generateInitialFormData());
-        }
-    }, [data, formMethods, numberOfOwners]);
 
     const handleSubmit = (data: CustomFormData) => {
+        if (!formMethods) return;
+        const percentageKeys = Object.keys(data).filter((key) => /^owner_\d+_percentage$/.test(key));
+        let hasInvalid = false;
+        const values = percentageKeys.map((key) => {
+            const num = parseFloat(String(data[key]));
+            if (Number.isNaN(num)) {
+                formMethods.setError(key, { type: 'manual', message: 'Enter a valid percentage' });
+                hasInvalid = true;
+            }
+            return num || 0;
+        });
+        if (hasInvalid) return;
+        const total = values.reduce((sum: number, val: number) => sum + val, 0);
+        const roundedTotal = Math.round(total * 100) / 100;
+        if (roundedTotal !== 100) {
+            percentageKeys.forEach((key) => {
+                formMethods.setError(key, { type: 'manual', message: `Total ownership must equal 100% (current ${roundedTotal}%)` });
+            });
+            return;
+        }
         handleFormSubmit({ OwnersInfo: data, isOwnersInfoComplete: true })
     };
 
@@ -105,7 +98,7 @@ const OwnersInfoFormTypeTwo: React.FC<ChildComponentProps> = ({ handleFormSubmit
                 <InputField
                     name={`${ownerPrefix}_percentage`}
                     label="Ownership Percentage"
-                    type="text"
+                    type="number"
                     required
                     placeholder="Enter Ownership Percentage"
                 />
@@ -173,7 +166,6 @@ const OwnersInfoFormTypeTwo: React.FC<ChildComponentProps> = ({ handleFormSubmit
                 submitText="Continue"
                 onFormStateChange={handleFormStateChange}
                 className="mb-5 mt-10"
-                defaultValues={generateInitialFormData()}
             >
                 {/* Generate owner forms dynamically */}
                 {Array.from({ length: numberOfOwners }, (_, index) => generateOwnerForm(index + 1))}

@@ -20,24 +20,19 @@ const OwnersInfoFormTypeOne: React.FC<ChildComponentProps> = ({ handleFormSubmit
     }, []);
 
 
-    useEffect(() => {
-        if (formMethods) {
-            formMethods.reset({
-                //remove this
-                name: '',
-                email: '',
-                mobile: '',
-                country: '',
-                city: '',
-                state: '',
-                zipCode: '',
-                streetAddress: '',
-                ownersPercentage: '',
-            });
-        }
-    }, [data, formMethods]);
 
     const handleSubmit = (data: CustomFormData) => {
+        if (!formMethods) return;
+        const value = parseFloat(String(data.ownersPercentage));
+        if (Number.isNaN(value)) {
+            formMethods.setError('ownersPercentage', { type: 'manual', message: 'Enter a valid percentage' });
+            return;
+        }
+        const rounded = Math.round(value * 100) / 100;
+        if (rounded !== 100) {
+            formMethods.setError('ownersPercentage', { type: 'manual', message: 'Ownership percentage must be exactly 100%' });
+            return;
+        }
         handleFormSubmit({ OwnersInfo: data, isOwnersInfoComplete: true })
     };
 
@@ -132,7 +127,7 @@ const OwnersInfoFormTypeOne: React.FC<ChildComponentProps> = ({ handleFormSubmit
                 <InputField
                     name="ownersPercentage"
                     label="Ownership Percentage"
-                    type="text"
+                    type="number"
                     required
                     placeholder="Enter Ownership Percentage"
                 />

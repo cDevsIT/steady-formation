@@ -7,6 +7,7 @@ import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
 import companyFormationService, { useCompanyFormationData, CompanyFormationData } from "@/lib/companyFormationService";
+import { useStates } from "@/hooks/useStates";
 
 const plans = [
     {
@@ -64,6 +65,7 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [selected, setSelected] = useState(0); // Default to Free plan (index 0)
     const data = useCompanyFormationData();
     const [formMethods, setFormMethods] = useState<any>(null);
+    const { states: usStates, isLoading: isLoadingStates } = useStates();
 
     // Load initial data and set selected plan
     useEffect(() => {
@@ -84,7 +86,7 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         if (formMethods) {
             formMethods.reset({
                 country: "USA",
-                //remove This
+                state: data?.businessDetails?.stateName || undefined,
             });
         }
     }, [data, formMethods]);
@@ -240,9 +242,12 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                         <InputField
                             name="state"
                             label="State"
-                            type="text"
+                            type="select"
                             required
-                            placeholder="Enter State"
+                            placeholder={isLoadingStates ? "Loading states..." : "Select State"}
+                            options={usStates}
+                            disabled={isLoadingStates}
+                            defaultValue={data?.businessDetails?.stateName}
                         />
                         <InputField
                             name="zipCode"

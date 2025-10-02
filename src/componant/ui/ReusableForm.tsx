@@ -1,15 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useForm, Controller, FieldErrors } from 'react-hook-form';
+import { countries, Country } from './countries';
 
 // Types
-interface Country {
-    name: string;
-    code: string;
-    dialCode: string;
-    flag: string;
-    phoneRegex: RegExp;
-    format: string;
-}
 
 interface CompanyType {
     label: string;
@@ -31,6 +24,7 @@ interface InputFieldProps {
     className?: string;
     disabled?: boolean;
     belowText?: string;
+    trigger?: (name: string) => Promise<boolean>;
 }
 
 // Custom form data interface to avoid conflict with built-in FormData
@@ -38,20 +32,6 @@ interface CustomFormData {
     [key: string]: any;
 }
 
-// Country data with phone regex patterns and formats
-const countries: Country[] = [
-    { name: 'United States', code: 'US', dialCode: '+1', flag: '🇺🇸', phoneRegex: /^[2-9]\d{2}[2-9]\d{2}\d{4}$/, format: '(XXX) XXX-XXXX' },
-    { name: 'United Kingdom', code: 'GB', dialCode: '+44', flag: '🇬🇧', phoneRegex: /^7\d{9}$/, format: '7XXX XXXXXX' },
-    { name: 'Canada', code: 'CA', dialCode: '+1', flag: '🇨🇦', phoneRegex: /^[2-9]\d{2}[2-9]\d{2}\d{4}$/, format: '(XXX) XXX-XXXX' },
-    { name: 'Australia', code: 'AU', dialCode: '+61', flag: '🇦🇺', phoneRegex: /^4\d{8}$/, format: '4XX XXX XXX' },
-    { name: 'Germany', code: 'DE', dialCode: '+49', flag: '🇩🇪', phoneRegex: /^1[5-7]\d{8,9}$/, format: '1XX XXXX XXXX' },
-    { name: 'France', code: 'FR', dialCode: '+33', flag: '🇫🇷', phoneRegex: /^[67]\d{8}$/, format: 'XX XX XX XX XX' },
-    { name: 'India', code: 'IN', dialCode: '+91', flag: '🇮🇳', phoneRegex: /^[6-9]\d{9}$/, format: 'XXXXX XXXXX' },
-    { name: 'Japan', code: 'JP', dialCode: '+81', flag: '🇯🇵', phoneRegex: /^[789]0\d{8}$/, format: 'XX XXXX XXXX' },
-    { name: 'China', code: 'CN', dialCode: '+86', flag: '🇨🇳', phoneRegex: /^1[3-9]\d{9}$/, format: '1XX XXXX XXXX' },
-    { name: 'Brazil', code: 'BR', dialCode: '+55', flag: '🇧🇷', phoneRegex: /^[1-9]\d{10}$/, format: 'XX XXXXX XXXX' },
-    { name: 'Bangladesh', code: 'BD', dialCode: '+880', flag: '🇧🇩', phoneRegex: /^1[3-9]\d{8}$/, format: '1XXX XXXXXX' }
-];
 
 // Company types data
 const companyTypes: CompanyType[] = [
@@ -81,7 +61,8 @@ export const InputField: React.FC<InputFieldProps> = ({
     rules = {},
     className = '',
     disabled = false,
-    belowText = ''
+    belowText = '',
+    trigger
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
@@ -113,9 +94,12 @@ export const InputField: React.FC<InputFieldProps> = ({
 
     // Email validation
     const emailValidation = {
-        pattern: {
-            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: 'Please enter a valid email address'
+        validate: (value: string) => {
+            if (!value) return true; // Let required validation handle empty values
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                return 'Please enter a valid email address';
+            }
+            return true;
         }
     };
 
@@ -231,6 +215,12 @@ export const InputField: React.FC<InputFieldProps> = ({
                                             onChange(option.value);
                                             onBlur();
                                             setIsOpen(false);
+                                            // Trigger validation when option is selected
+                                            if (trigger) {
+                                                setTimeout(() => {
+                                                    trigger(name);
+                                                }, 0);
+                                            }
                                         }}
                                         className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
                                     >
@@ -300,7 +290,16 @@ export const InputField: React.FC<InputFieldProps> = ({
                         <input
                             type="tel"
                             value={value || ''}
-                            onChange={onChange}
+                            onChange={(e) => {
+                                onChange(e);
+                                // Trigger validation on input change to clear errors immediately
+                                if (trigger) {
+                                    // Use setTimeout to ensure the value is updated before validation
+                                    setTimeout(() => {
+                                        trigger(name);
+                                    }, 0);
+                                }
+                            }}
                             onBlur={onBlur}
                             placeholder={placeholder}
                             disabled={disabled}
@@ -364,7 +363,15 @@ export const InputField: React.FC<InputFieldProps> = ({
                         <input
                             type="text"
                             value={value || ''}
-                            onChange={onChange}
+                            onChange={(e) => {
+                                onChange(e);
+                                // Trigger validation on input change to clear errors immediately
+                                if (trigger) {
+                                    setTimeout(() => {
+                                        trigger(name);
+                                    }, 0);
+                                }
+                            }}
                             onBlur={onBlur}
                             placeholder={placeholder}
                             disabled={disabled}
@@ -379,7 +386,15 @@ export const InputField: React.FC<InputFieldProps> = ({
                     <input
                         type="number"
                         value={value || ''}
-                        onChange={onChange}
+                        onChange={(e) => {
+                            onChange(e);
+                            // Trigger validation on input change to clear errors immediately
+                            if (trigger) {
+                                setTimeout(() => {
+                                    trigger(name);
+                                }, 0);
+                            }
+                        }}
                         onBlur={onBlur}
                         placeholder={placeholder}
                         disabled={disabled}
@@ -393,7 +408,29 @@ export const InputField: React.FC<InputFieldProps> = ({
                     <input
                         type={type}
                         value={value || ''}
-                        onChange={onChange}
+                        onChange={(e) => {
+                            onChange(e);
+                            // Trigger validation on input change to clear errors immediately
+                            if (trigger) {
+                                if (type === 'email') {
+                                    // For email, only clear errors if the email is valid or if it's a required error
+                                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                    const hasRequiredError = typeof errors[name]?.message === 'string' && errors[name]?.message.includes('required');
+                                    const hasValidEmail = e.target.value && emailRegex.test(e.target.value);
+                                    
+                                    if (hasRequiredError || hasValidEmail) {
+                                        setTimeout(() => {
+                                            trigger(name);
+                                        }, 0);
+                                    }
+                                } else {
+                                    // For other field types, trigger validation on any input
+                                    setTimeout(() => {
+                                        trigger(name);
+                                    }, 0);
+                                }
+                            }
+                        }}
                         onBlur={onBlur}
                         placeholder={placeholder}
                         disabled={disabled}
@@ -459,7 +496,9 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
         watch,
         setValue,
         getValues,
-        trigger
+        trigger,
+        setError,
+        clearErrors,
     } = formMethods;
 
     useEffect(() => {
@@ -473,6 +512,8 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
                 setValue,
                 getValues,
                 trigger,
+                setError,
+                clearErrors,
                 resetForm: () => reset(),
                 setFieldValue: (name: string, value: any) => setValue(name, value),
                 getFieldValue: (name: string) => getValues(name),
@@ -496,11 +537,12 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
                 return child;
             }
 
-            // If it's an InputField, clone it with control and errors props
+            // If it's an InputField, clone it with control, errors, and trigger props
             if (child.type === InputField) {
                 return React.cloneElement(child as React.ReactElement<InputFieldProps>, {
                     control,
-                    errors
+                    errors,
+                    trigger
                 });
             }
 
