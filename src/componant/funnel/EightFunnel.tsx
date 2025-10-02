@@ -197,10 +197,8 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     transfer_fee: 25
   };
 
-  // Calculate multimember fee based on company type and LLC type
-  const isPartnership = data?.businessType === 'partnership';
-  const isMultiLLC = data?.businessDetails?.llcType === 'multiLLC';
-  const multimemberFee = (isPartnership || isMultiLLC) ? 100 : 0;
+
+  const multimemberFee = data?.multimemberFee || 0
 
   const feeData = [
     {

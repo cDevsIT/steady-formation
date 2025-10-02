@@ -133,7 +133,19 @@ const OwnersInfoFormTypeOne: React.FC<ChildComponentProps> = ({ handleFormSubmit
                 />
 
 
+                <InputField
+                    name={`owners_scanned_passport_copy`}
+                    label="Scanned Passport Copy"
+                    type="file"
+                    required
+                />
 
+                <InputField
+                    name={`owners_bank_statement`}
+                    label="Local Bank Statement (last 3 months)"
+                    type="file"
+                    required
+                />
 
             </ReusableForm>
 

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useForm, Controller, FieldErrors } from 'react-hook-form';
 import { countries, Country } from './countries';
+import Image from './Image';
 
 // Types
 
@@ -13,7 +14,7 @@ interface CompanyType {
 interface InputFieldProps {
     name: string;
     label: string;
-    type: 'text' | 'number' | 'email' | 'select' | 'phone' | 'company';
+    type: 'text' | 'number' | 'email' | 'select' | 'phone' | 'company' | 'file';
     required?: boolean;
     placeholder?: string;
     options?: { label: string; value: string | number | boolean }[];
@@ -25,6 +26,7 @@ interface InputFieldProps {
     disabled?: boolean;
     belowText?: string;
     trigger?: (name: string) => Promise<boolean>;
+    supportingText?: string;
 }
 
 // Custom form data interface to avoid conflict with built-in FormData
@@ -62,7 +64,8 @@ export const InputField: React.FC<InputFieldProps> = ({
     className = '',
     disabled = false,
     belowText = '',
-    trigger
+    trigger,
+    supportingText = ''
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
@@ -73,6 +76,36 @@ export const InputField: React.FC<InputFieldProps> = ({
     const dropdownRef = useRef<HTMLDivElement>(null);
     const countryDropdownRef = useRef<HTMLDivElement>(null);
     const companyTypeDropdownRef = useRef<HTMLDivElement>(null);
+
+    // File input hooks
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [dragActive, setDragActive] = useState(false);
+    const [fileName, setFileName] = useState('');
+
+    // File input handlers
+    const handleFileChange = (onChange: (file: File) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+            setFileName(file.name);
+            onChange(file);
+        }
+    };
+    const handleDrop = (onChange: (file: File) => void) => (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            setFileName(e.dataTransfer.files[0].name);
+            onChange(e.dataTransfer.files[0]);
+        }
+    };
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(true);
+    };
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(false);
+    };
 
     // Handle outside clicks
     useEffect(() => {
@@ -403,6 +436,44 @@ export const InputField: React.FC<InputFieldProps> = ({
                     />
                 );
 
+            case 'file':
+                return (
+                    <div
+                        className={`flex flex-col items-center justify-center border ${dragActive ? 'border-[#7856FC]' : 'border-gray-300'}  rounded-xl py-6 px-4 transition-colors duration-200 bg-white cursor-pointer w-full relative`}
+                        onClick={() => !disabled && fileInputRef.current?.click()}
+                        onDrop={handleDrop(onChange)}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        tabIndex={0}
+                        style={{ outline: 'none' }}
+                    >
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange(onChange)}
+                            onBlur={onBlur}
+                            disabled={disabled}
+                            required={required}
+                        />
+                        <div className="flex flex-col items-center">
+                            <span className="flex items-center justify-center w-10 h-10 rounded-full bg-[#F4F3FF] mb-2">
+                                <Image
+                                    url='/client/file_upload.svg'
+                                    alt='Upload File'
+                                    width={40}
+                                    height={40}
+                                />
+                            </span>
+                            <div className='flex flex-col justify-center items-center'>
+                                <p className='text-gray-500 text-sm'><span className="text-[#7856FC] font-medium text-base gap-1">Click to upload</span> or drag and drop</p>
+                                <p className='text-xs font-normal text-gray-600'>{supportingText}</p>
+                            </div>
+                            {(fileName || (value && value.name)) && <span className="mt-2 text-gray-700 text-sm">{fileName || (value && value.name)}</span>}
+                        </div>
+                    </div>
+                );
+
             default:
                 return (
                     <input
@@ -441,6 +512,19 @@ export const InputField: React.FC<InputFieldProps> = ({
         }
     };
 
+    // Early return if no control is provided
+    if (!control) {
+        return (
+            <div className={`mb-1 col-span-2 lg:col-span-1 ${className}`}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {label}
+                    {required && <span className="text-[#1570EF] ml-1">*</span>}
+                </label>
+                <div className="text-red-500 text-sm">Error: Control prop is required</div>
+            </div>
+        );
+    }
+
     return (
         <div className={`mb-1 col-span-2 lg:col-span-1 ${className}`}>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -464,6 +548,9 @@ export const InputField: React.FC<InputFieldProps> = ({
         </div>
     );
 };
+
+// Add displayName for better component identification
+InputField.displayName = 'InputField';
 
 // Reusable Form Component
 interface ReusableFormProps {
@@ -537,8 +624,13 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
                 return child;
             }
 
+            // Check if it's an InputField by looking at the component name or displayName
+            const isInputField = child.type === InputField || 
+                                (typeof child.type === 'function' && child.type.name === 'InputField') ||
+                                (child.type as any)?.displayName === 'InputField';
+
             // If it's an InputField, clone it with control, errors, and trigger props
-            if (child.type === InputField) {
+            if (isInputField) {
                 return React.cloneElement(child as React.ReactElement<InputFieldProps>, {
                     control,
                     errors,
@@ -560,6 +652,11 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
     };
 
     const enhancedChildren = cloneChildrenWithProps(children);
+
+    // Don't render until control is available
+    if (!control) {
+        return <div>Loading form...</div>;
+    }
 
     return (
         <div className={`space-y-4 grid gap-4 grid-cols-1 lg:grid-cols-2 ${className}`}>

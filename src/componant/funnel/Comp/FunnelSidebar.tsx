@@ -38,13 +38,8 @@ const FunnelSidebar: React.FC<FunnelSidebarProps> = ({ currentFormState }) => {
 
     // Calculate multimember fee based on company type and LLC type
     // Use current form state if available, otherwise fall back to stored data
-    
-    const currentBusinessType = currentFormState?.llcType || data?.businessType;
-    const currentLlcType = currentFormState?.llcType || data?.businessDetails?.llcType;
-    
-    const isPartnership = currentBusinessType === 'partnership';
-    const isMultiLLC = currentLlcType === 'multiLLC';
-    const multimemberFee = (isPartnership || isMultiLLC) ? 100 : 0;
+ 
+    const multimemberFee = data?.multimemberFee || 0
     
     const orderSummary = [
         { label: 'Incorporation of Your Company', value: 'Free' },
