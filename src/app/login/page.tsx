@@ -128,10 +128,10 @@ export default function LoginPage() {
                             <Image url="/google-icon.svg" alt="Google" width={20} height={20} className="mr-2" />
                             Sign in with Google
                         </button> */}
-                        {/* <div className="text-center text-sm text-[#475467]">
+                        <div className="text-center text-sm text-[#475467]">
                             Don&apos;t have an account?{' '}
                             <Link href="/sign-up" className="text-[#7856FC] hover:underline font-medium">Sign up</Link>
-                        </div> */}
+                        </div>
                     </form>
                 </div>
                 {/* Right: Image */}
