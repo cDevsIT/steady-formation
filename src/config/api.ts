@@ -27,6 +27,10 @@ export const API_CONFIG = {
                 CREATE_PAYMENT: '/payments/paypal/create-payment',
             },
         },
+        WALLET: {
+            BALANCE: '/wallet/balance',
+            PROCESS_PAYMENT: '/wallet/process-payment',
+        },
         BLOGS: {
             LIST: '/blogs',
             DETAIL: (slug: string) => `/blogs/${slug}`,
