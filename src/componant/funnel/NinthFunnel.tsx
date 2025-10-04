@@ -135,7 +135,7 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                         <span className="text-xl font-medium text-black">Card</span>
                     </div>
                 </div>
-                <div
+                {/* <div
                     className={`flex items-center justify-between gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${paymentOption === "paypal" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
                     onClick={() => setPaymentOption("paypal")}
                 >
@@ -144,17 +144,17 @@ const NinthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                         <Image className="h-[40px]" url="/icons/paypal-icon.svg" alt="Paypal" />
                         <span className="text-xl font-medium text-black">Paypal</span>
                     </div>
-                </div>
-            </div>
+                </div> */}
 
-            <div
+<div
                 className={`flex items-center gap-2 p-[20px] h-[120px] w-full rounded-xl border-2 cursor-pointer transition-all duration-150 ${paymentOption === "balance" ? "border-[#7856FC] bg-[#F5F3FF] shadow-sm" : "border-gray-200 bg-white hover:border-[#C7B6F7]"}`}
             >
                 <CheckIcon isSelected={false} />
                 <div className="flex gap-2 items-center w-full justify-between">
                     <p className="text-xl font-medium text-black">System Balance</p>
-                    <p className="text-xl font-medium text-black">${totalAmmount?.toFixed(2)}</p>
+                    <p className="text-xl font-medium text-black">$0.00</p>
                 </div>
+            </div>
             </div>
 
             {/* Continue Button */}
