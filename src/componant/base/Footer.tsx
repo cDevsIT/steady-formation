@@ -17,6 +17,7 @@ export default function Footer() {
         { name: 'Refund Policy', href: '/refund' },
         { name: 'Blog', href: '/blog' },
         { name: 'Contact Us', href: '/contact' },
+        { name: 'Services', href: '/services'}
     ];
 
     const socialLinks = [
