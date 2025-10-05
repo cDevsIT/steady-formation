@@ -26,7 +26,7 @@ const CallToAction: React.FC = () => {
         
         {/* Subtitle */}
         <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
-          Join thousands of entrepreneurs who trust Expedite Formation with their business needs.
+          Join thousands of entrepreneurs who trust Steady Formation with their business needs.
         </p>
         
         {/* CTA Button */}
