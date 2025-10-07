@@ -82,7 +82,7 @@ export interface CompanyFormationData {
   
   // Payment
   payment?: {
-    method: 'paypal' | 'stripe';
+    method: 'paypal' | 'stripe' | 'wallet';
     amount: number;
     status: 'pending' | 'completed' | 'failed';
   };

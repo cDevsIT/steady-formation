@@ -18,6 +18,8 @@ export interface WalletPaymentResponse {
     order_id: number;
     amount_paid: number;
     remaining_balance: number;
+    temp_login_token: string;
+    user_id: number;
   };
   error?: string;
 }
