@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "@/componant/ui/Image";
 import Link from "next/link";
 import { API_CONFIG } from "@/config/api";
 
-export default function LoginPage() {
+function LoginForm() {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -14,18 +14,11 @@ export default function LoginPage() {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isClient, setIsClient] = useState(false);
+    const [urlParams, setUrlParams] = useState<{email?: string, password?: string}>({});
     const router = useRouter();
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const performLogin = useCallback(async (email: string, password: string) => {
         setLoading(true);
         setError('');
 
@@ -36,8 +29,8 @@ export default function LoginPage() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
+                    email: email,
+                    password: password,
                 }),
             });
 
@@ -60,6 +53,49 @@ export default function LoginPage() {
         } finally {
             setLoading(false);
         }
+    }, [router]);
+
+    const handleAutoLogin = useCallback(async (email: string, password: string) => {
+        await performLogin(email, password);
+    }, [performLogin]);
+
+    // Set client-side flag and parse URL parameters
+    useEffect(() => {
+        setIsClient(true);
+        
+        // Parse URL parameters manually
+        if (typeof window !== 'undefined') {
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            const email = urlSearchParams.get('email');
+            const password = urlSearchParams.get('password');
+            
+            if (email && password) {
+                setUrlParams({ email, password });
+                setFormData(prev => ({
+                    ...prev,
+                    email: email,
+                    password: password
+                }));
+                
+                // Auto-submit the form if both email and password are provided
+                setTimeout(() => {
+                    handleAutoLogin(email, password);
+                }, 500); // Small delay to ensure form is updated
+            }
+        }
+    }, [handleAutoLogin]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await performLogin(formData.email, formData.password);
     };
 
     return (
@@ -69,6 +105,15 @@ export default function LoginPage() {
                 <div className="flex-1 max-w-[440px] mx-auto text-center md:text-left">
                     <h2 className="text-3xl font-semibold mb-2">Welcome back</h2>
                     <p className="text-[#475467] mb-8 text-[16px] leading-6 font-normal">Welcome back! Please enter your details.</p>
+                    
+                    {isClient && urlParams.email && urlParams.password && (
+                        <div className="mb-4 p-3 bg-blue-100 border border-blue-400 text-blue-700 rounded-md">
+                            <div className="flex items-center">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-700 mr-2"></div>
+                                Auto-logging in with provided credentials...
+                            </div>
+                        </div>
+                    )}
                     
                     {error && (
                         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
@@ -148,4 +193,22 @@ export default function LoginPage() {
             </div>
         </div>
     );
-} 
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading...</p>
+                </div>
+            </div>
+        }>
+            <LoginForm />
+        </Suspense>
+    );
+}
+
+// Force dynamic rendering to avoid SSR issues with useSearchParams
+export const dynamic = 'force-dynamic'; 
