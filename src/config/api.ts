@@ -47,6 +47,9 @@ export const API_CONFIG = {
                DOCUMENTS: {
                    USER_DOCUMENTS: '/documents/user-documents',
                    DOWNLOAD: (orderId: string, type: string) => `/documents/download/${orderId}/${type}`,
+               },
+               QUICK_ACTIONS: {
+                   USER_ACTIONS: '/quick-actions/user-actions',
                }
     }
 };
