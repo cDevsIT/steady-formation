@@ -21,7 +21,7 @@ interface BlogPageProps {
   }>;
 }
 
-// Generate metadata for SEO
+// Generate metadata for SEO (SSR)
 export async function generateMetadata({ searchParams }: BlogPageProps): Promise<Metadata> {
   const resolvedSearchParams = await searchParams;
   const currentPage = parseInt(resolvedSearchParams?.page || '1', 10);
@@ -29,7 +29,6 @@ export async function generateMetadata({ searchParams }: BlogPageProps): Promise
   try {
     const response = await blogService.getAllBlogs(currentPage);
     const blogs = response.data.data;
-    const totalPages = response.data.last_page;
     
     const pageTitle = currentPage > 1 ? `Blog - Page ${currentPage}` : 'Blog';
     const pageDescription = `Discover the latest industry news, interviews, technologies, and resources. ${blogs.length > 0 ? `Featured: ${blogs[0].title}` : ''}`;
@@ -62,33 +61,13 @@ export async function generateMetadata({ searchParams }: BlogPageProps): Promise
   }
 }
 
-// Generate static params for pagination
-export async function generateStaticParams() {
-  try {
-    // Get the first page to determine total pages
-    const response = await blogService.getAllBlogs(1);
-    const totalPages = response.data.last_page;
-    
-    // Generate params for all pages
-    const params = [];
-    for (let page = 1; page <= totalPages; page++) {
-      params.push({ page: page.toString() });
-    }
-    
-    return params;
-  } catch (error) {
-    console.error('Error generating static params:', error);
-    // Fallback to just the first page
-    return [{ page: '1' }];
-  }
-}
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   const resolvedSearchParams = await searchParams;
   const currentPage = parseInt(resolvedSearchParams?.page || '1', 10);
   const baseUrl = getBaseUrl();
 
-  // Fetch blogs data at build time
+  // Fetch blogs data at request time (SSR)
   let blogs: Blog[] = [];
   let totalPages = 1;
   let totalBlogs = 0;

@@ -48,76 +48,7 @@ function slugToTitle(slug: string): string {
 }
 
 
-const latestBlogsData = [
-  {
-    id: 1,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-  {
-    id: 2,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-  {
-    id: 3,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-  {
-    id: 4,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-  {
-    id: 5,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-  {
-    id: 6,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-];
 
-// Generate static params for all blog pages
-export async function generateStaticParams() {
-  try {
-    // Get all blogs to generate static pages
-    const response = await blogService.getAllBlogs(1);
-    const totalPages = response.data.last_page;
-    
-    // Collect all blog slugs from all pages
-    const allSlugs: string[] = [];
-    
-    for (let page = 1; page <= totalPages; page++) {
-      const pageResponse = await blogService.getAllBlogs(page);
-      const slugs = pageResponse.data.data.map(blog => blog.slug);
-      allSlugs.push(...slugs);
-    }
-    
-    return allSlugs.map(slug => ({
-      slug: slug,
-    }));
-  } catch (error) {
-    console.error('Error generating static params for blog pages:', error);
-    // Fallback to empty array - pages will be generated on-demand
-    return [];
-  }
-}
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -163,7 +94,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
   const blogTitle = slugToTitle(slug);
   const baseUrl = getBaseUrl();
   
-  // Fetch blog data at build time
+  // Fetch blog data at request time (SSR)
   let blog: Blog | null = null;
   let error: string | null = null;
   
@@ -178,6 +109,23 @@ export default async function BlogPost({ params }: BlogPostProps) {
   } catch (err) {
     error = err instanceof Error ? err.message : 'Unknown error occurred';
     console.error('❌ Error fetching blog:', error);
+  }
+
+  // Fetch latest blogs data at request time (SSR)
+  let latestBlogs: Blog[] = [];
+  let latestBlogsError: string | null = null;
+
+  try {
+    const latestResponse = await blogService.getAllBlogs(1);
+    
+    if (latestResponse.status === 'success' && latestResponse.data) {
+      latestBlogs = latestResponse.data.data.slice(0, 6); // Get first 6 blogs
+    } else {
+      latestBlogsError = latestResponse.message || 'Failed to fetch latest blogs';
+    }
+  } catch (err) {
+    latestBlogsError = err instanceof Error ? err.message : 'Unknown error occurred';
+    console.error('❌ Error fetching latest blogs:', latestBlogsError);
   }
   
   // If blog not found, return 404
@@ -197,7 +145,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
       <div className='hidden'>
         <LaunchCompanyPopup />
       </div>
-      <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row gap-8">
+      <div className="max-w-[980px] px-5 lg:px-0 lg:max-w-[1100px] xl:max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row gap-8">
         {/* Table of Content (Left) - 21.6% */}
         <TableOfContents items={tableOfContents} blogTitle={blog?.title || blogTitle} />
 
@@ -295,21 +243,37 @@ export default async function BlogPost({ params }: BlogPostProps) {
       <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mt-24 md:mt-28 mb-36 px-4 md:px-0">
         <h2 className="font-inter font-semibold text-[36px] leading-[44px] mb-[36px] tracking-[-0.02em] text-black">Read our latest posted blog</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 md:gap-y-8">
-          {latestBlogsData.map((blog, idx) => (
-            <div key={blog.id} className="mb-6">
-              <div className="flex items-center gap-6 mb-2">
-                <span className="flex items-center gap-2 font-inter font-medium text-[16px] leading-[27.2px] tracking-normal text-[#526061]">
-                  <Image url="/blog/date-icon.svg" alt="Date" className="w-4 h-4" />{blog.date}
-                </span>
-                <span className="flex items-center gap-2 font-inter font-medium text-[16px] leading-[27.2px] tracking-normal text-[#526061]">
-                  <Image url="/blog/comment-icon.svg" alt="Comments" className="w-4 h-4" />{blog.comments}
-                </span>
-              </div>
-              <div className="font-inter font-semibold text-[18px] leading-[28px] mb-[18px] text-black">{blog.title}</div>
-              <div className="font-inter font-normal text-[18px] leading-[28px] mb-[18px] text-[#475467]">{blog.description}</div>
-              <div className="border-b border-[#EAECF0] mt-4" />
+          {latestBlogsError ? (
+            <div className="col-span-2 text-center text-red-500 py-8">
+              <p>Unable to load latest blogs. Please try again later.</p>
             </div>
-          ))}
+          ) : latestBlogs.length > 0 ? (
+            latestBlogs.map((blog, idx) => (
+              <div key={blog.id} className="mb-6">
+                <div className="flex items-center gap-6 mb-2">
+                  <span className="flex items-center gap-2 font-inter font-medium text-[16px] leading-[27.2px] tracking-normal text-[#526061]">
+                    <Image url="/blog/date-icon.svg" alt="Date" className="w-4 h-4" />
+                    {new Date(blog.created_at).toLocaleDateString('en-US', { 
+                      day: 'numeric', 
+                      month: 'short', 
+                      year: 'numeric' 
+                    })}
+                  </span>
+                  <span className="flex items-center gap-2 font-inter font-medium text-[16px] leading-[27.2px] tracking-normal text-[#526061]">
+                    <Image url="/blog/comment-icon.svg" alt="Comments" className="w-4 h-4" />
+                    Comments
+                  </span>
+                </div>
+                <div className="font-inter font-semibold text-[18px] leading-[28px] mb-[18px] text-black">{blog.title}</div>
+                <div className="font-inter font-normal text-[18px] leading-[28px] mb-[18px] text-[#475467]">{blog.description}</div>
+                <div className="border-b border-[#EAECF0] mt-4" />
+              </div>
+            ))
+          ) : (
+            <div className="col-span-2 text-center text-gray-500 py-8">
+              <p>No blog posts available.</p>
+            </div>
+          )}
         </div>
       </section>
 
