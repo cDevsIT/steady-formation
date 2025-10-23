@@ -17,7 +17,7 @@ interface BlogPost {
 export default async function LatestBlogSection() {
     const baseUrl = getBaseUrl();
     
-    // Fetch blogs data at build time (SSG)
+    // Fetch blogs data at request time (SSR)
     let blogs: Blog[] = [];
     let error: string | null = null;
 
