@@ -16,7 +16,7 @@ export default function HeroSection() {
             <div className="flex flex-col gap-3">
               <h1 className="text-[36px] leading-[44px] lg:text-[60px] lg:leading-[78px] font-bold text-gray-900 m-0 max-w-[700px]">
                 Launch Business in Any State —
-                <span className="text-[#7856FC] bg-[#aaf0c4] px-3 rounded-full mx-2"> 0 Cost </span>
+                <span className="text-[#7856FC] bg-[#aaf0c4] px-3 rounded-full mx-2"> $0 Cost </span>
                 for U.S. Residents
               </h1>
               <p className="text-[16px] lg:text-[18px] text-gray-600 leading-relaxed max-w-lg">

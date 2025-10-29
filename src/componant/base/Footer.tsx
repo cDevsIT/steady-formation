@@ -12,18 +12,18 @@ export default function Footer() {
 
     const links = [
         { name: 'About Us', href: '/about' },
-        { name: 'Terms & Conditions', href: '/terms' },
-        { name: 'Privacy Policy', href: '/privacy' },
-        { name: 'Refund Policy', href: '/refund' },
+        { name: 'Terms of Use', href: '#' },
+        { name: 'Privacy Policy', href: '#' },
+        // { name: 'Refund Policy', href: '#' },
         { name: 'Blog', href: '/blog' },
-        { name: 'Contact Us', href: '/contact' },
+        { name: 'Contact Us', href: '/contact-us' },
     ];
 
     const socialLinks = [
         { name: 'Facebook', icon: '/icons/facebook.svg', href: 'https://facebook.com/steadyformation' },
         { name: 'Skype', icon: '/icons/skype.svg', href: 'https://skype.com/steadyformation' },
-        { name: 'Twitter', icon: '/icons/twitter.svg', href: 'https://linkedin.com/company/steadyformation' },
-        { name: 'Linkedin', icon: '/icons/linkedin.svg', href: 'https://instagram.com/steadyformation' },
+        { name: 'Instagram', icon: '/icons/instagram-icon.svg', href: 'https://instagram.com/steadyformation' },
+        { name: 'Linkedin', icon: '/icons/linkedin.svg', href: 'https://linkedin.com/company/steadyformation' },
     ];
 
     if (isClientRoute || hideHeaderFooter) return null;
@@ -87,11 +87,11 @@ export default function Footer() {
                             </div>
                             <div className="flex items-center gap-3">
                                 <Image className='h-4 w-4 mt-0.5 flex-shrink-0' url='/icons/call.svg' alt='Call' />
-                                <span className="text-[16px] font-medium text-black">+1 (307) 400-1051</span>
+                                <span className="text-[16px] font-medium text-black"><a href="tel:+13074001051">+1 (307) 400-1051</a></span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <Image className='h-4 w-4 mt-0.5 flex-shrink-0' url='/icons/mail.svg' alt='Mail' />
-                                <span className="text-[16px] font-medium text-black">info@steadyformation.com</span>
+                                <span className="text-[16px] font-medium text-black"><a href="mailto:info@steadyformation.com">info@steadyformation.com</a></span>
                             </div>
                         </div>
                     </div>

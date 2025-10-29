@@ -3,6 +3,7 @@ import companyFormationService from '@/lib/companyFormationService';
 import Button from '../ui/Button';
 import Image from '../ui/Image';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const businessStructures = [
     {
@@ -134,11 +135,13 @@ export default function PricingSection() {
                 </div>
 
                 {/* Additional Info Section */}
-                <div className="mt-16 text-center flex justify-center items-center">
-                    <p className="text-gray-600 max-w-[314px] text-start font-bold">
+                <div className="mt-16 text-center flex justify-center flex-col items-center">
+                    <p className="text-gray-600 text-start font-bold mb-4">
                         👉 Still unsure which structure fits your business best?
                     </p>
-                    <Button >Talk to a Business Advisor</Button>
+                    <Link href="/contact-us">
+                        <Button className='cursor-pointer'>Talk to a Business Advisor </Button>
+                    </Link>
                 </div>
             </div>
         </section>
