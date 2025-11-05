@@ -4,7 +4,7 @@ import CompanySelectSection from "./Comp/CompanySelectSection";
 import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
-import { industries, llcTypes, numOfOwnerShip } from "./funnel.type";
+import { industries, llcTypes, numOfOwnerShip, numOfDirectors } from "./funnel.type";
 import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 import stateFeesService from "@/lib/stateFeesService";
 import { useStates } from "@/hooks/useStates";
@@ -15,7 +15,11 @@ export interface ChildComponentProps {
 
 const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormStateChange }) => {
     const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
-    const [selected, setSelected] = useState(data?.businessType || 'llc');
+    const [selected, setSelected] = useState(() => {
+        // Initialize from localStorage on first render
+        const localData = companyFormationService.getFromLocalStorage();
+        return localData?.businessType || 'llc';
+    });
     const [formMethods, setFormMethods] = useState<any>(null);
     const [isLoadingFees, setIsLoadingFees] = useState(false);
     const [multimemberFee, setMultimemberFee] = useState(0);
@@ -37,7 +41,10 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
     useEffect(() => {
         const localData = companyFormationService.getFromLocalStorage();
         setData(localData);
-        setSelected(localData?.businessType || 'llc');
+        
+        // Ensure businessType is properly loaded from localStorage
+        const savedBusinessType = localData?.businessType || 'llc';
+        setSelected(savedBusinessType);
         
         // Calculate initial multimemberFee based on existing llcType
         const initialFee = localData?.multimemberFee || 
@@ -50,11 +57,11 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
         if (formMethods) {
             formMethods.reset({
                 llcType: llcTypeComputed,
-                numOfOwnerShip: 2,
+                numOfOwnerShip: selected === 'non_profit' ? 3 : 2,
                 stateName: companyFormationService.getFromLocalStorage()?.businessDetails?.stateName || undefined,
             });
         }
-    }, [data, formMethods, usStates, llcTypeComputed]);
+    }, [data, formMethods, usStates, llcTypeComputed, selected]);
 
     // Notify parent when company type selection changes
     useEffect(() => {
@@ -288,8 +295,7 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormS
                     label="Number of Director minimum 3, upto 15"
                     type="select"
                     required
-                    placeholder="Select Num of Director"
-                    options={numOfOwnerShip}
+                    options={numOfDirectors}
                     className="lg:col-span-2 mb-1"
                 />}
 

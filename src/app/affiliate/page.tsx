@@ -2,6 +2,7 @@
 import React from 'react';
 import Accordion from '@/componant/ui/Accordion';
 import Image from '@/componant/ui/Image';
+import Link from 'next/link';
 
 const faqData = [
     {
@@ -128,9 +129,11 @@ export default function AffiliatePage() {
                         <h3 className="text-lg md:text-xl font-semibold text-gray-900">Still have questions?</h3>
                         <p className="text-gray-600 mt-1 text-sm md:text-base">Can&apos;t find the answer you&apos;re looking for? Please chat to our friendly team.</p>
                     </div>
+                    <Link href="/contact-us">
                     <button className="bg-[#7856FC] text-white font-semibold rounded-lg px-5 py-3 hover:bg-[#6C3EF5] transition cursor-pointer w-full sm:w-auto">
                         Get in touch
                     </button>
+                    </Link>
                 </div>
             </div>
         </div>

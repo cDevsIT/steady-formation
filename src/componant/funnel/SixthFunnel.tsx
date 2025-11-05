@@ -17,15 +17,16 @@ export const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => 
 
 const SixthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   const data = useCompanyFormationData();
-  const [expressOption, setExpressOption] = useState<string>("no");
+  const [expressOption, setExpressOption] = useState<string>("yes");
 
   useEffect(() => {
-      // Set EIN option based on existing data
+      // Set option based on existing data only if user has previously saved data
     if (data?.agreement_amount === 99) {
         setExpressOption("yes");
-      } else if (data?.agreement_amount === 0 || !data?.agreement_amount) {
+      } else if (data?.agreement_amount === 0) {
         setExpressOption("no");
       }
+      // If agreement_amount is undefined/null, keep the default state (yes)
     }, [data?.agreement_amount]);
 
   const handleContinue = () => {

@@ -27,6 +27,7 @@ interface InputFieldProps {
     belowText?: string;
     trigger?: (name: string) => Promise<boolean>;
     supportingText?: string;
+    defaultCountryCode?: string;
 }
 
 // Custom form data interface to avoid conflict with built-in FormData
@@ -65,10 +66,14 @@ export const InputField: React.FC<InputFieldProps> = ({
     disabled = false,
     belowText = '',
     trigger,
-    supportingText = ''
+    supportingText = '',
+    defaultCountryCode = 'US'
 }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
+    const [selectedCountry, setSelectedCountry] = useState<Country>(() => {
+        // Find country by code, fallback to US if not found
+        return countries.find(c => c.code === defaultCountryCode) || countries.find(c => c.code === 'US') || countries[0];
+    });
     const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
     const [selectedCompanyType, setSelectedCompanyType] = useState<CompanyType>(companyTypes[0]);
     const [companyTypeDropdownOpen, setCompanyTypeDropdownOpen] = useState(false);
