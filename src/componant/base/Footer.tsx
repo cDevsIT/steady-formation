@@ -12,8 +12,8 @@ export default function Footer() {
 
     const links = [
         { name: 'About Us', href: '/about' },
-        { name: 'Terms of Use', href: '#' },
-        { name: 'Privacy Policy', href: '#' },
+        { name: 'Terms of Use', href: '' },
+        { name: 'Privacy Policy', href: '' },
         // { name: 'Refund Policy', href: '#' },
         { name: 'Blog', href: '/blog' },
         { name: 'Contact Us', href: '/contact-us' },
@@ -61,16 +61,20 @@ export default function Footer() {
                     <div className="space-y-4 max-w-[150px]">
                         <h3 className="text-[16px] font-medium text-gray-600 uppercase tracking-wider">LINKS</h3>
                         <ul className="space-y-3">
-                            {links.map((link) => (
-                                <li key={link.name}>
-                                    <Link
-                                        href={link.href}
-                                        className="text-black hover:text-purple-600 text-[16px] font-medium transition-colors duration-200"
-                                    >
-                                        {link.name}
-                                    </Link>
-                                </li>
-                            ))}
+                            {links.map((link) => {
+                                const isEmpty = !link.href || link.href.trim() === '';
+                                return (
+                                    <li key={link.name}>
+                                        <Link
+                                            href={isEmpty ? '#' : link.href}
+                                            onClick={isEmpty ? (e) => e.preventDefault() : undefined}
+                                            className={`text-black hover:text-purple-600 text-[16px] font-medium transition-colors duration-200 ${isEmpty ? 'cursor-default pointer-events-none' : 'cursor-pointer'}`}
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
 

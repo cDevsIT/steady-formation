@@ -59,6 +59,11 @@ export const fetchApi = async <T>(
   options: RequestInit = {}
 ): Promise<T> => {
   try {
+    // Prepend BASE_URL if endpoint doesn't start with http/https
+    const fullUrl = endpoint.startsWith('http://') || endpoint.startsWith('https://')
+      ? endpoint
+      : `${API_CONFIG.BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    
     // Only set default Content-Type if not already provided and not using FormData
     const isFormData = options.body instanceof FormData;
     const defaultOptions: RequestInit = {
@@ -68,7 +73,7 @@ export const fetchApi = async <T>(
       },
     };
     
-    const response = await fetch(endpoint, {
+    const response = await fetch(fullUrl, {
       ...defaultOptions,
       ...options,
     });

@@ -19,7 +19,7 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   const data = useCompanyFormationData();
   // State for EIN option and express EIN option
   const [einOption, setEinOption] = useState<string>('add');
-  const [expressOption, setExpressOption] = useState<string>("");
+  const [expressOption, setExpressOption] = useState<string>("no");
   const [ssn, setSSN] = useState("");
 
 
