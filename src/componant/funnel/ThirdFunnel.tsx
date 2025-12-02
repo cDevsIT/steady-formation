@@ -62,7 +62,7 @@ const CheckIcon = () => (
 );
 
 const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-    const [selected, setSelected] = useState(0); // Default to Free plan (index 0)
+    const [selected, setSelected] = useState(2); // Default to Yearly plan (index 2)
     const data = useCompanyFormationData();
     const [formMethods, setFormMethods] = useState<any>(null);
     const { states: usStates, isLoading: isLoadingStates } = useStates();
@@ -75,8 +75,8 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 setSelected(findCurrentSelect)
             }
         } else {
-            // Default to Free plan (index 0) if no plan is selected
-            setSelected(0)
+            // Default to Yearly plan (index 2) if no plan is selected
+            setSelected(2)
 
         }
     }, [data.plan?.plan_name, data]);

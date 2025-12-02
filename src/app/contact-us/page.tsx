@@ -1,71 +1,87 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { contactService, ContactFormData } from '@/services/contactService';
 import TrustedCustomerSection from '@/componant/shared/TrustedCustomerSection';
 import Image from '@/componant/ui/Image';
 import PageHeader from '@/componant/ui/PageHeader';
+import { useVisitorCountry } from '@/hooks/useVisitorCountry';
+import { countries, Country } from '@/componant/ui/countries';
 
-const countryCodes = [
-    { code: '+1', country: 'US' },
-    { code: '+93', country: 'AF' },
-    { code: '+355', country: 'AL' },
-    { code: '+213', country: 'DZ' },
-    { code: '+376', country: 'AD' },
-    { code: '+244', country: 'AO' },
-    { code: '+672', country: 'AQ' },
-    { code: '+54', country: 'AR' },
-    { code: '+374', country: 'AM' },
-    { code: '+61', country: 'AU' },
-    { code: '+880', country: 'BD' },
-    { code: '+975', country: 'BT' },
-    { code: '+673', country: 'BN' },
-    { code: '+855', country: 'KH' },
-    { code: '+86', country: 'CN' },
-    { code: '+852', country: 'HK' },
-    { code: '+91', country: 'IN' },
-    { code: '+62', country: 'ID' },
-    { code: '+81', country: 'JP' },
-    { code: '+82', country: 'KR' },
-    { code: '+856', country: 'LA' },
-    { code: '+60', country: 'MY' },
-    { code: '+960', country: 'MV' },
-    { code: '+976', country: 'MN' },
-    { code: '+95', country: 'MM' },
-    { code: '+977', country: 'NP' },
-    { code: '+64', country: 'NZ' },
-    { code: '+92', country: 'PK' },
-    { code: '+63', country: 'PH' },
-    { code: '+65', country: 'SG' },
-    { code: '+94', country: 'LK' },
-    { code: '+886', country: 'TW' },
-    { code: '+66', country: 'TH' },
-    { code: '+670', country: 'TL' },
-    { code: '+84', country: 'VN' },
-];
+// Generate country codes from countries list
+const countryCodes = countries.map(country => ({
+    code: country.dialCode,
+    country: country.code
+}));
 
 export default function ContactUs() {
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { countryCode: detectedCountryCode } = useVisitorCountry();
+    const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+    
+    // Get dial code from country code
+    const getDialCodeFromCountryCode = (countryCode: string): string => {
+        const country = countries.find(c => c.code === countryCode);
+        return country?.dialCode || '+1';
+    };
+
+    const defaultDialCode = getDialCodeFromCountryCode(detectedCountryCode);
 
     const {
         control,
         handleSubmit,
         formState: { errors },
         reset,
-        watch
+        watch,
+        setValue,
+        trigger
     } = useForm<ContactFormData>({
         defaultValues: {
             firstName: '',
             lastName: '',
             email: '',
             phone: '',
-            countryCode: '+1',
+            countryCode: defaultDialCode,
             subject: '',
             message: '',
             privacy: false
         }
     });
+
+    // Watch country code changes
+    const currentCountryCode = watch('countryCode');
+
+    // Initialize selected country on mount
+    useEffect(() => {
+        const dialCode = getDialCodeFromCountryCode(detectedCountryCode);
+        const country = countries.find(c => c.dialCode === dialCode);
+        if (country) {
+            setSelectedCountry(country);
+        }
+    }, []);
+
+    // Update country code when detected country changes
+    useEffect(() => {
+        const dialCode = getDialCodeFromCountryCode(detectedCountryCode);
+        setValue('countryCode', dialCode);
+        const country = countries.find(c => c.dialCode === dialCode);
+        if (country) {
+            setSelectedCountry(country);
+        }
+        // Re-validate phone when country changes
+        trigger('phone');
+    }, [detectedCountryCode, setValue, trigger]);
+
+    // Update selected country when countryCode changes
+    useEffect(() => {
+        if (currentCountryCode) {
+            const country = countries.find(c => c.dialCode === currentCountryCode);
+            if (country) {
+                setSelectedCountry(country);
+            }
+        }
+    }, [currentCountryCode]);
 
     const privacyAccepted = watch('privacy');
 
@@ -83,9 +99,6 @@ export default function ContactUs() {
             if (response.success) {
                 toast.success(response.message);
                 reset();
-
-                // Send email notification to admin
-                await contactService.sendEmailNotification(data);
             } else {
                 throw new Error(response.message || 'Failed to send message');
             }
@@ -209,43 +222,74 @@ export default function ContactUs() {
                                     <Controller
                                         name="phone"
                                         control={control}
-                                        render={({ field }) => (
-                                            <div>
-                                                <label htmlFor="phone" className="block text-[14px] font-medium text-[#344054] mb-2 font-inter leading-[20px]">
-                                                    Phone Number
-                                                </label>
-                                                <div className="relative flex items-center">
-                                                    <Controller
-                                                        name="countryCode"
-                                                        control={control}
-                                                        render={({ field: countryField }) => (
-                                                            <select
-                                                                {...countryField}
-                                                                className="absolute left-0 w-[90px] pl-4 pr-8 py-3 bg-transparent border-0 appearance-none z-10 focus:ring-0"
-                                                            >
-                                                                {countryCodes.map((country) => (
-                                                                    <option key={country.code} value={country.code}>
-                                                                        {country.country}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                        )}
-                                                    />
-                                                    <div className="pointer-events-none absolute left-[45px] top-1/2 -translate-y-1/2">
-                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M4 6L8 10L12 6" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                                        </svg>
+                                        rules={{
+                                            validate: (value: string | undefined) => {
+                                                if (!value) return true; // Phone is optional
+                                                if (!selectedCountry || !selectedCountry.phoneRegex) return true;
+                                                if (!selectedCountry.phoneRegex.test(value)) {
+                                                    return `Please use format: ${selectedCountry.format}`;
+                                                }
+                                                return true;
+                                            }
+                                        }}
+                                        render={({ field }) => {
+                                            const placeholder = selectedCountry?.format || 'Enter phone number';
+                                            
+                                            return (
+                                                <div>
+                                                    <label htmlFor="phone" className="block text-[14px] font-medium text-[#344054] mb-2 font-inter leading-[20px]">
+                                                        Phone Number
+                                                    </label>
+                                                    <div className="relative flex items-center">
+                                                        <Controller
+                                                            name="countryCode"
+                                                            control={control}
+                                                            render={({ field: countryField }) => (
+                                                                <select
+                                                                    {...countryField}
+                                                                    onChange={(e) => {
+                                                                        countryField.onChange(e);
+                                                                        const country = countries.find(c => c.dialCode === e.target.value);
+                                                                        if (country) {
+                                                                            setSelectedCountry(country);
+                                                                        }
+                                                                        // Re-validate phone when country changes
+                                                                        setTimeout(() => trigger('phone'), 0);
+                                                                    }}
+                                                                    className="absolute left-0 w-[90px] pl-4 pr-8 py-3 bg-transparent border-0 appearance-none z-10 focus:ring-0"
+                                                                >
+                                                                    {countryCodes.map((country) => (
+                                                                        <option key={country.code} value={country.code}>
+                                                                            {country.country}
+                                                                        </option>
+                                                                    ))}
+                                                                </select>
+                                                            )}
+                                                        />
+                                                        <div className="pointer-events-none absolute left-[45px] top-1/2 -translate-y-1/2">
+                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M4 6L8 10L12 6" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                            </svg>
+                                                        </div>
+                                                        <input
+                                                            {...field}
+                                                            type="tel"
+                                                            id="phone"
+                                                            onChange={(e) => {
+                                                                field.onChange(e);
+                                                                // Trigger validation on input change
+                                                                setTimeout(() => trigger('phone'), 0);
+                                                            }}
+                                                            className={`w-full pl-24 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
+                                                            placeholder={placeholder}
+                                                        />
                                                     </div>
-                                                    <input
-                                                        {...field}
-                                                        type="tel"
-                                                        id="phone"
-                                                        className="w-full pl-24 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                                        placeholder="+1 (555) 000-0000"
-                                                    />
+                                                    {errors.phone && (
+                                                        <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                                                    )}
                                                 </div>
-                                            </div>
-                                        )}
+                                            );
+                                        }}
                                     />
                                 </div>
 

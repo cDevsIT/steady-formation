@@ -15,9 +15,10 @@ interface FullScreenImageModalProps {
     document: any;
     previewUrl: string | null;
     showImagePreview: boolean;
+    handleDownload: (e: React.MouseEvent, doc: any) => void;
 }
 
-function FullScreenImageModal({ open, onClose, imageUrl, alt, document, previewUrl, showImagePreview }: FullScreenImageModalProps) {
+function FullScreenImageModal({ open, onClose, imageUrl, alt, document, previewUrl, showImagePreview, handleDownload }: FullScreenImageModalProps) {
     if (!open) return null;
     return (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
@@ -48,13 +49,12 @@ function FullScreenImageModal({ open, onClose, imageUrl, alt, document, previewU
                             </div>
                         </div>
                         {document?.file_path ? (
-                            <a 
-                                href={`${API_CONFIG.BASE_URL}/documents/file/${document.file_path.split('/').pop()}`}
-                                download={document.file_path.split('/').pop()}
-                                className="bg-[#7856FC] text-white px-6 py-2 rounded-lg hover:bg-[#6840e0] w-full md:w-auto inline-block text-center no-underline"
+                            <button 
+                                onClick={(e) => handleDownload(e, document)}
+                                className="bg-[#7856FC] text-white px-6 py-2 rounded-lg hover:bg-[#6840e0] w-full md:w-auto inline-block text-center cursor-pointer border-none"
                             >
                                 Download
-                            </a>
+                            </button>
                         ) : (
                             <span className="bg-[#7856FC] text-white px-6 py-2 rounded-lg w-full md:w-auto inline-block text-center opacity-50">
                                 Download
@@ -127,6 +127,40 @@ export default function Documents() {
         
         // For non-image files, use a default document icon
         return '/client/document-icon.svg';
+    };
+
+    // Helper to get the correct download URL based on file type
+    const getDownloadUrl = (doc: any) => {
+        if (!doc?.file_path) return null;
+        
+        const filename = doc.file_path.split('/').pop();
+        
+        // For image files, use direct storage URL to avoid nginx issues
+        if (isImageFile(filename)) {
+            // Extract just the filename and construct the storage URL
+            return doc.file_path; // This already contains the full storage URL from the API
+        }
+        
+        // For non-image files, use the API endpoint
+        return `${API_CONFIG.BASE_URL}/documents/file/${filename}`;
+    };
+
+    // Handle download with proper file handling
+    const handleDownload = (e: React.MouseEvent, doc: any) => {
+        e.stopPropagation(); // Prevent row click
+        
+        if (!doc?.file_path) return;
+        
+        const filename = doc.file_path.split('/').pop();
+        
+        // Use Next.js API route as a proxy to avoid CORS/nginx issues
+        const url = `/api/download?filename=${encodeURIComponent(filename)}`;
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename || 'download';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     const previewUrl = getPreviewUrl(selectedDoc);
@@ -232,14 +266,12 @@ export default function Documents() {
                                     </td>
                                     <td className="py-3 px-6 text-center">
                                         {doc.file_path ? (
-                                            <a 
-                                                href={`${API_CONFIG.BASE_URL}/documents/file/${doc.file_path.split('/').pop()}`}
-                                                download={doc.file_path.split('/').pop()}
-                                                className="bg-[#F5F5F7] text-[#7856FC] px-4 py-2 rounded-lg hover:bg-[#ece9fa] inline-block text-center no-underline"
-                                                onClick={(e) => e.stopPropagation()}
+                                            <button
+                                                onClick={(e) => handleDownload(e, doc)}
+                                                className="bg-[#F5F5F7] text-[#7856FC] px-4 py-2 rounded-lg hover:bg-[#ece9fa] inline-block text-center cursor-pointer border-none"
                                             >
                                                 {doc.action}
-                                            </a>
+                                            </button>
                                         ) : (
                                             <span className="bg-[#F5F5F7] text-[#7856FC] px-4 py-2 rounded-lg inline-block text-center opacity-50">
                                                 {doc.action}
@@ -260,6 +292,7 @@ export default function Documents() {
                 document={selectedDoc}
                 previewUrl={previewUrl}
                 showImagePreview={showImagePreview}
+                handleDownload={handleDownload}
             />
         </div>
     );

@@ -370,27 +370,40 @@ export default function Payment() {
         return isNaN(n) ? 0 : n;
     };
     const buildInvoiceForPdf = (data: PaymentModalData) => {
+        const amount = parseAmount(data.amount);
+        const serviceDescription = data.companyName 
+            ? `${data.entityType || 'Company'} Formation - ${data.companyName}` 
+            : 'Company Formation Service';
+        
         return {
             invoiceNumber: toInvoiceNumber(data.invoiceId),
             date: data.date,
             companyName: 'Steady Formations LLC',
             companyEmail: 'support@steadyformation.com',
             companyAddress: '2218 Baker Street, Suite 400, San Francisco, CA 94115, United States',
-            clientName: data.companyName || 'Customer',
+            clientName: data.billingName || data.companyName || 'Customer',
             clientEmail: data.userEmail || '',
             clientAddress: '—',
+            status: data.status as 'Paid' | 'Pending' | 'Failed',
             items: [
                 {
-                    description: data.companyName ? `Payment for ${data.companyName}` : 'Company Payment',
-                    quantity: 1,
-                    price: parseAmount(data.amount),
+                    item: serviceDescription,
+                    price: `$${amount.toFixed(2)}`,
+                    qty: '1',
+                    total: `$${amount.toFixed(2)}`,
                 },
             ],
-            subtotal: parseAmount(data.amount),
-            tax: 0,
-            discount: 0,
-            total: parseAmount(data.amount),
-            notes: `Payment Method: ${data.paymentMethod || '-'} | Transaction: ${data.transactionId || '-'}`,
+            subtotal: `$${amount.toFixed(2)}`,
+            tax: '$0.00',
+            discount: '$0.00',
+            total: `$${amount.toFixed(2)}`,
+            transactionId: data.transactionId,
+            paymentMethod: data.paymentMethod,
+            paymentGateway: data.paymentGateway,
+            userEmail: data.userEmail,
+            userId: data.userId,
+            entityType: data.entityType,
+            billingName: data.billingName,
         };
     };
 
@@ -506,7 +519,6 @@ export default function Payment() {
                                     <tr><td colSpan={5} className="py-6 text-center text-[#667085] text-sm">
                                         No payment history found. 
                                         {error && <div className="text-red-500 mt-2">Error: {error}</div>}
-                                        <div className="text-xs mt-2">Company ID: {selectedCompany?.id || 'None'}</div>
                                     </td></tr>
                                 )}
                             </tbody>

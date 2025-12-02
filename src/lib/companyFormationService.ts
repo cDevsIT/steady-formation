@@ -17,6 +17,7 @@ export interface CompanyFormationData {
   llcType?: string;
   multimemberFee?: number;
   numOfOwnerShip?: number;
+  company_id?: number;
   // Step 3: Business Details
   businessDetails?: {
     industryType: string;
@@ -81,7 +82,7 @@ export interface CompanyFormationData {
   
   // Payment
   payment?: {
-    method: 'paypal' | 'stripe';
+    method: 'paypal' | 'stripe' | 'wallet';
     amount: number;
     status: 'pending' | 'completed' | 'failed';
   };

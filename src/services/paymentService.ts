@@ -52,7 +52,15 @@ export const createStripeSession = async (localStorageData: any): Promise<Paymen
     );
 
     if (response.status === 'success' && response.data) {
-        return response.data as PaymentSessionData;
+        const sessionData = response.data as PaymentSessionData;
+        // Store company_id and user_id in localStorage for later use
+        companyFormationService.saveToLocalStorage({
+            ...localStorageData,
+            company_id: sessionData.company_id,
+            user_id: sessionData.user_id,
+            order_id: sessionData.order_id
+        });
+        return sessionData;
     } else {
         throw new Error(response.message || 'Failed to create Stripe session');
     }
@@ -74,7 +82,14 @@ export const createPayPalPayment = async (localStorageData: any): Promise<PayPal
     );
 
     if (response.status === 'success' && response.data) {
-        return response.data as PayPalPaymentData;
+        const paypalData = response.data as PayPalPaymentData;
+        // Store company_id and user_id in localStorage for later use
+        companyFormationService.saveToLocalStorage({
+            ...localStorageData,
+            company_id: paypalData.company_id,
+            user_id: paypalData.user_id
+        });
+        return paypalData;
     } else {
         throw new Error(response.message || 'Failed to create PayPal payment');
     }

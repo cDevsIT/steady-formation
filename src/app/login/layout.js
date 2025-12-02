@@ -9,6 +9,17 @@ export default function LoginLayout({ children }) {
 
     useEffect(() => {
         const checkAuth = async () => {
+            // Skip auth check if we have URL parameters (coming from admin customer view)
+            if (typeof window !== 'undefined') {
+                const urlSearchParams = new URLSearchParams(window.location.search);
+                const hasUrlParams = urlSearchParams.get('email') && urlSearchParams.get('password');
+                
+                if (hasUrlParams) {
+                    // Let the login page handle the auto-login
+                    return;
+                }
+            }
+
             const token = localStorage.getItem('auth_token');
             
             if (token) {

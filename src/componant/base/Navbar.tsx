@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useLogout } from "@/lib/useLogout";
 import { useCompany } from "@/contexts/CompanyContext";
+import { getUserProfile, UserProfile } from "@/services/userService";
+import { API_CONFIG } from "@/config/api";
 
 interface NavbarProps { }
 
@@ -16,7 +18,9 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
   const hideHeaderFooter = pathname.startsWith('/login') || pathname.startsWith('/sign-up');
   const [isScrolled, setIsScrolled] = useState(false);
   const { handleLogout } = useLogout();
-      const { companies, selectedCompany, setSelectedCompany, loading: companiesLoading } = useCompany();
+  const { companies, selectedCompany, setSelectedCompany, loading: companiesLoading } = useCompany();
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,6 +36,27 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    setIsLoggedIn(!!token);
+  }, [pathname]);
+
+  // Fetch user profile when on client route
+  useEffect(() => {
+    if (isClientRoute) {
+      const fetchProfile = async () => {
+        try {
+          const profile = await getUserProfile();
+          setUserProfile(profile);
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+        }
+      };
+      fetchProfile();
+    }
+  }, [isClientRoute]);
 
   return (
     <nav
@@ -69,10 +94,20 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
 
                 {/* Profile Button */}
                 <button className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <Image url={selectedCompany?.icon ?? ''} alt="User Icon" width={56} height={56} className="w-14 h-14 rounded-full" />
-                  </div>
-                  <span className="text-sm font-medium">{selectedCompany?.name}</span>
+                  {userProfile?.avatar ? (
+                    <img 
+                      src={`${API_CONFIG.BASE_URL.replace('/api', '')}/storage/${userProfile.avatar}`}
+                      alt={`${userProfile.first_name} ${userProfile.last_name}`}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                      {userProfile ? `${userProfile.first_name.charAt(0)}${userProfile.last_name.charAt(0)}` : 'U'}
+                    </div>
+                  )}
+                  <span className="text-sm font-medium">
+                    {userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'User'}
+                  </span>
                 </button>
 
                 {/* Logout Button */}
@@ -91,13 +126,14 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
               </div>
             ) : (
               <>
-
-                {!hideHeaderFooter && <Link
-                  href="/login"
-                  className="bg-primary hover:bg-primary-hover text-white px-6 py-3  h-11 rounded-lg text-[16px] font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
-                >
-                  Login
-                </Link>}
+                {!hideHeaderFooter && (
+                  <Link
+                    href={isLoggedIn ? "/client" : "/login"}
+                    className="bg-primary hover:bg-primary-hover text-white px-6 py-3 h-11 rounded-lg text-[16px] font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
+                  >
+                    {isLoggedIn ? "Dashboard" : "Login"}
+                  </Link>
+                )}
               </>
             )}
           </div>

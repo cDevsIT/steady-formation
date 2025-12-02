@@ -14,7 +14,7 @@ export default function NotFound() {
           />
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Blog Not Found</h1>
           <p className="text-lg text-gray-600 mb-8">
-            Sorry, we couldn't find the blog post you're looking for. It might have been moved or deleted.
+            Sorry, we couldn&apos;t find the blog post you&apos;re looking for. It might have been moved or deleted.
           </p>
         </div>
         
