@@ -31,6 +31,26 @@ const SixthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
   const handleContinue = () => {
     const price = expressOption === 'yes' ? 99 : 0
+    
+    // Save Operating Agreement service data to localStorage if selected
+    if (expressOption === 'yes' && price > 0) {
+      companyFormationService.saveToLocalStorage({
+        ...data,
+        agreement_amount: price,
+        operatingAgreementService: {
+          service_id: 7, // Operating Agreement service (one-time service)
+          service_fee: price,
+          renewal_fee: 0, // No renewal fee for one-time service
+          service_type: 'yearly', // Service type, but renewal_date will be null
+        }
+      });
+    } else {
+      companyFormationService.saveToLocalStorage({
+        ...data,
+        agreement_amount: price
+      });
+    }
+    
     if (handleFormSubmit) handleFormSubmit({ stepSix: { expressOption: expressOption, }, agreement_amount: price });
   };
 
@@ -42,10 +62,25 @@ const SixthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         price = 0
       } 
     setExpressOption(option);
+    
+    // Save Operating Agreement service data to localStorage if selected
+    if (option === "yes" && price > 0) {
+      companyFormationService.saveToLocalStorage({
+        ...data,
+        agreement_amount: price,
+        operatingAgreementService: {
+          service_id: 7, // Operating Agreement service (one-time service)
+          service_fee: price,
+          renewal_fee: 0, // No renewal fee for one-time service
+          service_type: 'yearly', // Service type, but renewal_date will be null
+        }
+      });
+    } else {
       companyFormationService.saveToLocalStorage({
         ...data,
         agreement_amount: price
       });
+    }
     };
   return (
     <div className="max-w-[728px]">

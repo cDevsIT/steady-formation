@@ -13,6 +13,7 @@ const plans = [
     {
         name: "Free",
         price: 0,
+        renewal_fee: 0, // Free plan has no renewal fee
         period: "",
         title: "Basic tools with limited reporting, simple workflows, and entry-level automation for getting started.",
         description: [
@@ -25,6 +26,7 @@ const plans = [
     {
         name: "Half-Yearly",
         price: 59,
+        renewal_fee: 59, // Renewal fee for Half-Yearly plan (can be different from initial price)
         period: "Half-Yearly",
         title: "Enhanced features, better reporting, and flexible automation, billed on a Half-Yearly basis.",
         description: [
@@ -37,6 +39,7 @@ const plans = [
     {
         name: "Yearly",
         price: 99,
+        renewal_fee: 99, // Renewal fee for Yearly plan (can be different from initial price)
         period: "Yearly",
         title: "Premium features, full automation, and advanced reporting with annual savings built in.",
         description: [
@@ -52,7 +55,7 @@ const checklist = [
     "A physical street address is required in the state where your business operates.",
     "P.O. Boxes or PMBs cannot be used.",
     "Your business address may appear on public records with your name, phone, and email.",
-    "If you don’t have a business address, you can use your Registered Agent’s address (if allowed in your state) or select one of our Half-Yearly/Yearly packages."
+    "If you don't have a business address, you can use your Registered Agent's address (if allowed in your state) or select one of our Half-Yearly/Yearly packages."
 ];
 
 const CheckIcon = () => (
@@ -95,19 +98,27 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         const selectedPlan = plans[selected];
         
         // Save plan data to localStorage
+        const planData: any = {
+            service_id: 6, // Business Address service
+            plan_name: selectedPlan.name,
+            plan_price: selectedPlan.price,
+            renewal_fee: selectedPlan.renewal_fee, // Renewal fee can be different from initial price
+        };
+        
+        // Only add free_plan_details if it's Free plan and we have address data
+        if (selectedPlan.name === 'Free' && data.streetAddress && data.city && data.state && data.zipCode) {
+            planData.free_plan_details = {
+                street_address: data.streetAddress,
+                step4_city: data.city,
+                step4_state: data.state,
+                step4_zip_code: data.zipCode,
+                step4_country: data.country || 'USA'
+            };
+        }
+        
         companyFormationService.saveToLocalStorage({
             ...data,
-            plan: {
-                plan_name: selectedPlan.name,
-                plan_price: selectedPlan.price,
-                free_plan_details: selectedPlan.name === 'Free' ? {
-                    street_address: data.streetAddress,
-                    step4_city: data.city,
-                    step4_state: data.state,
-                    step4_zip_code: data.zipCode,
-                    step4_country: data.country
-                } : undefined
-            },
+            plan: planData,
             currentStep: 4
         });
 
@@ -122,8 +133,10 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         companyFormationService.saveToLocalStorage({
             ...data,
             plan: {
+                service_id: 6, // Business Address service
                 plan_name: selectedPlan.name,
-                plan_price: selectedPlan.price
+                plan_price: selectedPlan.price,
+                renewal_fee: selectedPlan.renewal_fee // Renewal fee can be different from initial price
             },
             currentStep: 4
         });
@@ -142,11 +155,16 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         setSelected(idx);
         // Save plan data to localStorage instantly when selected
         const selectedPlan = plans[idx];
+        const currentPlan = data.plan || {} as any;
         companyFormationService.saveToLocalStorage({
             ...data,
             plan: {
+                service_id: 6, // Business Address service
                 plan_name: selectedPlan.name,
                 plan_price: selectedPlan.price,
+                renewal_fee: selectedPlan.renewal_fee, // Renewal fee can be different from initial price
+                // Preserve free_plan_details if it exists and we're still on Free plan
+                ...(selectedPlan.name === 'Free' && (currentPlan as any).free_plan_details ? { free_plan_details: (currentPlan as any).free_plan_details } : {})
             }
         });
     };
@@ -220,7 +238,7 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                         onFormStateChange={handleFormStateChange}
                         className="mb-5 mt-10"
                     >
-                        <h4 className="text-[16px] font-semibold lg:col-span-2 mb-1">Your Registered Agent Address *</h4>
+                        <h4 className="text-[16px] font-semibold lg:col-span-2 mb-1">Your Business Address *</h4>
                         <InputField
                             name="country"
                             label="Country"

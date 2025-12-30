@@ -47,6 +47,27 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
       price = 149
     }
 
+    // Save EIN service data to localStorage if not skipping
+    if (einOption !== "skip" && price > 0) {
+      companyFormationService.saveToLocalStorage({
+        ...data,
+        en_amount: price,
+        ssn: expressOption === "yes" ? ssn : null, // Save SSN only if express EIN is selected
+        einService: {
+          service_id: 4, // EIN service (one-time service)
+          service_fee: price,
+          renewal_fee: 0, // No renewal fee for one-time service
+          service_type: 'yearly', // Service type, but renewal_date will be null
+        }
+      });
+    } else {
+      companyFormationService.saveToLocalStorage({
+        ...data,
+        en_amount: price,
+        ssn: null // No SSN if skipping EIN
+      });
+    }
+
     if (handleFormSubmit) handleFormSubmit({ stepFive: { einOption: einOption, expressOption: expressOption, ssn: ssn }, en_amount: price });
   };
 
@@ -63,11 +84,26 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     }
     setEinOption(option);
     
-
+    // Save EIN service data to localStorage (only if not skipping)
+    // Note: SSN is not saved here - it will be saved in handleContinue when user clicks Continue
+    if (option !== "skip" && price > 0) {
+      companyFormationService.saveToLocalStorage({
+        ...data,
+        en_amount: price,
+        einService: {
+          service_id: 4, // EIN service (one-time service)
+          service_fee: price,
+          renewal_fee: 0, // No renewal fee for one-time service
+          service_type: 'yearly', // Service type, but renewal_date will be null
+        }
+      });
+    } else {
     companyFormationService.saveToLocalStorage({
       ...data,
-      en_amount: price
+      en_amount: price,
+      ssn: null // No SSN if skipping EIN
     });
+    }
   };
   return (
     <div className=" bg-white max-w-[728px] flex flex-col gap-8">

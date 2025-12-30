@@ -4,6 +4,7 @@ import { CustomFormData } from "../ui/FormSample";
 import { FunnelHeading, FunnelSubHeading } from "../ui/FunnelHeading";
 import Image from "../ui/Image";
 import RegisterAgentOption from "./Comp/RegisterAgentOption";
+import companyFormationService, { useCompanyFormationData } from "@/lib/companyFormationService";
 
 // Data for the benefits cards
 const benefitsData = [
@@ -35,13 +36,35 @@ const benefitsData = [
 
 const FourthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   const [selectedOption, setSelectedOption] = useState<'steady' | 'own'>("steady");
+  const data = useCompanyFormationData();
 
   // Always pass an object to handleFormSubmit
   const handleSteadyContinue = () => {
+    // Save Registered Agent service (service_id = 5) to localStorage
+    // Free for first year (service_fee = 0), renewal_fee = 99, service_type = yearly
+    companyFormationService.saveToLocalStorage({
+      ...data,
+      registeredAgent: {
+        service_id: 5, // Registered Agent service
+        service_fee: 0, // Free for first year
+        renewal_fee: 99, // Renewal fee after first year
+        service_type: 'yearly',
+        type: selectedOption, // 'steady' or 'own'
+      },
+      currentStep: 5
+    });
+    
     handleFormSubmit({ stepFour: { type: selectedOption } });
   };
 
   const handleOwnContinue = (data: CustomFormData) => {
+    // Don't save Registered Agent service when user selects "own" - they're using their own agent
+    // The agent_information will be saved by RegisterAgentOption component
+    companyFormationService.saveToLocalStorage({
+      ...data,
+      currentStep: 5
+    });
+    
     handleFormSubmit({ stepFour: {...data, type: selectedOption } });
   };
 

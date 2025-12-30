@@ -12,6 +12,7 @@ export interface CompanyFormationData {
     last_name: string;
     email: string;
     phone_number: string;
+    secondary_phone?: string;
   };
 
   llcType?: string;
@@ -39,8 +40,10 @@ export interface CompanyFormationData {
   
   // Step 4: Plan Selection
   plan?: {
+    service_id?: number; // Service ID (e.g., 6 for Business Address)
     plan_name: string;
     plan_price: number;
+    renewal_fee?: number; // Renewal fee (can be different from plan_price)
     free_plan_details?: {
       street_address: string;
       step4_city: string;
@@ -50,10 +53,46 @@ export interface CompanyFormationData {
     };
   };
   
+  // Registered Agent Service (service_id = 5)
+  registeredAgent?: {
+    service_id: number; // 5 for Registered Agent
+    service_fee: number; // 0 (free for first year)
+    renewal_fee: number; // 99
+    service_type: string; // 'yearly'
+    type: 'steady' | 'own'; // 'steady' or 'own'
+  };
+  
+  // EIN Service (service_id = 4) - One-time service
+  einService?: {
+    service_id: number; // 4 for EIN
+    service_fee: number; // 69 or 149 (0 if skipped)
+    renewal_fee: number; // 0 (no renewal for one-time service)
+    service_type: string; // 'yearly' (but renewal_date will be null)
+  };
+  
+  // Operating Agreement Service (service_id = 7) - One-time service
+  operatingAgreementService?: {
+    service_id: number; // 7 for Operating Agreement
+    service_fee: number; // 99 (0 if skipped)
+    renewal_fee: number; // 0 (no renewal for one-time service)
+    service_type: string; // 'yearly' (but renewal_date will be null)
+  };
+  
   // Step 5: Registered Agent
   agentInfo?: string;
   agentInfoTwo?: string;
+  // New format: agent_information from FourthFunnel (when user selects "own registered agent")
   agent_information?: {
+    agent_type: 'individual' | 'company';
+    name: string; // Name or Company Name
+    country: string;
+    city: string;
+    state: string;
+    zip_code: string;
+    street_address: string;
+  };
+  // Legacy format: step_5_agent_information (old format)
+  step_5_agent_information?: {
     ind_first_name?: string;
     ind_last_name?: string;
     ind_street_address?: string;
@@ -73,6 +112,7 @@ export interface CompanyFormationData {
   
   // Step 6: EIN
   en_amount?: number;
+  ssn?: string | null; // Social Security Number for express EIN
   
   // Step 7: Operating Agreement
   agreement_amount?: number;

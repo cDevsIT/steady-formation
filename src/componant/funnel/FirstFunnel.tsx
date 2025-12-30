@@ -6,6 +6,7 @@ import Rating from "../shared/Rating";
 import { dataState } from "./Funnel";
 import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 import { useVisitorCountry } from "@/hooks/useVisitorCountry";
+import { getUserProfile, UserProfile } from "@/services/userService";
 
 interface ChildComponentProps {
     handleFormSubmit: (data: CustomFormData) => void;
@@ -15,6 +16,27 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
     const [formMethods, setFormMethods] = useState<any>(null);
     const { countryCode, isLoading: isLoadingCountry } = useVisitorCountry();
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    const [isLoadingUser, setIsLoadingUser] = useState(true);
+
+    // Check if user is logged in and fetch user profile
+    useEffect(() => {
+        const checkUserAndFetchProfile = async () => {
+            try {
+                const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+                if (token) {
+                    const profile = await getUserProfile();
+                    setUserProfile(profile);
+                }
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+                // User might not be logged in or token expired, continue without profile
+            } finally {
+                setIsLoadingUser(false);
+            }
+        };
+        checkUserAndFetchProfile();
+    }, []);
 
     // Load initial data from localStorage using the new service
     useEffect(() => {
@@ -24,16 +46,25 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
 
     useEffect(() => {
-        if (formMethods) {
+        if (formMethods && !isLoadingUser) {
+            // Auto-fill from user profile if logged in and data not already in localStorage
+            const fullName = data.userInfo?.first_name && data.userInfo?.last_name 
+                ? `${data.userInfo.first_name} ${data.userInfo.last_name}`.trim()
+                : (userProfile ? `${userProfile.first_name} ${userProfile.last_name}`.trim() : "");
+            
+            const email = data.userInfo?.email || userProfile?.email || "";
+            const primaryPhone = data.userInfo?.phone_number || userProfile?.phone || "";
+            const secondaryPhone = data.userInfo?.secondary_phone || "";
+
             formMethods.reset({
                 companyName: data.companyName || "",
-                fullName: "",
-                email: "",
-                primaryPhone: "",
-                secondaryPhone: "",
+                fullName: fullName,
+                email: email,
+                primaryPhone: primaryPhone,
+                secondaryPhone: secondaryPhone,
             });
         }
-    }, [data, formMethods]);
+    }, [data, formMethods, userProfile, isLoadingUser]);
 
     const handleSubmit = (data: CustomFormData) => {
         // Transform the data to match API expectations
@@ -41,7 +72,8 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             first_name: data.fullName?.split(' ')[0] || '',
             last_name: data.fullName?.split(' ').slice(1).join(' ') || '',
             email: data.email || '',
-            phone_number: data.primaryPhone || ''
+            phone_number: data.primaryPhone || '',
+            secondary_phone: data.secondaryPhone || ''
         };
 
         // Save the data to localStorage with correct structure

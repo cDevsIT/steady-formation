@@ -5,7 +5,7 @@ import { dataState } from "../Funnel";
 import { FunnelHeading, FunnelSubHeading } from "@/componant/ui/FunnelHeading";
 import { InputField, ReusableForm } from "@/componant/ui/ReusableForm";
 import { useStates } from "@/hooks/useStates";
-import { useCompanyFormationData } from "@/lib/companyFormationService";
+import companyFormationService, { useCompanyFormationData } from "@/lib/companyFormationService";
 
 const options = [
     {
@@ -64,9 +64,24 @@ const RegisterAgentOption: React.FC<ChildComponentProps> = ({ handleSubmit }) =>
     }, [data, formMethods, formationData?.businessDetails?.stateName]);
 
     const handleFormSubmit = (data: CustomFormData) => {
+        // Prepare agent information data
+        const agentInformation = {
+            agent_type: selected, // 'individual' or 'company'
+            name: data.name || '', // Name or Company Name
+            country: data.country || 'USA',
+            city: data.city || '',
+            state: data.state || '',
+            zip_code: data.zipCode || '',
+            street_address: data.streetAddress || '',
+        };
+
+        // Save to localStorage
+        companyFormationService.saveToLocalStorage({
+            ...formationData,
+            agent_information: agentInformation,
+        });
 
         handleSubmit({ ...data, companyType: selected })
-
     };
 
     // Handle form state changes and set up watchers
