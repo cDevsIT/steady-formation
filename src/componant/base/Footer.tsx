@@ -16,7 +16,8 @@ export default function Footer() {
         { name: 'Privacy Policy', href: '' },
         // { name: 'Refund Policy', href: '#' },
         { name: 'Blog', href: '/blog' },
-        { name: 'Contact Us', href: '/contact-us' },
+        { name: 'Contact Us', href: '/contact' },
+        { name: 'Services', href: '/services'}
     ];
 
     const socialLinks = [
