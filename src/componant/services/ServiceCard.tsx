@@ -7,8 +7,8 @@ interface ServiceFeature {
   included: boolean;
 }
 
-interface ServiceCardData {
-  id: string;
+export interface ServiceCardData {
+  id: string | number;
   title: string;
   description: string;
   features: ServiceFeature[];
@@ -17,88 +17,6 @@ interface ServiceCardData {
   buttonText: string;
   icon: string;
 }
-
-const serviceData: ServiceCardData[] = [
-  {
-    id: 'ein-letter',
-    title: 'Employer Identification Number (EIN Letter)',
-    description: 'Employer Identification Number (EIN Letter)',
-    features: [
-      { text: 'Employer Identification Number (EIN Letter)', included: true }
-    ],
-    price: 'Starting at $65',
-    buttonText: 'Order Now',
-    icon: '📄'
-  },
-  {
-    id: 'stripe-consultation',
-    title: 'Business Stripe Account Support Consultation',
-    description: 'Business Stripe Account Support Consultation',
-    features: [
-      { text: 'Business Stripe Account Support Consultation', included: true }
-    ],
-    price: 'Starting at $99',
-    buttonText: 'Order Now',
-    icon: '💳'
-  },
-  {
-    id: 'business-address',
-    title: 'US Business Address',
-    description: 'US Business Address',
-    features: [
-      { text: 'US Business Address', included: true }
-    ],
-    price: 'Starting at $99',
-    renewalPrice: 'Renewal: $99/year',
-    buttonText: 'Order Now',
-    icon: '🏢'
-  },
-  {
-    id: 'bank-account',
-    title: 'Business Bank Account Setup',
-    description: 'Professional assistance with opening your business bank account. We help you navigate requirements and connect with banking partners.',
-    features: [
-      { text: 'Bank Requirements Analysis', included: true },
-      { text: 'Document Preparation Assistance', included: true },
-      { text: 'Banking Partner Introductions', included: true },
-      { text: 'Application Support & Guidance', included: true },
-      { text: '+ 4 more features', included: false }
-    ],
-    price: 'Starting at $199',
-    buttonText: 'Order Now',
-    icon: '🏦'
-  },
-  {
-    id: 'itin-application',
-    title: 'ITIN Application Service',
-    description: 'ITIN Application Service',
-    features: [
-      { text: 'Complete ITIN Application (Form W-7)', included: true },
-      { text: 'Document Review & Verification', included: true },
-      { text: 'IRS Submission & Tracking', included: true },
-      { text: 'Status Updates via Email', included: true },
-      { text: '+ 4 more features', included: false }
-    ],
-    price: 'Starting at $199',
-    buttonText: 'Order Now',
-    icon: '🆔'
-  },
-  {
-    id: 'business-dissolution',
-    title: 'Business Dissolution Service',
-    description: 'Professional business dissolution and closure service to properly terminate your business entity and resolve obligations.',
-    features: [
-      { text: 'Dissolution Document Preparation', included: true },
-      { text: 'State Filing & Processing', included: true },
-      { text: 'Tax Closure Assistance', included: true },
-      { text: 'Asset Distribution Planning', included: true },
-      { text: '+ 4 more features', included: false }
-    ],
-    price: 'Starting at $399',
-    buttonText: 'Order Now',
-    icon: '📋'
-  }
-];
 
 const ServiceCard: React.FC<{ service: ServiceCardData }> = ({ service }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -185,10 +103,10 @@ const ServiceCard: React.FC<{ service: ServiceCardData }> = ({ service }) => {
   );
 };
 
-const ServiceCardGrid: React.FC = () => {
+const ServiceCardGrid: React.FC<{ services: ServiceCardData[] }> = ({ services }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {serviceData.map((service) => (
+      {services.map((service) => (
         <ServiceCard key={service.id} service={service} />
       ))}
     </div>
