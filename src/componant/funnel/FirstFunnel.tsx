@@ -5,6 +5,7 @@ import { InputField, ReusableForm } from "../ui/ReusableForm";
 import Rating from "../shared/Rating";
 import { dataState } from "./Funnel";
 import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
+import { useVisitorCountry } from "@/hooks/useVisitorCountry";
 
 interface ChildComponentProps {
     handleFormSubmit: (data: CustomFormData) => void;
@@ -13,6 +14,7 @@ interface ChildComponentProps {
 const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
     const [formMethods, setFormMethods] = useState<any>(null);
+    const { countryCode, isLoading: isLoadingCountry } = useVisitorCountry();
 
     // Load initial data from localStorage using the new service
     useEffect(() => {
@@ -110,6 +112,7 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                         type="phone"
                         required
                         placeholder="Enter primary number"
+                        defaultCountryCode={countryCode}
                     />
                     <InputField
                         name="secondaryPhone"
@@ -117,11 +120,12 @@ const FirstFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                         type="phone"
                         placeholder="Enter secondary number"
                         className=""
+                        defaultCountryCode={countryCode}
                     />
 
                 </ReusableForm>
 
-                <Rating maxWidth={false} className="border w-full border-[#E4E7EC] hidden lg:flex" radius={false} />
+                <Rating maxWidth={false} className="border mb-10 mt-7 w-full border-[#E4E7EC] hidden lg:flex" radius={false} />
             </div>
         </div>
     );

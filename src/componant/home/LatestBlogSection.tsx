@@ -2,6 +2,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Link from 'next/link';
 import Image from '../ui/Image';
 import CarouselSlider from '../ui/CarouselSlider';
+import Button from '../ui/Button';
 import blogService, { Blog, getBaseUrl } from '@/lib/blogService';
 
 interface BlogPost {
@@ -17,7 +18,7 @@ interface BlogPost {
 export default async function LatestBlogSection() {
     const baseUrl = getBaseUrl();
     
-    // Fetch blogs data at build time (SSG)
+    // Fetch blogs data at request time (SSR)
     let blogs: Blog[] = [];
     let error: string | null = null;
 
@@ -49,8 +50,11 @@ export default async function LatestBlogSection() {
         slug: blog.slug
     });
 
-    // Get business ideas (remaining blogs)
-    const blogPosts = blogs.slice(0, 6).map(convertBlogToCard);
+    // Get latest 3 blogs
+    const blogPosts = blogs.slice(0, 3).map(convertBlogToCard);
+    
+    // Check if there are more than 3 blogs available
+    const hasMoreBlogs = blogs.length > 3;
 
     const BlogCard = ({ post }: { post: BlogPost }) => (
         <article className="">
@@ -121,6 +125,15 @@ export default async function LatestBlogSection() {
                         </div>
                     ))}
                 </CarouselSlider>
+
+                {/* All Blogs Button - Show if more than 3 posts available */}
+                {hasMoreBlogs && (
+                    <div className="mt-12 text-center">
+                        <Link href="/blog">
+                            <Button className="cursor-pointer">All Blogs</Button>
+                        </Link>
+                    </div>
+                )}
             </div>
         </div>
     );

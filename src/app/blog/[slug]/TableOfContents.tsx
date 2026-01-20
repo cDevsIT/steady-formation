@@ -47,7 +47,7 @@ export default function TableOfContents({ items, blogTitle }: TableOfContentsPro
   };
 
   return (
-    <aside className="w-full md:w-[21.6%] bg-[#fafbfc] rounded-xl p-5 h-fit border border-[#ececec] sticky top-[90px]">
+    <aside className="w-full hidden md:block md:w-[21.6%] bg-[#fafbfc] rounded-xl p-5 h-fit border border-[#ececec] sticky top-[90px]">
       <h2 className="font-inter font-semibold text-[24px] leading-[32px] text-black mb-5">Table Of Content</h2>
       {items.length > 0 ? (
         <ul>

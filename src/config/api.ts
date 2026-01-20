@@ -2,7 +2,7 @@
 export const API_CONFIG = {
     BASE_URL: process.env.NEXT_PUBLIC_API_URL || 
         (process.env.NODE_ENV === 'production' 
-            ? 'https://api.cdevs.com.bd/api' 
+            ? 'https://app.steadyformation.com/api' 
             : 'http://localhost:8000/api'),
     ENDPOINTS: {
         AUTH: {
@@ -27,6 +27,10 @@ export const API_CONFIG = {
                 CREATE_PAYMENT: '/payments/paypal/create-payment',
             },
         },
+        WALLET: {
+            BALANCE: '/wallet/balance',
+            PROCESS_PAYMENT: '/wallet/process-payment',
+        },
         BLOGS: {
             LIST: '/blogs',
             DETAIL: (slug: string) => `/blogs/${slug}`,
@@ -43,6 +47,9 @@ export const API_CONFIG = {
                DOCUMENTS: {
                    USER_DOCUMENTS: '/documents/user-documents',
                    DOWNLOAD: (orderId: string, type: string) => `/documents/download/${orderId}/${type}`,
+               },
+               QUICK_ACTIONS: {
+                   USER_ACTIONS: '/quick-actions/user-actions',
                }
     }
 };
@@ -52,6 +59,11 @@ export const fetchApi = async <T>(
   options: RequestInit = {}
 ): Promise<T> => {
   try {
+    // Prepend BASE_URL if endpoint doesn't start with http/https
+    const fullUrl = endpoint.startsWith('http://') || endpoint.startsWith('https://')
+      ? endpoint
+      : `${API_CONFIG.BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    
     // Only set default Content-Type if not already provided and not using FormData
     const isFormData = options.body instanceof FormData;
     const defaultOptions: RequestInit = {
@@ -61,7 +73,7 @@ export const fetchApi = async <T>(
       },
     };
     
-    const response = await fetch(endpoint, {
+    const response = await fetch(fullUrl, {
       ...defaultOptions,
       ...options,
     });
