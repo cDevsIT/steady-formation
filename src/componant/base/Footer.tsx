@@ -11,13 +11,13 @@ export default function Footer() {
     const hideHeaderFooter = pathname.startsWith('/login') || pathname.startsWith('/sign-up');
 
     const links = [
-        { name: 'About Us', href: '/about' },
+        { name: 'Contact Us', href: '/contact-us' },
+        { name: 'Services', href: '/services'},
+        { name: 'Blog', href: '/blog' },
+        // { name: 'About Us', href: '/about' },
         { name: 'Terms of Use', href: '' },
         { name: 'Privacy Policy', href: '' },
         // { name: 'Refund Policy', href: '#' },
-        { name: 'Blog', href: '/blog' },
-        { name: 'Contact Us', href: '/contact' },
-        { name: 'Services', href: '/services'}
     ];
 
     const socialLinks = [
