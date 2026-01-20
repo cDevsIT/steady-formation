@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { getCompanyData, CompanyData } from '@/services/companyService';
+import { useCompany } from '@/contexts/CompanyContext';
 
 export default function Company() {
+    const { selectedCompany } = useCompany();
     const [companyData, setCompanyData] = useState<CompanyData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -12,7 +14,7 @@ export default function Company() {
         const fetchCompanyData = async () => {
             try {
                 setLoading(true);
-                const data = await getCompanyData();
+                const data = await getCompanyData(selectedCompany?.id);
                 setCompanyData(data);
                 setError(null);
             } catch (err: any) {
@@ -23,8 +25,10 @@ export default function Company() {
             }
         };
 
-        fetchCompanyData();
-    }, []);
+        if (selectedCompany?.id) {
+            fetchCompanyData();
+        }
+    }, [selectedCompany?.id]);
 
     if (loading) {
         return (
@@ -119,8 +123,8 @@ export default function Company() {
                                 <div className=" text-[16px] font-normal leading-6 text-green-500 text-right">{companyData.address_status}</div>
                                 <div className="text-[#475467] text-[16px] font-normal leading-6">Last Mail Received Date</div>
                                 <div className=" text-[16px] font-normal leading-6 text-right">{companyData.last_mail_received_date}</div>
-                                <div className="text-[#475467] text-[16px] font-normal leading-6">Upgrade premium address</div>
-                                <a href="#" className=" text-[16px] font-normal leading-6 text-[#7856FC] hover:underline text-right">{companyData.upgrade_premium_address}</a>
+                                {/* <div className="text-[#475467] text-[16px] font-normal leading-6">Upgrade premium address</div>
+                                <a href="#" className=" text-[16px] font-normal leading-6 text-[#7856FC] hover:underline text-right">{companyData.upgrade_premium_address}</a> */}
                             </div>
                         </div>
 

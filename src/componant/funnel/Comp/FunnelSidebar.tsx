@@ -5,13 +5,24 @@ import { useEffect, useState } from 'react';
 import Image from '@/componant/ui/Image';
 import Rating from '@/componant/shared/Rating';
 import companyFormationService, { useCompanyFormationData, CompanyFormationData } from '@/lib/companyFormationService';
+import { FunnelSidebarHeaderText } from '@/lib/funnelSidebarHeaderText';
 
 
 
-const FunnelSidebar = () => {
+interface FunnelSidebarProps {
+    currentFormState?: {
+        businessType?: string;
+        llcType?: string;
+    };
+}
+
+const FunnelSidebar: React.FC<FunnelSidebarProps> = ({ currentFormState }) => {
     const data = useCompanyFormationData();
     const [currentSlide, setCurrentSlide] = useState(0);
     const reviews = sampleReviews.slice(0, 3);
+
+    const headerText = FunnelSidebarHeaderText.find(item => item.step === data.currentStep);
+
 
     // Get state name for display
     const getStateName = (stateName: string) => {
@@ -25,11 +36,16 @@ const FunnelSidebar = () => {
         transfer_fee: 25
     };
 
+    // Calculate multimember fee based on company type and LLC type
+    // Use current form state if available, otherwise fall back to stored data
+ 
+    const multimemberFee = data?.multimemberFee || 0
+    
     const orderSummary = [
         { label: 'Incorporation of Your Company', value: 'Free' },
         { label: 'Business Address Fee', value: `$${data?.plan?.plan_price?.toFixed(2) ?? '0.00'}` },
         { label: 'Registered Agent for 1 Year', value: 'Free' },
-        { label: 'Multimember Fee', value: '$0.00' },
+        { label: 'Multimember Fee', value: `$${multimemberFee.toFixed(2)}` },
         { label: 'EIN', value: `$${data?.en_amount?.toFixed(2) ?? '0.00'}` },
         { label: 'Operating Agreement', value: `$${data?.agreement_amount?.toFixed(2) ?? '0.00'}` },
         { label: 'Expedite Processing', value: `$${data?.rush_processing_amount?.toFixed(2) ?? '0.00'}` },
@@ -39,7 +55,7 @@ const FunnelSidebar = () => {
         },
     ];
 
-    const totalAmmount = (data?.agreement_amount ?? 0) + (data?.en_amount ?? 0) + (data?.rush_processing_amount ?? 0) + (data?.plan?.plan_price ?? 0) + (stateFees.registration_fee ?? 0)
+    const totalAmmount = (data?.agreement_amount ?? 0) + (data?.en_amount ?? 0) + (data?.rush_processing_amount ?? 0) + (data?.plan?.plan_price ?? 0) + (stateFees.registration_fee ?? 0) + multimemberFee
 
     // Custom arrows for the carousel
     const ArrowButton = ({ direction, onClick, disabled }: { direction: 'left' | 'right'; onClick?: () => void; disabled?: boolean }) => (
@@ -74,7 +90,19 @@ const FunnelSidebar = () => {
 
     return (
         <div className="hidden lg:flex flex-col gap-6 max-w-[452px]">
-            <Image className='w-[452px]' url="/funnel/funnel-sidebar-head.svg" alt="stars" width={452} height={195} />
+            <div className='w-[452px] relative'>
+                {headerText && (
+                    <div className='absolute top-5 left-[30px] text-white '>
+                        <h3 className='text-[20px] font-bold mb-2'>{headerText.title}</h3>
+                        <ul style={{ listStyleType: "disc", paddingLeft: "20px" }}>
+                            {headerText.point.map((p, index) => (
+                                <li className='text-[14px] font-medium' key={index}>{p}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+                <Image  url="/funnel/funnel-sidebar-head.png" alt="stars" width={452} height={195} />
+            </div>
             {/* Order Summary Section */}
             <div className="bg-gray-100 rounded-xl shadow p-4 mb-2">
                 <div className="font-bold text-[20px]">Order Summary</div>

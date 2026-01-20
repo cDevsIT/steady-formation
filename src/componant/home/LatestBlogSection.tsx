@@ -2,6 +2,8 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Link from 'next/link';
 import Image from '../ui/Image';
 import CarouselSlider from '../ui/CarouselSlider';
+import Button from '../ui/Button';
+import blogService, { Blog, getBaseUrl } from '@/lib/blogService';
 
 interface BlogPost {
     title: string;
@@ -13,34 +15,46 @@ interface BlogPost {
 }
 
 
-const blogPosts: BlogPost[] = [
-    {
-        img: '/blog/Steady-formations-blog-image-1.png',
-        alt: 'Blog 1',
-        title: 'Quick and Easy Flaky Pastry for Tasty Breakfast',
-        date: '18 Jul 2023',
-        comments: 'Comments',
-        slug: 'quick-and-easy-flaky-pastry'
-    },
-    {
-        img: '/blog/Steady-formations-blog-image-2.png',
-        alt: 'Blog 2',
-        title: 'Quick and Easy Flaky Pastry for Tasty Breakfast',
-        date: '18 Jul 2023',
-        comments: 'Comments',
-        slug: 'quick-and-easy-flaky-pastry-2'
-    },
-    {
-        img: '/blog/Steady-formations-blog-image-3.png',
-        alt: 'Blog 3',
-        title: 'Quick and Easy Flaky Pastry for Tasty Breakfast',
-        date: '18 Jul 2023',
-        comments: 'Comments',
-        slug: 'quick-and-easy-flaky-pastry-3'
-    },
-];
+export default async function LatestBlogSection() {
+    const baseUrl = getBaseUrl();
+    
+    // Fetch blogs data at request time (SSR)
+    let blogs: Blog[] = [];
+    let error: string | null = null;
 
-export default function LatestBlogSection() {
+    try {
+        const response = await blogService.getAllBlogs(1);
+        
+        if (response.status === 'success' && response.data) {
+            blogs = response.data.data;
+        } else {
+            throw new Error(response.message || 'Failed to fetch blogs');
+        }
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+        console.error('❌ Error fetching blogs:', errorMessage);
+        error = errorMessage;
+    }
+
+    // Convert API blog data to component format
+    const convertBlogToCard = (blog: Blog) => ({
+        img: `${baseUrl}/storage/uploads/blog/${blog.feature_image}` || `/blog/Steady-formations-blog-image-1.png`,
+        alt: blog.title,
+        title: blog.title,
+        date: new Date(blog.created_at).toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        }),
+        comments: 'Comments', // Default, can be updated from API
+        slug: blog.slug
+    });
+
+    // Get latest 3 blogs
+    const blogPosts = blogs.slice(0, 3).map(convertBlogToCard);
+    
+    // Check if there are more than 3 blogs available
+    const hasMoreBlogs = blogs.length > 3;
 
     const BlogCard = ({ post }: { post: BlogPost }) => (
         <article className="">
@@ -73,12 +87,27 @@ export default function LatestBlogSection() {
         </article>
     );
 
+    // Handle error state
+    if (error) {
+        return (
+            <div className="pb-20 px-4 bg-white">
+                <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto px-0 lg:px-10">
+                    <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6 text-center max-w-[807px] mx-auto">
+                        Read our latest posted blog
+                    </h2>
+                    <div className="text-center text-red-600">
+                        <p>Unable to load blog posts. Please try again later.</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="pb-20 px-4 bg-white">
             <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto px-0 lg:px-10">
                 {/* Header */}
-                {/* Header */}
-                <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6  text-center max-w-[807px] mx-auto">
+                <h2 className="text-[30px] lg:text-[48px] leading-[38px] lg:leading-[60px] font-bold text-gray-900 mb-6 text-center max-w-[807px] mx-auto">
                     Read our latest posted blog
                 </h2>
                 {/* Desktop Layout - 3 Columns */}
@@ -96,6 +125,15 @@ export default function LatestBlogSection() {
                         </div>
                     ))}
                 </CarouselSlider>
+
+                {/* All Blogs Button - Show if more than 3 posts available */}
+                {hasMoreBlogs && (
+                    <div className="mt-12 text-center">
+                        <Link href="/blog">
+                            <Button className="cursor-pointer">All Blogs</Button>
+                        </Link>
+                    </div>
+                )}
             </div>
         </div>
     );

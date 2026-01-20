@@ -108,3 +108,39 @@ button:active {
     border-radius: 8px;
   }
 }
+
+
+/* Blog Css Design  */
+
+.blog-content>* {
+  margin-bottom: 5px;
+}
+
+.blog-content h2 {
+  font-size: 30px;
+  font-weight: 700;
+  margin-top: 25px;
+  line-height: 40px;
+}
+
+.blog-content h4 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.blog-content figure {
+  overflow-x: scroll;
+}
+
+.blog-content ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.blog-content ul li {
+  margin-bottom: 3px;
+  line-height: 1.6;
+}
+

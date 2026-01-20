@@ -4,50 +4,120 @@ import CompanySelectSection from "./Comp/CompanySelectSection";
 import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
-import { industries, llcTypes, numOfOwnerShip } from "./funnel.type";
+import { industries, llcTypes, numOfOwnerShip, numOfDirectors } from "./funnel.type";
 import companyFormationService, { CompanyFormationData } from "@/lib/companyFormationService";
 import stateFeesService from "@/lib/stateFeesService";
 import { useStates } from "@/hooks/useStates";
 export interface ChildComponentProps {
     handleFormSubmit: (data: CustomFormData) => void;
+    onFormStateChange?: (formState: { businessType: string; llcType?: string }) => void;
 }
 
-const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
+const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit, onFormStateChange }) => {
     const [data, setData] = useState<CompanyFormationData>({ currentStep: 1 });
-    const [selected, setSelected] = useState(data?.businessType || 'llc');
+    const [selected, setSelected] = useState(() => {
+        // Initialize from localStorage on first render
+        const localData = companyFormationService.getFromLocalStorage();
+        return localData?.businessType || 'llc';
+    });
     const [formMethods, setFormMethods] = useState<any>(null);
     const [isLoadingFees, setIsLoadingFees] = useState(false);
+    const [multimemberFee, setMultimemberFee] = useState(0);
     const { states: usStates, isLoading: isLoadingStates } = useStates();
 
     const [watchedValues, setWatchedValues] = useState<any>({});
 
     const companyType = selected === 'llc' || selected === 'multiLLC' ? llcTypes : selected === 's_corp' ? [{ label: 'S Corporation (Owners must be U.S Resident)', value: 's_corp' }] : selected === 'c_corp' ? [{ label: 'C Corporation', value: 'c_corp' }] : selected === 'partnership' ? [{ label: 'Partnership', value: 'partnership' }] : [];
 
+    const llcTypeComputed: string | undefined =
+        selected === 'llc' ? 'singleLLC'
+        : selected === 's_corp' ? 's_corp'
+        : selected === 'c_corp' ? 'c_corp'
+        : selected === 'partnership' ? 'partnership'
+        : selected === 'non_profit' ? 'non_profit'
+        : undefined;
+
     // Load initial data from localStorage using the new service
     useEffect(() => {
         const localData = companyFormationService.getFromLocalStorage();
         setData(localData);
-        setSelected(localData?.businessType || 'llc');
+        
+        // Ensure businessType is properly loaded from localStorage
+        const savedBusinessType = localData?.businessType || 'llc';
+        setSelected(savedBusinessType);
+        
+        // Calculate initial multimemberFee based on existing llcType
+        const initialFee = localData?.multimemberFee || 
+            (localData?.businessDetails?.llcType === 'multiLLC' || localData?.businessDetails?.llcType === 'partnership' ? 100 : 0);
+        setMultimemberFee(initialFee);
     }, []);
 
 
     useEffect(() => {
-        if (formMethods && usStates.length > 0) {
+        if (formMethods) {
             formMethods.reset({
-                //remove This
-                llcType: "singleLLC",
-                industryType: "technology",
-                stateName: usStates[0]?.value || "Colorado",
-                numOfOwnerShip: 1,
+                llcType: llcTypeComputed,
+                numOfOwnerShip: selected === 'non_profit' ? 3 : 2,
+                stateName: companyFormationService.getFromLocalStorage()?.businessDetails?.stateName || undefined,
             });
         }
-    }, [data, formMethods, usStates]);
+    }, [data, formMethods, usStates, llcTypeComputed, selected]);
+
+    // Notify parent when company type selection changes
+    useEffect(() => {
+        if (onFormStateChange) {
+            onFormStateChange({
+                businessType: selected,
+                llcType: watchedValues.llcType
+            });
+        }
+    }, [selected, watchedValues.llcType, onFormStateChange]);
+
+    // Persist business type and computed llcType to localStorage on change for reload persistence
+    useEffect(() => {
+        try {
+            const currentData = companyFormationService.getFromLocalStorage();
+            const payload: Partial<CompanyFormationData> = {
+                ...currentData,
+                businessType: selected,
+            };
+            if (currentData.businessDetails) {
+                payload.businessDetails = {
+                    ...currentData.businessDetails,
+                    llcType: llcTypeComputed,
+                } as CompanyFormationData['businessDetails'];
+            }
+            companyFormationService.saveToLocalStorage(payload);
+        } catch (err) {
+            console.error('Failed to persist business type/llcType', err);
+        }
+    }, [selected, llcTypeComputed]);
+
+    // Update multimemberFee when business type changes
+    useEffect(() => {
+        const newFee = llcTypeComputed === 'multiLLC' || llcTypeComputed === 'partnership' ? 100 : 0;
+        setMultimemberFee(newFee);
+        
+        // Persist the updated fee to localStorage
+        try {
+            const currentData = companyFormationService.getFromLocalStorage();
+            companyFormationService.saveToLocalStorage({
+                ...currentData,
+                multimemberFee: newFee,
+            });
+        } catch (err) {
+            console.error('Failed to persist multimemberFee', err);
+        }
+    }, [llcTypeComputed]);
 
     const handleSubmit = (data: CustomFormData) => {
         // Save the business details to localStorage
+        console.log(data?.llcType)
         companyFormationService.saveToLocalStorage({
             ...data,
             businessType: selected,
+            llcType: data.llcType,
+            multimemberFee: multimemberFee,
             businessDetails: {
                 industryType: data.industryType,
                 llcType: data.llcType,
@@ -58,7 +128,7 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             currentStep: 3
         });
 
-        handleFormSubmit({ stepTwo: data, businessType: selected });
+        handleFormSubmit({ stepTwo: data, businessType: selected, llcType: data.llcType });
     };
 
     // Handle form state changes and set up watchers
@@ -69,9 +139,55 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         const subscription = methods.watch((value: any, { name, type }: any) => {
             setWatchedValues(value);
             
-            // If state name changes, fetch and store state fees
+            // If state name changes, persist immediately and fetch fees
             if (name === 'stateName' && value.stateName) {
+                try {
+                    const currentData = companyFormationService.getFromLocalStorage();
+                    const payload: Partial<CompanyFormationData> = {
+                        ...currentData,
+                        businessDetails: {
+                            ...currentData.businessDetails,
+                            stateName: value.stateName,
+                        } as CompanyFormationData['businessDetails'],
+                    };
+                    companyFormationService.saveToLocalStorage(payload);
+                } catch (err) {
+                    console.error('Failed to persist stateName', err);
+                }
                 fetchAndStoreStateFees(value.stateName);
+            }
+            
+            // Notify parent of form state changes for real-time sidebar updates
+            if (onFormStateChange) {
+                onFormStateChange({
+                    businessType: selected,
+                    llcType: value.llcType
+                });
+            }
+
+            // Persist llcType changes immediately for reload persistence
+            if (name === 'llcType') {
+                // Calculate multimemberFee based on llcType
+                const newMultimemberFee = value.llcType === 'multiLLC' || value.llcType === 'partnership' ? 100 : 0;
+                setMultimemberFee(newMultimemberFee);
+                
+                try {
+                    const currentData = companyFormationService.getFromLocalStorage();
+                    const payload: Partial<CompanyFormationData> = {
+                        ...currentData,
+                        businessType: selected,
+                        multimemberFee: newMultimemberFee,
+                    };
+                    if (currentData.businessDetails) {
+                        payload.businessDetails = {
+                            ...currentData.businessDetails,
+                            llcType: value.llcType,
+                        } as CompanyFormationData['businessDetails'];
+                    }
+                    companyFormationService.saveToLocalStorage(payload);
+                } catch (err) {
+                    console.error('Failed to persist llcType', err);
+                }
             }
         });
 
@@ -179,8 +295,7 @@ const SecondFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                     label="Number of Director minimum 3, upto 15"
                     type="select"
                     required
-                    placeholder="Select Num of Director"
-                    options={numOfOwnerShip}
+                    options={numOfDirectors}
                     className="lg:col-span-2 mb-1"
                 />}
 

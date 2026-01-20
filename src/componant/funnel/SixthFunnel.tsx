@@ -17,15 +17,16 @@ export const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => 
 
 const SixthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   const data = useCompanyFormationData();
-  const [expressOption, setExpressOption] = useState<string>("no");
+  const [expressOption, setExpressOption] = useState<string>("yes");
 
   useEffect(() => {
-      // Set EIN option based on existing data
+      // Set option based on existing data only if user has previously saved data
     if (data?.agreement_amount === 99) {
         setExpressOption("yes");
-      } else if (data?.agreement_amount === 0 || !data?.agreement_amount) {
+      } else if (data?.agreement_amount === 0) {
         setExpressOption("no");
       }
+      // If agreement_amount is undefined/null, keep the default state (yes)
     }, [data?.agreement_amount]);
 
   const handleContinue = () => {
@@ -52,7 +53,7 @@ const SixthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         Operating Agreement / Corporate Bylaws
       </FunnelHeading>
       <FunnelSubHeading className="!font-semibold mt-3 mb-2">
-        Choose Your EIN Option:
+        Choose Your Operating Agreement Option:
       </FunnelSubHeading>
       <div className="flex flex-col sm:flex-row gap-4 mb-3">
         <div
@@ -61,8 +62,8 @@ const SixthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         >
           <CheckIcon isSelected={expressOption === "yes"} />
           <div className="flex flex-col">
-            <h5 className="font-semibold text-base">Operating agreement $99</h5>
-            <span className="text-sm text-gray-600">Let us handle the paperwork and speed things up</span>
+            <h5 className="font-semibold text-base">Operating Agreement – $99</h5>
+            <span className="text-sm text-gray-600">Let us prepare your Operating Agreement/Corporate Bylaws so your business is legally protected and structured properly.</span>
           </div>
         </div>
         <div
@@ -72,7 +73,7 @@ const SixthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
           <CheckIcon isSelected={expressOption === "no"} />
           <div className="flex flex-col">
             <h5 className="font-semibold text-base">No, skip</h5>
-            <span className="text-sm text-gray-600">I&apos;ll handle it on my own</span>
+            <span className="text-sm text-gray-600">I’ll create and manage my own documents.</span>
           </div>
         </div>
       </div>
@@ -81,19 +82,18 @@ const SixthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
       {/* Info Section */}
       <div className="">
         <FunnelSubHeading className="!font-semibold mb-2">
-          Fast & Reliable EIN Filing
+          Why an Operating Agreement Matters
         </FunnelSubHeading>
         <p className="text-[16px] font-normal text-gray-600 mb-2">
-          Standard IRS processing takes 10–25 days, and during peak tax season, it may take up to 30–120 days.<br />
-          Our Expedited EIN Service submits your application within 1-3 business days, and we&apos;ll keep you updated throughout the process.
+          An Operating Agreement (or Corporate Bylaws) defines ownership, responsibilities, and decision-making rules. It helps prevent disputes, strengthens credibility, and may be required when opening a business bank account.
         </p>
         <FunnelSubHeading className="!font-semibold mt-3 mb-2">
-          Without an EIN, your business may face:
+          Without an Operating Agreement, your business may face:
         </FunnelSubHeading>
         <ul className="list-disc ml-6 text-[16px] font-normal text-gray-600">
-          <li>IRS penalties</li>
-          <li>Issues with payroll and banking</li>
-          <li>Delays in operations</li>
+          <li>Internal disputes between owners</li>
+          <li>Challenges opening bank accounts or securing funding</li>
+          <li>Weak legal protection in case of conflicts</li>
         </ul>
       </div>
 

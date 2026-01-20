@@ -239,13 +239,13 @@ export default function SignupPage() {
                         >
                             {loading ? 'Creating Account...' : 'Sign Up'}
                         </button>
-                        <button
+                        {/* <button
                             type="button"
                             className="w-full flex items-center justify-center border border-gray-300 rounded-md py-2.5 font-medium text-gray-700 bg-white hover:bg-gray-50 mb-4 transition-colors"
                         >
                             <Image url="/google-icon.svg" alt="Google" width={20} height={20} className="mr-2" />
                             Sign up with Google
-                        </button>
+                        </button> */}
                         <div className="text-center text-sm text-[#475467]">
                             Have an account?{' '}
                             <Link href="/login" className="text-[#7856FC] hover:underline font-medium">Log in</Link>

@@ -22,23 +22,13 @@ export const contactService = {
     // Submit contact form
     submitContactForm: async (data: ContactFormData): Promise<ContactResponse> => {
         try {
-            return await fetchApi<ContactResponse>('/api/contact', {
+            return await fetchApi<ContactResponse>('/contact/submit', {
                 method: 'POST',
                 body: JSON.stringify(data),
             });
         } catch (error) {
             console.error('Contact service error:', error);
             throw new Error('Failed to send message. Please try again.');
-        }
-    },
-
-    // Send email notification (for admin)
-    sendEmailNotification: async (data: ContactFormData): Promise<void> => {
-        try {
-            // TODO: Implement email notification service
-            console.log('Sending email notification:', data);
-        } catch (error) {
-            console.error('Email notification error:', error);
         }
     },
 

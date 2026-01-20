@@ -5,12 +5,13 @@ import { CustomFormData } from "@/componant/ui/FormSample";
 import { InputField, ReusableForm } from "@/componant/ui/ReusableForm";
 import { countries, manageTypes } from "../funnel.type";
 import companyFormationService, { useCompanyFormationData } from "@/lib/companyFormationService";
+import ownerDocumentsService from "@/services/ownerDocumentsService";
 
 const OwnersInfoFormTypeFour: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     const [formMethods, setFormMethods] = useState<any>(null);
     const [watchedValues, setWatchedValues] = useState<any>({});
     const data = useCompanyFormationData();
-    const numberOfOwners = data?.businessDetails?.number_of_ownership || 1;
+    const numberOfOwners = data?.numOfOwnerShip || 1;
 
     // Load initial data from localStorage
     useEffect(() => {
@@ -21,34 +22,115 @@ const OwnersInfoFormTypeFour: React.FC<ChildComponentProps> = ({ handleFormSubmi
         }
     }, []);
 
-    // Generate initial form data based on number of owners
-    const generateInitialFormData = () => {
-        const initialData: any = {
-            who_manage: "member_manage",
-        };
+    const handleSubmit = async (data: CustomFormData) => {
+        if (!formMethods) return;
+        const percentageKeys = Object.keys(data).filter((key) => /^owner_\d+_percentage$/.test(key));
+        let hasInvalid = false;
+        const values = percentageKeys.map((key) => {
+            const num = parseFloat(String(data[key]));
+            if (Number.isNaN(num)) {
+                formMethods.setError(key, { type: 'manual', message: 'Enter a valid percentage' });
+                hasInvalid = true;
+            }
+            return num || 0;
+        });
+        if (hasInvalid) return;
+        const total = values.reduce((sum: number, val: number) => sum + val, 0);
+        const roundedTotal = Math.round(total * 100) / 100;
+        if (roundedTotal !== 100) {
+            percentageKeys.forEach((key) => {
+                formMethods.setError(key, { type: 'manual', message: `Total ownership must equal 100% (current ${roundedTotal}%)` });
+            });
+            return;
+        }
 
+        // Transform owner data to multi_member_info format
+        const multiMemberInfo = [];
         for (let i = 1; i <= numberOfOwners; i++) {
             const ownerPrefix = `owner_${i}`;
-            initialData[`${ownerPrefix}_name`] = `Owner ${i}`;
-            initialData[`${ownerPrefix}_email`] = "demo@email.com";
-            initialData[`${ownerPrefix}_mobile`] = "2345678901";
-            initialData[`${ownerPrefix}_country`] = "us";
-            initialData[`${ownerPrefix}_city`] = 'New York';
-            initialData[`${ownerPrefix}_state`] = 'Manhattan';
-            initialData[`${ownerPrefix}_zipCode`] = '22011';
-            initialData[`${ownerPrefix}_streetAddress`] = '111, manhattan, new work';
+            multiMemberInfo.push({
+                name: data[`${ownerPrefix}_name`] as string,
+                email: data[`${ownerPrefix}_email`] as string,
+                phone: data[`${ownerPrefix}_mobile`] as string,
+                ownership_percentage: parseFloat(String(data[`${ownerPrefix}_percentage`])),
+                street_address: data[`${ownerPrefix}_streetAddress`] as string,
+                city: data[`${ownerPrefix}_city`] as string,
+                state: data[`${ownerPrefix}_state`] as string,
+                zip_code: data[`${ownerPrefix}_zipCode`] as string,
+                country: data[`${ownerPrefix}_country`] as string,
+            });
         }
 
-        return initialData;
-    };
+        // Update localStorage with owner data
+        const currentData = companyFormationService.getFromLocalStorage();
+        companyFormationService.saveToLocalStorage({
+            ...currentData,
+            businessDetails: {
+                industryType: currentData.businessDetails?.industryType || '',
+                stateName: currentData.businessDetails?.stateName || '',
+                number_of_ownership: currentData.businessDetails?.number_of_ownership || multiMemberInfo.length,
+                ...currentData.businessDetails,
+                multi_member_info: multiMemberInfo
+            }
+        });
 
-    useEffect(() => {
-        if (formMethods) {
-            formMethods.reset(generateInitialFormData());
+        // Call API to create owners in the database
+        const companyId = currentData.company_id;
+        if (companyId) {
+            try {
+                const response = await ownerDocumentsService.storeOwners(companyId, multiMemberInfo);
+                if (response.status === 'success') {
+                    console.log('Owners created successfully:', response.data);
+                    
+                    // Upload documents for each owner if files are provided
+                    const ownerIds = response.data?.owner_ids || [];
+                    for (let i = 0; i < ownerIds.length; i++) {
+                        const ownerPrefix = `owner_${i + 1}`;
+                        const passportFile = data[`${ownerPrefix}_scanned_passport_copy`];
+                        const bankFile = data[`${ownerPrefix}_bank_statement`];
+                        
+                        if ((passportFile instanceof File) || (bankFile instanceof File)) {
+                            try {
+                                const files: { scanned_passport_copy?: File; bank_statement?: File } = {};
+                                
+                                if (passportFile instanceof File) {
+                                    files.scanned_passport_copy = passportFile;
+                                }
+                                
+                                if (bankFile instanceof File) {
+                                    files.bank_statement = bankFile;
+                                }
+
+                                if (Object.keys(files).length > 0) {
+                                    const uploadResponse = await ownerDocumentsService.uploadDocuments(ownerIds[i], files);
+                                    if (uploadResponse.status === 'success') {
+                                        console.log(`Documents uploaded for owner ${i + 1}:`, uploadResponse.data);
+                                    } else {
+                                        console.warn(`Failed to upload documents for owner ${i + 1}:`, uploadResponse.message);
+                                    }
+                                }
+                            } catch (uploadError) {
+                                console.error(`Error uploading documents for owner ${i + 1}:`, uploadError);
+                                // Don't block the flow if document upload fails
+                            }
+                        }
+                    }
+                } else {
+                    console.error('Failed to create owners:', response.message);
+                    alert('Failed to save owner information. Please try again.');
+                    return;
+                }
+            } catch (error) {
+                console.error('Error creating owners:', error);
+                alert('An error occurred while saving owner information. Please try again.');
+                return;
+            }
+        } else {
+            console.error('Company ID not found in localStorage');
+            alert('Company information not found. Please contact support.');
+            return;
         }
-    }, [data, formMethods, numberOfOwners]);
 
-    const handleSubmit = (data: CustomFormData) => {
         handleFormSubmit({ OwnersInfo: data, isOwnersInfoComplete: true })
     };
 
@@ -65,7 +147,7 @@ const OwnersInfoFormTypeFour: React.FC<ChildComponentProps> = ({ handleFormSubmi
         return () => subscription.unsubscribe();
     };
 
-    // Generate owner form fields dynamically
+    // Override owner form to include percentage field in type four as well
     const generateOwnerForm = (ownerNumber: number) => {
         const ownerPrefix = `owner_${ownerNumber}`;
 
@@ -99,6 +181,14 @@ const OwnersInfoFormTypeFour: React.FC<ChildComponentProps> = ({ handleFormSubmi
                     type="phone"
                     required
                     placeholder="Enter mobile number"
+                />
+
+                <InputField
+                    name={`${ownerPrefix}_percentage`}
+                    label="Ownership Percentage"
+                    type="number"
+                    required
+                    placeholder="Enter Ownership Percentage"
                 />
 
                 <InputField
@@ -143,6 +233,18 @@ const OwnersInfoFormTypeFour: React.FC<ChildComponentProps> = ({ handleFormSubmi
                     placeholder="Enter Street Address"
                     className="lg:col-span-2"
                 />
+
+                <InputField
+                    name={`${ownerPrefix}_scanned_passport_copy`}
+                    label="Scanned Passport Copy"
+                    type="file"
+                />
+
+                <InputField
+                    name={`${ownerPrefix}_bank_statement`}
+                    label="Local Bank Statement (last 3 months)"
+                    type="file"
+                />
             </React.Fragment>
         );
     };
@@ -164,7 +266,6 @@ const OwnersInfoFormTypeFour: React.FC<ChildComponentProps> = ({ handleFormSubmi
                 submitText="Continue"
                 onFormStateChange={handleFormStateChange}
                 className="mb-5 mt-10"
-                defaultValues={generateInitialFormData()}
             >
                 {/* Generate owner forms dynamically */}
                 {Array.from({ length: numberOfOwners }, (_, index) => generateOwnerForm(index + 1))}

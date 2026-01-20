@@ -33,7 +33,7 @@ NEXT_PUBLIC_APP_NAME=Steady Formation
 
 ```env
 # API Configuration
-NEXT_PUBLIC_API_URL=https://api.cdevs.com.bd/api
+NEXT_PUBLIC_API_URL=https://app.steadyformation.com/api
 
 # Environment
 NODE_ENV=production

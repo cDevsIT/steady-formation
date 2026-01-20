@@ -1,15 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useForm, Controller, FieldErrors } from 'react-hook-form';
+import { countries, Country } from './countries';
+import Image from './Image';
 
 // Types
-interface Country {
-    name: string;
-    code: string;
-    dialCode: string;
-    flag: string;
-    phoneRegex: RegExp;
-    format: string;
-}
 
 interface CompanyType {
     label: string;
@@ -20,7 +14,7 @@ interface CompanyType {
 interface InputFieldProps {
     name: string;
     label: string;
-    type: 'text' | 'number' | 'email' | 'select' | 'phone' | 'company';
+    type: 'text' | 'number' | 'email' | 'select' | 'phone' | 'company' | 'file';
     required?: boolean;
     placeholder?: string;
     options?: { label: string; value: string | number | boolean }[];
@@ -31,6 +25,9 @@ interface InputFieldProps {
     className?: string;
     disabled?: boolean;
     belowText?: string;
+    trigger?: (name: string) => Promise<boolean>;
+    supportingText?: string;
+    defaultCountryCode?: string;
 }
 
 // Custom form data interface to avoid conflict with built-in FormData
@@ -38,20 +35,6 @@ interface CustomFormData {
     [key: string]: any;
 }
 
-// Country data with phone regex patterns and formats
-const countries: Country[] = [
-    { name: 'United States', code: 'US', dialCode: '+1', flag: '🇺🇸', phoneRegex: /^[2-9]\d{2}[2-9]\d{2}\d{4}$/, format: '(XXX) XXX-XXXX' },
-    { name: 'United Kingdom', code: 'GB', dialCode: '+44', flag: '🇬🇧', phoneRegex: /^7\d{9}$/, format: '7XXX XXXXXX' },
-    { name: 'Canada', code: 'CA', dialCode: '+1', flag: '🇨🇦', phoneRegex: /^[2-9]\d{2}[2-9]\d{2}\d{4}$/, format: '(XXX) XXX-XXXX' },
-    { name: 'Australia', code: 'AU', dialCode: '+61', flag: '🇦🇺', phoneRegex: /^4\d{8}$/, format: '4XX XXX XXX' },
-    { name: 'Germany', code: 'DE', dialCode: '+49', flag: '🇩🇪', phoneRegex: /^1[5-7]\d{8,9}$/, format: '1XX XXXX XXXX' },
-    { name: 'France', code: 'FR', dialCode: '+33', flag: '🇫🇷', phoneRegex: /^[67]\d{8}$/, format: 'XX XX XX XX XX' },
-    { name: 'India', code: 'IN', dialCode: '+91', flag: '🇮🇳', phoneRegex: /^[6-9]\d{9}$/, format: 'XXXXX XXXXX' },
-    { name: 'Japan', code: 'JP', dialCode: '+81', flag: '🇯🇵', phoneRegex: /^[789]0\d{8}$/, format: 'XX XXXX XXXX' },
-    { name: 'China', code: 'CN', dialCode: '+86', flag: '🇨🇳', phoneRegex: /^1[3-9]\d{9}$/, format: '1XX XXXX XXXX' },
-    { name: 'Brazil', code: 'BR', dialCode: '+55', flag: '🇧🇷', phoneRegex: /^[1-9]\d{10}$/, format: 'XX XXXXX XXXX' },
-    { name: 'Bangladesh', code: 'BD', dialCode: '+880', flag: '🇧🇩', phoneRegex: /^1[3-9]\d{8}$/, format: '1XXX XXXXXX' }
-];
 
 // Company types data
 const companyTypes: CompanyType[] = [
@@ -81,10 +64,16 @@ export const InputField: React.FC<InputFieldProps> = ({
     rules = {},
     className = '',
     disabled = false,
-    belowText = ''
+    belowText = '',
+    trigger,
+    supportingText = '',
+    defaultCountryCode = 'US'
 }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]);
+    const [selectedCountry, setSelectedCountry] = useState<Country>(() => {
+        // Find country by code, fallback to US if not found
+        return countries.find(c => c.code === defaultCountryCode) || countries.find(c => c.code === 'US') || countries[0];
+    });
     const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
     const [selectedCompanyType, setSelectedCompanyType] = useState<CompanyType>(companyTypes[0]);
     const [companyTypeDropdownOpen, setCompanyTypeDropdownOpen] = useState(false);
@@ -92,6 +81,36 @@ export const InputField: React.FC<InputFieldProps> = ({
     const dropdownRef = useRef<HTMLDivElement>(null);
     const countryDropdownRef = useRef<HTMLDivElement>(null);
     const companyTypeDropdownRef = useRef<HTMLDivElement>(null);
+
+    // File input hooks
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [dragActive, setDragActive] = useState(false);
+    const [fileName, setFileName] = useState('');
+
+    // File input handlers
+    const handleFileChange = (onChange: (file: File) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+            setFileName(file.name);
+            onChange(file);
+        }
+    };
+    const handleDrop = (onChange: (file: File) => void) => (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(false);
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            setFileName(e.dataTransfer.files[0].name);
+            onChange(e.dataTransfer.files[0]);
+        }
+    };
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(true);
+    };
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setDragActive(false);
+    };
 
     // Handle outside clicks
     useEffect(() => {
@@ -113,9 +132,12 @@ export const InputField: React.FC<InputFieldProps> = ({
 
     // Email validation
     const emailValidation = {
-        pattern: {
-            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: 'Please enter a valid email address'
+        validate: (value: string) => {
+            if (!value) return true; // Let required validation handle empty values
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                return 'Please enter a valid email address';
+            }
+            return true;
         }
     };
 
@@ -231,6 +253,12 @@ export const InputField: React.FC<InputFieldProps> = ({
                                             onChange(option.value);
                                             onBlur();
                                             setIsOpen(false);
+                                            // Trigger validation when option is selected
+                                            if (trigger) {
+                                                setTimeout(() => {
+                                                    trigger(name);
+                                                }, 0);
+                                            }
                                         }}
                                         className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
                                     >
@@ -300,7 +328,16 @@ export const InputField: React.FC<InputFieldProps> = ({
                         <input
                             type="tel"
                             value={value || ''}
-                            onChange={onChange}
+                            onChange={(e) => {
+                                onChange(e);
+                                // Trigger validation on input change to clear errors immediately
+                                if (trigger) {
+                                    // Use setTimeout to ensure the value is updated before validation
+                                    setTimeout(() => {
+                                        trigger(name);
+                                    }, 0);
+                                }
+                            }}
                             onBlur={onBlur}
                             placeholder={placeholder}
                             disabled={disabled}
@@ -364,7 +401,15 @@ export const InputField: React.FC<InputFieldProps> = ({
                         <input
                             type="text"
                             value={value || ''}
-                            onChange={onChange}
+                            onChange={(e) => {
+                                onChange(e);
+                                // Trigger validation on input change to clear errors immediately
+                                if (trigger) {
+                                    setTimeout(() => {
+                                        trigger(name);
+                                    }, 0);
+                                }
+                            }}
                             onBlur={onBlur}
                             placeholder={placeholder}
                             disabled={disabled}
@@ -379,7 +424,15 @@ export const InputField: React.FC<InputFieldProps> = ({
                     <input
                         type="number"
                         value={value || ''}
-                        onChange={onChange}
+                        onChange={(e) => {
+                            onChange(e);
+                            // Trigger validation on input change to clear errors immediately
+                            if (trigger) {
+                                setTimeout(() => {
+                                    trigger(name);
+                                }, 0);
+                            }
+                        }}
                         onBlur={onBlur}
                         placeholder={placeholder}
                         disabled={disabled}
@@ -388,12 +441,72 @@ export const InputField: React.FC<InputFieldProps> = ({
                     />
                 );
 
+            case 'file':
+                return (
+                    <div
+                        className={`flex flex-col items-center justify-center border ${dragActive ? 'border-[#7856FC]' : 'border-gray-300'}  rounded-xl py-6 px-4 transition-colors duration-200 bg-white cursor-pointer w-full relative`}
+                        onClick={() => !disabled && fileInputRef.current?.click()}
+                        onDrop={handleDrop(onChange)}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        tabIndex={0}
+                        style={{ outline: 'none' }}
+                    >
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange(onChange)}
+                            onBlur={onBlur}
+                            disabled={disabled}
+                            required={required}
+                        />
+                        <div className="flex flex-col items-center">
+                            <span className="flex items-center justify-center w-10 h-10 rounded-full bg-[#F4F3FF] mb-2">
+                                <Image
+                                    url='/client/file_upload.svg'
+                                    alt='Upload File'
+                                    width={40}
+                                    height={40}
+                                />
+                            </span>
+                            <div className='flex flex-col justify-center items-center'>
+                                <p className='text-gray-500 text-sm'><span className="text-[#7856FC] font-medium text-base gap-1">Click to upload</span> or drag and drop</p>
+                                <p className='text-xs font-normal text-gray-600'>{supportingText}</p>
+                            </div>
+                            {(fileName || (value && value.name)) && <span className="mt-2 text-gray-700 text-sm">{fileName || (value && value.name)}</span>}
+                        </div>
+                    </div>
+                );
+
             default:
                 return (
                     <input
                         type={type}
                         value={value || ''}
-                        onChange={onChange}
+                        onChange={(e) => {
+                            onChange(e);
+                            // Trigger validation on input change to clear errors immediately
+                            if (trigger) {
+                                if (type === 'email') {
+                                    // For email, only clear errors if the email is valid or if it's a required error
+                                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                    const hasRequiredError = typeof errors[name]?.message === 'string' && errors[name]?.message.includes('required');
+                                    const hasValidEmail = e.target.value && emailRegex.test(e.target.value);
+                                    
+                                    if (hasRequiredError || hasValidEmail) {
+                                        setTimeout(() => {
+                                            trigger(name);
+                                        }, 0);
+                                    }
+                                } else {
+                                    // For other field types, trigger validation on any input
+                                    setTimeout(() => {
+                                        trigger(name);
+                                    }, 0);
+                                }
+                            }
+                        }}
                         onBlur={onBlur}
                         placeholder={placeholder}
                         disabled={disabled}
@@ -403,6 +516,19 @@ export const InputField: React.FC<InputFieldProps> = ({
                 );
         }
     };
+
+    // Early return if no control is provided
+    if (!control) {
+        return (
+            <div className={`mb-1 col-span-2 lg:col-span-1 ${className}`}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {label}
+                    {required && <span className="text-[#1570EF] ml-1">*</span>}
+                </label>
+                <div className="text-red-500 text-sm">Error: Control prop is required</div>
+            </div>
+        );
+    }
 
     return (
         <div className={`mb-1 col-span-2 lg:col-span-1 ${className}`}>
@@ -427,6 +553,9 @@ export const InputField: React.FC<InputFieldProps> = ({
         </div>
     );
 };
+
+// Add displayName for better component identification
+InputField.displayName = 'InputField';
 
 // Reusable Form Component
 interface ReusableFormProps {
@@ -459,7 +588,9 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
         watch,
         setValue,
         getValues,
-        trigger
+        trigger,
+        setError,
+        clearErrors,
     } = formMethods;
 
     useEffect(() => {
@@ -473,6 +604,8 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
                 setValue,
                 getValues,
                 trigger,
+                setError,
+                clearErrors,
                 resetForm: () => reset(),
                 setFieldValue: (name: string, value: any) => setValue(name, value),
                 getFieldValue: (name: string) => getValues(name),
@@ -496,11 +629,17 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
                 return child;
             }
 
-            // If it's an InputField, clone it with control and errors props
-            if (child.type === InputField) {
+            // Check if it's an InputField by looking at the component name or displayName
+            const isInputField = child.type === InputField || 
+                                (typeof child.type === 'function' && child.type.name === 'InputField') ||
+                                (child.type as any)?.displayName === 'InputField';
+
+            // If it's an InputField, clone it with control, errors, and trigger props
+            if (isInputField) {
                 return React.cloneElement(child as React.ReactElement<InputFieldProps>, {
                     control,
-                    errors
+                    errors,
+                    trigger
                 });
             }
 
@@ -519,13 +658,18 @@ export const ReusableForm: React.FC<ReusableFormProps> = ({
 
     const enhancedChildren = cloneChildrenWithProps(children);
 
+    // Don't render until control is available
+    if (!control) {
+        return <div>Loading form...</div>;
+    }
+
     return (
         <div className={`space-y-4 grid gap-4 grid-cols-1 lg:grid-cols-2 ${className}`}>
             {enhancedChildren}
             <button
                 onClick={handleSubmit(onFormSubmit)}
                 disabled={isSubmitting}
-                className="col-span-1 lg:col-span-2 flex-1 bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-xl shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="col-span-2 flex-1 bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-xl shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 {isSubmitting ? 'Submitting...' : submitText}
             </button>

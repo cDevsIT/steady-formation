@@ -12,8 +12,10 @@ const TrustedCustomerSection = () => {
 
                 <h2 className="text-[30px] lg:text-[60px] leading-[120%] tracking-tighter text-[#6634F3] text-center font-semibold mb-4">We are trusted by over 1000+ customers. Join them now and grow your business.</h2>
 
-                <StartFunnelInput
-                />
+                {/* Highlighted Form Container */}
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 lg:p-8 shadow-lg border border-blue-100 w-full max-w-2xl">
+                    <StartFunnelInput />
+                </div>
 
                 <InfinityBrandSliding />
 

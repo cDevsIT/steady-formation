@@ -7,27 +7,30 @@ import { dataState } from "./Funnel";
 import { CustomFormData } from "../ui/FormSample";
 import { InputField, ReusableForm } from "../ui/ReusableForm";
 import companyFormationService, { useCompanyFormationData, CompanyFormationData } from "@/lib/companyFormationService";
+import { useStates } from "@/hooks/useStates";
 
 const plans = [
     {
         name: "Free",
         price: 0,
         period: "",
+        title: "Basic tools with limited reporting, simple workflows, and entry-level automation for getting started.",
         description: [
-            "Basic features for getting started",
-            "Use my own address as the primary business address",
-            "Public residential addresses will be listed"
+            "Basic address option to get started",
+            "Use my own U.S. address as the business address",
+            "Public residential addresses will be visible"
         ],
         selected: true,
     },
     {
-        name: "Monthly",
-        price: 10,
-        period: "Monthly",
+        name: "Half-Yearly",
+        price: 59,
+        period: "Half-Yearly",
+        title: "Enhanced features, better reporting, and flexible automation, billed on a Half-Yearly basis.",
         description: [
-            "Enhanced features and basic automation",
-            "Use my address or a provided one",
-            "Provided business address for public listing"
+            "Enhanced features with flexible billing",
+            "Use my own address or a provided one",
+            "Business address included for public records"
         ],
         selected: false,
     },
@@ -35,20 +38,21 @@ const plans = [
         name: "Yearly",
         price: 99,
         period: "Yearly",
+        title: "Premium features, full automation, and advanced reporting with annual savings built in.",
         description: [
-            "Premium features, full automation, and advanced reporting",
+            "Premium features with full coverage",
             "Provided professional business address",
-            "Residential addresses kept private"
+            "Residential addresses remain private"
         ],
         selected: false,
     },
 ];
 
 const checklist = [
-    "Are you sure you can meet this state requirement?",
-    "You must provide a physical address for your Registered Agent in the state where your business operates (no PO Boxes or PMBs allowed).",
-    "In some states, this address (registered agent/business address) may appear on public records along with your name, phone number, and email address.",
-    "If You Don't Have One, Choose a Monthly/Yearly Package for Registered Agent Address."
+    "A physical street address is required in the state where your business operates.",
+    "P.O. Boxes or PMBs cannot be used.",
+    "Your business address may appear on public records with your name, phone, and email.",
+    "If you don’t have a business address, you can use your Registered Agent’s address (if allowed in your state) or select one of our Half-Yearly/Yearly packages."
 ];
 
 const CheckIcon = () => (
@@ -58,9 +62,10 @@ const CheckIcon = () => (
 );
 
 const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
-    const [selected, setSelected] = useState(0); // Default to Free plan (index 0)
+    const [selected, setSelected] = useState(2); // Default to Yearly plan (index 2)
     const data = useCompanyFormationData();
     const [formMethods, setFormMethods] = useState<any>(null);
+    const { states: usStates, isLoading: isLoadingStates } = useStates();
 
     // Load initial data and set selected plan
     useEffect(() => {
@@ -70,8 +75,8 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 setSelected(findCurrentSelect)
             }
         } else {
-            // Default to Free plan (index 0) if no plan is selected
-            setSelected(0)
+            // Default to Yearly plan (index 2) if no plan is selected
+            setSelected(2)
 
         }
     }, [data.plan?.plan_name, data]);
@@ -81,11 +86,7 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         if (formMethods) {
             formMethods.reset({
                 country: "USA",
-                //remove This
-                city: 'New York',
-                state: 'Manhattan',
-                zipCode: '22011',
-                streetAddress: '111, manhattan, new work'
+                state: data?.businessDetails?.stateName || undefined,
             });
         }
     }, [data, formMethods]);
@@ -106,6 +107,23 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                     step4_zip_code: data.zipCode,
                     step4_country: data.country
                 } : undefined
+            },
+            currentStep: 4
+        });
+
+        const finalData = { ...data, selectedPlan: selectedPlan.name };
+        handleFormSubmit({ stepThree: finalData });
+    };
+
+    const handlePremiumSubmit = () => {
+        const selectedPlan = plans[selected];
+
+        // Save plan data to localStorage
+        companyFormationService.saveToLocalStorage({
+            ...data,
+            plan: {
+                plan_name: selectedPlan.name,
+                plan_price: selectedPlan.price
             },
             currentStep: 4
         });
@@ -141,6 +159,8 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             <FunnelSubHeading className="!font-semibold mt-3 mb-2">
                 Select Business Address Package *
             </FunnelSubHeading>
+
+           
             <div className="flex flex-col lg:flex-row gap-4 mb-8">
                 {plans.map((plan, idx) => (
                     <div
@@ -157,7 +177,7 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                                 <span className="text-[20px] font-semibold">{plan.name}</span>
                             </div>
                             <p className="text-[16px] font-normal mb-2"><span className="text-[36px] font-bold text-black">${plan.price}</span>.00</p>
-                            <p className="text-sm font-normal text-black mb-3">Advanced features and reporting, better workflows and automation.</p>
+                            <p className="text-sm font-normal text-black mb-3">{plan.title}</p>
                             <ul className="mb-4 space-y-2">
                                 {plan.description.map((desc, i) => (
                                     <li key={i} className="grid grid-cols-[10%_90%] gap-3 text-sm text-gray-700">
@@ -180,70 +200,88 @@ const ThirdFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                     </div>
                 ))}
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-                <h3 className="text-[20px] font-semibold mb-3">Checklist</h3>
-                <ul className="list-disc pl-5 space-y-2 text-[#475467] text-[16px]">
-                    {checklist.map((item, idx) => (
-                        <li key={idx}>{item}</li>
-                    ))}
-                </ul>
-            </div>
+
+            {selected === 0 ? 
+            <>
+                    <div className="bg-white border border-gray-200 rounded-xl p-6">
+                        <h3 className="text-[20px] font-semibold mb-3">Checklist</h3>
+                        <ul className="list-disc pl-5 space-y-2 text-[#475467] text-[16px]">
+                            {checklist.map((item, idx) => (
+                                <li key={idx}>{item}</li>
+                            ))}
+                        </ul>
+                    </div>
 
 
 
-            <ReusableForm
-                onSubmit={handleSubmit}
-                submitText="Continue"
-                onFormStateChange={handleFormStateChange}
-                className="mb-5 mt-10"
-            >
-                <h4 className="text-[16px] font-semibold lg:col-span-2 mb-1">Your Registered Agent Address *</h4>
-                <InputField
-                    name="country"
-                    label="Country"
-                    type="text"
-                    required
-                    placeholder="Country"
-                    disabled={true}
-                    defaultValue="USA"
-                />
+                    <ReusableForm
+                        onSubmit={handleSubmit}
+                        submitText="Continue"
+                        onFormStateChange={handleFormStateChange}
+                        className="mb-5 mt-10"
+                    >
+                        <h4 className="text-[16px] font-semibold lg:col-span-2 mb-1">Your Registered Agent Address *</h4>
+                        <InputField
+                            name="country"
+                            label="Country"
+                            type="text"
+                            required
+                            placeholder="Country"
+                            disabled={true}
+                            defaultValue="USA"
+                        />
 
-                <InputField
-                    name="city"
-                    label="City"
-                    type="text"
-                    required
-                    placeholder="Enter City"
-                />
+                        <InputField
+                            name="city"
+                            label="City"
+                            type="text"
+                            required
+                            placeholder="Enter City"
+                        />
 
-                <InputField
-                    name="state"
-                    label="State"
-                    type="text"
-                    required
-                    placeholder="Enter State"
-                />
-                <InputField
-                    name="zipCode"
-                    label="Zip Code"
-                    type="text"
-                    required
-                    placeholder="Enter Zip Code"
-                />
+                        <InputField
+                            name="state"
+                            label="State"
+                            type="select"
+                            required
+                            placeholder={isLoadingStates ? "Loading states..." : "Select State"}
+                            options={usStates}
+                            disabled={isLoadingStates}
+                            defaultValue={data?.businessDetails?.stateName}
+                        />
+                        <InputField
+                            name="zipCode"
+                            label="Zip Code"
+                            type="text"
+                            required
+                            placeholder="Enter Zip Code"
+                        />
 
-                <InputField
-                    name="streetAddress"
-                    label="Streen Address"
-                    type="text"
-                    required
-                    placeholder="Enter Street Address"
-                    className="lg:col-span-2 "
-                />
+                        <InputField
+                            name="streetAddress"
+                            label="Streen Address"
+                            type="text"
+                            required
+                            placeholder="Enter Street Address"
+                            className="lg:col-span-2 "
+                        />
 
 
 
 
-            </ReusableForm>
+                    </ReusableForm>
+            </> 
+            : 
+            <>
+                    <h3 className="font-semibold text-xl mb-3">Address Vailed for {selected === 1 ? 'Six Month': 'One Year'}</h3>
+                    <button
+                        onClick={handlePremiumSubmit}
+                        className="w-full bg-[#7856FC] hover:bg-[#5D3FC4] text-white font-semibold py-3 rounded-lg shadow transition-all text-lg duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Continue
+                    </button>
+            </>}
+            
         </div>
     );
 };

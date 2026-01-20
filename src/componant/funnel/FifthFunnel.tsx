@@ -18,8 +18,8 @@ const CheckIcon: React.FC<{ isSelected: boolean }> = ({ isSelected }) => {
 const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   const data = useCompanyFormationData();
   // State for EIN option and express EIN option
-  const [einOption, setEinOption] = useState<string>( 'skip');
-  const [expressOption, setExpressOption] = useState<string>("");
+  const [einOption, setEinOption] = useState<string>('add');
+  const [expressOption, setExpressOption] = useState<string>("no");
   const [ssn, setSSN] = useState("");
 
 
@@ -27,14 +27,15 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   const showExpressSection = einOption === "add" || einOption === "expedite";
 
   useEffect(() => {
-    // Set EIN option based on existing data
+    // Set EIN option based on existing data only if user has previously saved data
     if (data?.en_amount === 69) {
       setEinOption("add");
     } else if (data?.en_amount === 149) {
       setEinOption("expedite");
-    } else if (data?.en_amount === 0 || !data?.en_amount) {
+    } else if (data?.en_amount === 0) {
       setEinOption("skip");
     }
+    // If en_amount is undefined/null, keep the default state (add)
   }, [data?.en_amount]);
 
   // Handle continue (for demo, just calls handleFormSubmit if provided)
@@ -130,7 +131,7 @@ const FifthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
                 <CheckIcon isSelected={expressOption === "yes"} />
                 <div className="flex flex-col">
                   <h5 className="font-semibold text-base">Yes</h5>
-                  <span className="text-sm text-gray-600">You have to provide SS number for free express EIN</span>
+                  <span className="text-sm text-gray-600">You have to provide SSN number for free express EIN</span>
                 </div>
               </div>
               <div

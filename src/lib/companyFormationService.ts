@@ -13,7 +13,11 @@ export interface CompanyFormationData {
     email: string;
     phone_number: string;
   };
-  
+
+  llcType?: string;
+  multimemberFee?: number;
+  numOfOwnerShip?: number;
+  company_id?: number;
   // Step 3: Business Details
   businessDetails?: {
     industryType: string;
@@ -78,7 +82,7 @@ export interface CompanyFormationData {
   
   // Payment
   payment?: {
-    method: 'paypal' | 'stripe';
+    method: 'paypal' | 'stripe' | 'wallet';
     amount: number;
     status: 'pending' | 'completed' | 'failed';
   };
@@ -97,6 +101,9 @@ export interface CompanyFormationData {
   isPaymentComplete?: boolean;
   registrationConfrim?: boolean;
   isOwnersInfoComplete?: boolean;
+  
+  // Temporary login token for auto-login after payment
+  tempLoginToken?: string;
   
   // Metadata
   createdAt?: string;

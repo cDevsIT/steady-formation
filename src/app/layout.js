@@ -3,6 +3,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import Footer from '@/componant/base/Footer';
 import { Toaster } from 'react-hot-toast';
+import { CompanyProvider } from '@/contexts/CompanyContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,6 +23,18 @@ export const metadata = {
   alternates: {
     canonical: '/',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.png', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
+  themeColor: '#8B5CF6',
   openGraph: {
     title: 'Steady Formation - Launch Your Business in Any State at 0 Cost',
     description: 'Launch your business in any U.S. state with zero upfront costs. Professional business formation services for U.S. residents with no hidden fees and no document requirements.',
@@ -67,12 +80,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="icon" type="image/png" href="/favicon.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-        <meta name="theme-color" content="#8B5CF6" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -102,7 +109,10 @@ export default function RootLayout({ children }) {
       </head>
       <body  >
         <main>
-          <Navbar />
+          <CompanyProvider>
+            <Navbar />
+          </CompanyProvider>
+          
           <div className='mt-[-65px]'>{children}</div>
           <Footer />
           <Toaster

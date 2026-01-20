@@ -1,8 +1,44 @@
-"use client";
 import React from 'react';
-import { useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import LaunchCompanyPopup from "@/componant/shared/LaunchCompanyPopup";
 import Image from '@/componant/ui/Image';
+import { blogService, Blog, getBaseUrl } from '@/lib/blogService';
+import { Metadata } from 'next';
+import TableOfContents from './TableOfContents';
+
+// Utility function to extract H2 tags from HTML content (server-side)
+function extractH2Tags(htmlContent: string): Array<{ title: string; id: string; link: string }> {
+  if (!htmlContent) return [];
+  
+  // Use regex to extract H2 tags since DOMParser is not available on server
+  const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi;
+  const matches = htmlContent.match(h2Regex);
+  
+  if (!matches) return [];
+  
+  return matches.map((match, index) => {
+    // Extract text content from H2 tag
+    const textContent = match.replace(/<[^>]*>/g, '').trim();
+    const id = `section-${index + 1}`;
+    return {
+      title: textContent,
+      id,
+      link: `#${id}`
+    };
+  });
+}
+
+// Utility function to add IDs to H2 tags in HTML content (server-side)
+function addIdsToH2Tags(htmlContent: string): string {
+  if (!htmlContent) return '';
+  
+  let index = 1;
+  return htmlContent.replace(/<h2([^>]*)>/gi, (match, attributes) => {
+    const id = `section-${index}`;
+    index++;
+    return `<h2${attributes} id="${id}">`;
+  });
+}
 
 function slugToTitle(slug: string): string {
   if (!slug) return '';
@@ -11,228 +47,144 @@ function slugToTitle(slug: string): string {
     .replace(/\b\w/g, (c: string) => c.toUpperCase());
 }
 
-// This will come from API later
-const tableOfContents = [
-  {
-    title: "Introduction",
-    link: "#section1",
-    isActive: true
-  },
-  {
-    title: "Why Do You Need a B2B Website Design Agency for Your Business?",
-    link: "#section2",
-    isActive: false
-  },
-  {
-    title: "7 Best B2B Website Design Agencies",
-    link: "#section3",
-    isActive: false
-  },
-  {
-    title: "How to Choose the Best B2B Website Design Agency?",
-    link: "#section4",
-    isActive: false
+
+
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  try {
+    const { slug } = await params;
+    const response = await blogService.getBlogBySlug(slug);
+    
+    if (response.status === 'success' && response.data) {
+      const blog = response.data;
+      return {
+        title: blog.title,
+        description: blog.description,
+        openGraph: {
+          title: blog.title,
+          description: blog.description,
+          type: 'article',
+          publishedTime: blog.created_at,
+          authors: [blog.author.name],
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title: blog.title,
+          description: blog.description,
+        },
+      };
+    }
+  } catch (error) {
+    console.error('Error generating metadata:', error);
   }
-];
+  
+  return {
+    title: 'Blog Post',
+    description: 'Read our latest blog post',
+  };
+}
 
-const latestBlogsData = [
-  {
-    id: 1,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-  {
-    id: 2,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-  {
-    id: 3,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-  {
-    id: 4,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-  {
-    id: 5,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-  {
-    id: 6,
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    title: 'Never Worry About What to Do About Banking Again',
-    description: 'Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies.'
-  },
-];
+interface BlogPostProps {
+  params: Promise<{ slug: string }>;
+}
 
-export default function BlogPost() {
-  const params = useParams();
-  const slug = params.slug as string;
+export default async function BlogPost({ params }: BlogPostProps) {
+  const { slug } = await params;
   const blogTitle = slugToTitle(slug);
+  const baseUrl = getBaseUrl();
+  
+  // Fetch blog data at request time (SSR)
+  let blog: Blog | null = null;
+  let error: string | null = null;
+  
+  try {
+    const response = await blogService.getBlogBySlug(slug);
+    
+    if (response.status === 'success' && response.data) {
+      blog = response.data;
+    } else {
+      error = response.message || 'Failed to fetch blog';
+    }
+  } catch (err) {
+    error = err instanceof Error ? err.message : 'Unknown error occurred';
+    console.error('❌ Error fetching blog:', error);
+  }
+
+  // Fetch latest blogs data at request time (SSR)
+  let latestBlogs: Blog[] = [];
+  let latestBlogsError: string | null = null;
+
+  try {
+    const latestResponse = await blogService.getAllBlogs(1);
+    
+    if (latestResponse.status === 'success' && latestResponse.data) {
+      latestBlogs = latestResponse.data.data.slice(0, 6); // Get first 6 blogs
+    } else {
+      latestBlogsError = latestResponse.message || 'Failed to fetch latest blogs';
+    }
+  } catch (err) {
+    latestBlogsError = err instanceof Error ? err.message : 'Unknown error occurred';
+    console.error('❌ Error fetching latest blogs:', latestBlogsError);
+  }
+  
+  // If blog not found, return 404
+  if (!blog && !error) {
+    notFound();
+  }
+
+  // Generate table of contents from blog content
+  const tableOfContents = blog ? extractH2Tags(blog.content) : [];
+  
+  // Add IDs to H2 tags in blog content
+  const processedContent = blog ? addIdsToH2Tags(blog.content) : '';
+
 
   return (
     <div className="w-full min-h-screen bg-white pt-[70px]">
       <div className='hidden'>
         <LaunchCompanyPopup />
       </div>
-      <div className="max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row gap-8">
+      <div className="max-w-[980px] px-5 lg:px-0 lg:max-w-[1100px] xl:max-w-[1280px] mx-auto py-8 flex flex-col md:flex-row gap-8">
         {/* Table of Content (Left) - 21.6% */}
-        <aside className="w-full md:w-[21.6%] bg-[#fafbfc] rounded-xl p-5 h-fit border border-[#ececec]">
-          <h2 className="font-inter font-semibold text-[24px] leading-[32px] text-black mb-5">Table Of Content</h2>
-          <ul>
-            {tableOfContents.map((item, index) => (
-              <li
-                key={index}
-                className={`border-b ${item.isActive ? 'border-[#7856FC]' : 'border-[#E4E7EC]'
-                  } ${index === tableOfContents.length - 1 ? '' :
-                    item.isActive ? 'md:pb-[46px] pb-4 mb-4' : 'pb-4 mb-4'
-                  }`}
-              >
-                <a
-                  href={item.link}
-                  className={`font-inter ${item.isActive
-                    ? 'font-semibold text-[#7856FC]'
-                    : 'font-semibold text-black'
-                    } text-[18px] leading-[28px] hover:underline`}
-                >
-                  {index === 0 ? blogTitle : item.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </aside>
+        <TableOfContents items={tableOfContents} blogTitle={blog?.title || blogTitle} />
 
         {/* Main Blog Content (Center) - 55% */}
         <main className="w-full md:w-[55%]">
-          <p className="text-[#7856FC] text-[16px] leading-[24px] font-medium mb-3">Published 13 Jan 2024</p>
-          <h2 className="font-inter text-[30px] leading-[38px] md:text-[48px] md:leading-[60px] font-semibold tracking-[-0.02em] text-black mb-6">A conversation with Lucy Bond</h2>
-          <p className="font-inter text-[16px] leading-[24px] md:text-[20px] md:leading-[30px] font-normal text-[#475467] mb-6">Lucy Bond is an interior designer who started her career in New Zealand, working for large architectural firms. We chatted to her about design and life.</p>
-          <h3 className="font-inter text-[24px] leading-[32px] md:text-[30px] md:leading-[38px] font-semibold text-black mb-6" id="section1">Introduction</h3>
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-4">Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam suspendisse morbi eleifend faucibus eget vestibulum felis. Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi, tellus tincidunt. At feugiat sapien varius id.</p>
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">Eget quis mi enim, leo lacinia pharetra, semper. Eget in volutpat mollis at volutpat lectus velit, sed auctor. Porttitor fames arcu quis fusce augue enim. Quis at habitant diam at. Suscipit tristique risus, at donec. In turpis vel et quam imperdiet. Ipsum molestie aliquet sodales id est ac volutpat.</p>
-          <Image
-            url="/blog-details/steady-formations-blog-details.png"
-            alt="Steady Formations Blog Details"
-            className="rounded-xl mb-6 w-full object-cover max-h-[350px]"
-          />
-          <div className="mb-12 pl-6 border-l-2 border-[#7856FC]">
-            <p className="font-inter text-[24px] leading-[32px] font-medium italic text-black mb-4">
-              &quot;In a world older and more complete than ours they move finished and complete, gifted with extensions of the senses we have lost or never attained, living by voices we shall never hear.&quot;
-            </p>
-            <div className="flex items-center gap-3">
-              <Image
-                url="/blog-details/designer-1-icon.png"
-                alt="Olivia Rhye"
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <p className="font-inter text-[16px] leading-[24px] font-semibold text-black">Olivia Rhye</p>
-                <p className="font-inter text-[16px] leading-[24px] font-normal text-[#475467]">Product Designer</p>
-              </div>
+          {error ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-red-500 text-[16px] leading-[24px] font-medium">Error: {error}</div>
             </div>
-          </div>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Dolor enim eu tortor urna sed duis nulla. Aliquam vestibulum, nulla odio nisi vitae. In aliquet pellentesque aenean hac vestibulum turpis mi bibendum diam. Tempor integer aliquam in vitae malesuada fringilla.
-          </p>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Elit nisi in eleifend sed nisi. Pulvinar at orci, proin imperdiet commodo consectetur convallis risus. Sed condimentum enim dignissim adipiscing faucibus consequat, urna. Viverra purus et erat auctor aliquam. Risus, volutpat vulputate posuere purus sit congue convallis aliquet. Arcu id augue ut feugiat donec porttitor neque. Mauris, neque ultricies eu vestibulum, bibendum quam lorem id. Dolor lacus, eget nunc lectus in tellus, pharetra, porttitor.
-          </p>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Ipsum sit mattis nulla quam nulla. Gravida id gravida ac enim mauris id. Non pellentesque congue eget consectetur turpis. Sapien, dictum molestie sem tempor. Diam elit, orci, tincidunt aenean tempus. Quis velit eget ut tortor tellus. Sed vel, congue felis elit erat nam nibh orci.
-          </p>
-
-          <h3 className="font-inter text-[24px] leading-[32px] md:text-[30px] md:leading-[38px] font-semibold text-black mb-6">Software and tools</h3>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Mi tincidunt elit, id quisque ligula ac diam, amet. Vel etiam suspendisse morbi eleifend faucibus eget vestibulum felis. Dictum quis montes, sit sit. Tellus aliquam enim urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi, tellus tincidunt. At feugiat sapien varius id.
-          </p>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Eget quis mi enim, leo lacinia pharetra, semper. Eget in volutpat mollis at volutpat lectus velit, sed auctor. Porttitor fames arcu quis fusce augue enim. Quis at habitant diam at. Suscipit tristique risus, at donec. In turpis vel et quam imperdiet. Ipsum molestie aliquet sodales id est ac volutpat.
-          </p>
-
-          <h3 className="font-inter text-[24px] leading-[32px] md:text-[30px] md:leading-[38px] font-semibold text-black mb-6">Other resources</h3>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Sagittis et eu at elementum, quis in. Proin praesent volutpat egestas sociis sit lorem nunc nunc sit. Eget diam curabitur mi ac. Auctor rutrum lacus malesuada massa ornare et. Vulputate consectetur ac ultrices at diam dui eget fringilla tincidunt. Arcu sit dignissim massa erat cursus vulputate gravida id. Sed quis auctor vulputate hac elementum gravida cursus dis.
-          </p>
-
-          <ol className="list-decimal pl-6 mb-6">
-            <li className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-2">
-              Lectus id duis vitae porttitor enim gravida morbi.
-            </li>
-            <li className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-2">
-              Eu turpis posuere semper feugiat volutpat elit, ultrices suspendisse. Auctor vel in vitae placerat.
-            </li>
-            <li className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-2">
-              Suspendisse maecenas ac donec scelerisque diam sed est duis purus.
-            </li>
-          </ol>
-
-          <Image
-            url="/blog-details/steady-formations-blog-details-image-2.png"
-            alt="Steady Formations Blog Details 2"
-            className="rounded-xl mb-6 w-full object-cover object-right h-[410px] md:max-h-[350px]"
-          />
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Lectus leo massa amet posuere. Malesuada mattis non convallis quisque. Libero sit et imperdiet bibendum quisque dictum vestibulum in non. Pretium ultricies tempor non est diam. Enim ut enim amet amet integer cursus. Sit ac commodo pretium sed etiam turpis suspendisse at.
-          </p>
-
-          <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-            Tristique odio senectus nam posuere ornare leo metus, ultricies. Blandit duis ultricies vulputate morbi feugiat cras placerat elit. Aliquam tellus lorem sed ac. Montes, sed mattis pellentesque suscipit accumsan. Cursus viverra aenean magna risus elementum faucibus molestie pellentesque. Arcu ultricies sed mauris vestibulum.
-          </p>
-
-          <div className="bg-[#F9FAFB] rounded-2xl p-8 mb-12">
-            <h3 className="font-inter text-[24px] leading-[32px] md:text-[30px] md:leading-[38px] font-semibold tracking-[0px] text-black mb-[30px]">Conclusion</h3>
-
-            <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-              Morbi sed imperdiet in ipsum, adipiscing elit dui lectus. Tellus id scelerisque est ultricies ultricies. Duis est sit sed leo nisi, blandit elit sagittis. Quisque tristique consequat quam sed. Nisl at scelerisque amet nulla purus habitasse.
-            </p>
-
-            <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6">
-              Nunc sed faucibus bibendum feugiat sed interdum. Ipsum egestas condimentum mi massa. In tincidunt pharetra consectetur sed duis facilisis metus. Etiam egestas in nec sed et. Quis lobortis at sit dictum eget nibh tortor commodo cursus.
-            </p>
-
-            <p className="font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467]">
-              Odio felis sagittis, morbi feugiat tortor vitae feugiat fusce aliquet. Nam elementum urna nisi aliquet erat dolor enim. Ornare id morbi eget ipsum. Aliquam senectus neque ut id eget consectetur dictum. Donec posuere pharetra odio consequat scelerisque et, nunc tortor.
-            </p>
-          </div>
-
-          <div className="bg-[#F9FAFB] rounded-2xl p-6 mb-12">
-            <div className="flex items-start gap-3">
-              <Image
-                url="/blog-details/security-expert-icon.png"
-                alt="Floyd Miles"
-                className="w-[70px] h-[70px] rounded-full"
-              />
-              <div>
-                <div className="flex items-center gap-3 mb-1">
-                  <p className="font-inter text-[18px] leading-[28px] font-semibold text-black">Floyd Miles</p>
-                  <p className="font-inter text-[14px] leading-[20px] font-normal text-[#475467]">Security Expert</p>
-                </div>
-                <p className="font-inter text-[16px] leading-[24px] font-normal text-[#475467]">As a result, this attack would never have worked. Even if axios was a dependency it was still missing as a requirement.</p>
-              </div>
+          ) : blog ? (
+            <>
+              <p className="text-[#7856FC] text-[16px] leading-[24px] font-medium mb-3">
+                Published {new Date(blog.created_at).toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'short', 
+                  day: 'numeric' 
+                })}
+              </p>
+              <h1 className="font-inter text-[30px] leading-[38px] md:text-[48px] md:leading-[60px] font-semibold tracking-[-0.02em] text-black mb-6">
+                {blog.title}
+              </h1>
+                <Image
+                  url={`${baseUrl}/storage/uploads/blog/${blog.feature_image}`}
+                  alt={blog.feature_image}
+                  width={400}
+                  height={300}
+                  className="w-full h-[400px] object-cover rounded-xl mb-6"
+                />
+              <p className="font-inter text-[16px] leading-[24px] md:text-[20px] md:leading-[30px] font-normal text-[#475467] mb-6">
+                {blog.description}
+              </p>
+              <div className="blog-content font-inter text-[16px] leading-[24px] md:text-[18px] md:leading-[28px] font-normal text-[#475467] mb-6" 
+                   dangerouslySetInnerHTML={{ __html: processedContent }} />
+            </>
+          ) : (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-[#475467] text-[16px] leading-[24px] font-medium">No blog found</div>
             </div>
-          </div>
+          )}
 
           {/* Navigation Links */}
           <div className="flex justify-between items-center gap-12 mt-8">
@@ -291,21 +243,37 @@ export default function BlogPost() {
       <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mt-24 md:mt-28 mb-36 px-4 md:px-0">
         <h2 className="font-inter font-semibold text-[36px] leading-[44px] mb-[36px] tracking-[-0.02em] text-black">Read our latest posted blog</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 md:gap-y-8">
-          {latestBlogsData.map((blog, idx) => (
-            <div key={blog.id} className="mb-6">
-              <div className="flex items-center gap-6 mb-2">
-                <span className="flex items-center gap-2 font-inter font-medium text-[16px] leading-[27.2px] tracking-normal text-[#526061]">
-                  <Image url="/blog/date-icon.svg" alt="Date" className="w-4 h-4" />{blog.date}
-                </span>
-                <span className="flex items-center gap-2 font-inter font-medium text-[16px] leading-[27.2px] tracking-normal text-[#526061]">
-                  <Image url="/blog/comment-icon.svg" alt="Comments" className="w-4 h-4" />{blog.comments}
-                </span>
-              </div>
-              <div className="font-inter font-semibold text-[18px] leading-[28px] mb-[18px] text-black">{blog.title}</div>
-              <div className="font-inter font-normal text-[18px] leading-[28px] mb-[18px] text-[#475467]">{blog.description}</div>
-              <div className="border-b border-[#EAECF0] mt-4" />
+          {latestBlogsError ? (
+            <div className="col-span-2 text-center text-red-500 py-8">
+              <p>Unable to load latest blogs. Please try again later.</p>
             </div>
-          ))}
+          ) : latestBlogs.length > 0 ? (
+            latestBlogs.map((blog, idx) => (
+              <div key={blog.id} className="mb-6">
+                <div className="flex items-center gap-6 mb-2">
+                  <span className="flex items-center gap-2 font-inter font-medium text-[16px] leading-[27.2px] tracking-normal text-[#526061]">
+                    <Image url="/blog/date-icon.svg" alt="Date" className="w-4 h-4" />
+                    {new Date(blog.created_at).toLocaleDateString('en-US', { 
+                      day: 'numeric', 
+                      month: 'short', 
+                      year: 'numeric' 
+                    })}
+                  </span>
+                  <span className="flex items-center gap-2 font-inter font-medium text-[16px] leading-[27.2px] tracking-normal text-[#526061]">
+                    <Image url="/blog/comment-icon.svg" alt="Comments" className="w-4 h-4" />
+                    Comments
+                  </span>
+                </div>
+                <div className="font-inter font-semibold text-[18px] leading-[28px] mb-[18px] text-black">{blog.title}</div>
+                <div className="font-inter font-normal text-[18px] leading-[28px] mb-[18px] text-[#475467]">{blog.description}</div>
+                <div className="border-b border-[#EAECF0] mt-4" />
+              </div>
+            ))
+          ) : (
+            <div className="col-span-2 text-center text-gray-500 py-8">
+              <p>No blog posts available.</p>
+            </div>
+          )}
         </div>
       </section>
 

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback } from "react";
 import ProgressBar from "../ui/ProgressBar";
 import { useRouter, useSearchParams } from "next/navigation";
 import FirstFunnel from "./FirstFunnel";
@@ -53,10 +53,15 @@ const FunnelContent = () => {
     const [totalSteps] = useState(9);
     const [refreshKey, setRefreshKey] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [currentFormState, setCurrentFormState] = useState<{ businessType: string; llcType?: string } | null>(null);
 
-    const handleChildSubmitSuccess = () => {
+    const handleChildSubmitSuccess = useCallback(() => {
         setRefreshKey(prev => prev + 1); // triggers re-render
-    };
+    }, []);
+
+    const handleFormStateChange = useCallback((formState: { businessType: string; llcType?: string }) => {
+        setCurrentFormState(formState);
+    }, []);
 
     // Handle payment success/cancel
     useEffect(() => {
@@ -66,6 +71,7 @@ const FunnelContent = () => {
         const orderId = searchParams.get('order_id');
         const token = searchParams.get('token');
         const payerId = searchParams.get('PayerID');
+        const tempLoginToken = searchParams.get('temp_login_token');
 
         console.log('Payment URL parameters:', {
             payment,
@@ -73,7 +79,8 @@ const FunnelContent = () => {
             userId,
             orderId,
             token,
-            payerId
+            payerId,
+            tempLoginToken
         });
 
         // Check if we have payment parameters (either success or cancel)
@@ -99,7 +106,7 @@ const FunnelContent = () => {
                         setPaymentStatus('success');
                         setPaymentData(result);
                         
-                        // Update localStorage to mark payment as complete
+                        // Update localStorage to mark payment as complete and store temp login token
                         const localData = companyFormationService.getFromLocalStorage();
                         console.log('Current localStorage data:', localData);
                         companyFormationService.saveToLocalStorage({
@@ -110,7 +117,8 @@ const FunnelContent = () => {
                                 status: 'completed'
                             },
                             isPaymentComplete: true,
-                            currentStep: 10 // Move to next step
+                            currentStep: 10, // Move to next step
+                            tempLoginToken: tempLoginToken || undefined // Store the temporary login token
                         });
                         
                     } else if (payment === 'cancel') {
@@ -151,18 +159,18 @@ const FunnelContent = () => {
     }, [data?.currentStep]);
 
     // Custom setter: updates localStorage
-    const updateCompanyData = (newData: Partial<CompanyFormationData>) => {
+    const updateCompanyData = useCallback((newData: Partial<CompanyFormationData>) => {
         const updatedData = { ...data, ...newData };
         companyFormationService.saveToLocalStorage(updatedData);
-    };
+    }, [data]);
 
-    const handleFormSubmit = (formData: CustomFormData) => {
+    const handleFormSubmit = useCallback((formData: CustomFormData) => {
         updateCompanyData({ ...formData, currentStep: currentStep + 1 });
         setCurrentStep(currentStep + 1);
         handleChildSubmitSuccess();
-    };
+    }, [currentStep, updateCompanyData, handleChildSubmitSuccess]);
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         if (currentStep > 1) {
             const newStep = currentStep - 1;
             setCurrentStep(newStep);
@@ -170,13 +178,13 @@ const FunnelContent = () => {
         } else {
             router.back();
         }
-    };
+    }, [currentStep, updateCompanyData, router]);
 
-    const handleStartOver = () => {
+    const handleStartOver = useCallback(() => {
         // Clear all data and redirect to home
         companyFormationService.clearLocalStorage();
         router.push('/');
-    };
+    }, [router]);
 
 
     // Show loading state while data is being loaded
@@ -208,8 +216,11 @@ const FunnelContent = () => {
                             </svg>
                         </div>
                         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Payment Successful!</h2>
+                        <p className="text-gray-600 mb-1">
+                            Your company formation has been processed successfully.
+                        </p>
                         <p className="text-gray-600 mb-6">
-                            Your company formation has been processed successfully. You will receive an email with your login credentials shortly.
+                            You will receive an email with your login credentials shortly.
                         </p>
                         
                         {paymentData && (
@@ -218,7 +229,7 @@ const FunnelContent = () => {
                                 <div className="space-y-2 text-sm text-gray-600">
                                     <p><span className="font-medium">Amount:</span> ${paymentData.amount}</p>
                                     <p><span className="font-medium">Payment Method:</span> {paymentData.payment_method}</p>
-                                    <p><span className="font-medium">Transaction ID:</span> {paymentData.payment_id}</p>
+                                    <p><span className="font-medium">Transaction ID:</span> <span className="break-all">{paymentData.payment_id}</span></p>
                                 </div>
                             </div>
                         )}
@@ -341,7 +352,7 @@ const FunnelContent = () => {
                 {data?.currentStep !== 1 &&
                     <div className="flex justify-between gap-4 ">
 
-                        {data?.currentStep === 2 && <SecondFunnel handleFormSubmit={handleFormSubmit} />}
+                        {data?.currentStep === 2 && <SecondFunnel handleFormSubmit={handleFormSubmit} onFormStateChange={handleFormStateChange} />}
 
                         {data?.currentStep === 3 && <ThirdFunnel handleFormSubmit={handleFormSubmit} />}
 
@@ -357,7 +368,7 @@ const FunnelContent = () => {
 
                         {data?.currentStep === 9 && <NinthFunnel handleFormSubmit={handleFormSubmit} />}
 
-                        {data?.currentStep < 10 && <FunnelSidebar />}
+                        {data?.currentStep < 10 && <FunnelSidebar currentFormState={currentFormState || undefined} />}
 
                     </div>
                 }

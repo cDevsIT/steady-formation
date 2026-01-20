@@ -120,7 +120,7 @@ const StartFunnelInput: React.FC<CustomStartFunnelInputProps> = (
 
                 {/* Submit Button */}
                 <div className="flex justify-center sm:justify-start">
-                    <Button type="submit" className="w-full sm:w-auto min-w-[120px]">
+                    <Button type="submit" className="w-full sm:w-auto min-w-[120px] h-12">
                         Start Now
                     </Button>
                 </div>

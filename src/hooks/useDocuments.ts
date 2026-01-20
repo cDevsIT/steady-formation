@@ -9,13 +9,13 @@ interface UseDocumentsReturn {
     downloadDocument: (orderId: string, type: string, fileName: string) => Promise<void>;
 }
 
-export const useDocuments = (userId?: number): UseDocumentsReturn => {
+export const useDocuments = (companyId?: number): UseDocumentsReturn => {
     const [documents, setDocuments] = useState<Document[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const fetchDocuments = async () => {
-        if (!userId) {
+        if (!companyId) {
             setDocuments([]);
             return;
         }
@@ -24,7 +24,7 @@ export const useDocuments = (userId?: number): UseDocumentsReturn => {
         setError(null);
 
         try {
-            const response = await documentsService.getUserDocuments(userId);
+            const response = await documentsService.getUserDocuments(companyId);
             
             if (response.success && response.data) {
                 setDocuments(response.data.documents);
@@ -57,7 +57,7 @@ export const useDocuments = (userId?: number): UseDocumentsReturn => {
 
     useEffect(() => {
         fetchDocuments();
-    }, [userId]);
+    }, [companyId]);
 
     return {
         documents,

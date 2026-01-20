@@ -6,6 +6,8 @@ import OwnersInfoBlock from "./Comp/OwnersInfoBlock";
 import { dataState } from "./Funnel";
 import companyFormationService, { CompanyFormationData, useCompanyFormationData } from "@/lib/companyFormationService";
 import { industries, usStates } from "./funnel.type";
+import { countries, Country } from "../ui/countries";
+import { useVisitorCountry } from "@/hooks/useVisitorCountry";
 
 // Custom Dropdown Component
 interface DropdownOption {
@@ -120,38 +122,72 @@ const initialOwnerInfoTwo = {
 
 const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   const data = useCompanyFormationData();
+  const { countryCode: detectedCountryCode } = useVisitorCountry();
   const [personalInfo, setPersonalInfo] = useState(initialPersonalInfo);
   const [businessInfo, setBusinessInfo] = useState(initialBusinessInfo);
   const [ownerInfo, setOwnerInfo] = useState(initialOwnerInfo);
   const [ownerInfoTwo, setOwnerInfoTwo] = useState(initialOwnerInfoTwo)
   const [editSection, setEditSection] = useState<string | null>(null);
   const [tempData, setTempData] = useState<any>({});
+  const [selectedCountry, setSelectedCountry] = useState<Country>(() => {
+    return countries.find(c => c.code === detectedCountryCode) || countries.find(c => c.code === 'US') || countries[0];
+  });
+  const [phoneError, setPhoneError] = useState<string>("");
+  const [phoneCountryCode, setPhoneCountryCode] = useState<string>(() => {
+    const country = countries.find(c => c.code === detectedCountryCode) || countries.find(c => c.code === 'US') || countries[0];
+    return country.dialCode;
+  });
+
+  // Extract dial code from phone number if present
+  const extractDialCodeFromPhone = (phone: string, defaultDialCode?: string): { dialCode: string; phoneNumber: string } => {
+    if (!phone) return { dialCode: defaultDialCode || phoneCountryCode, phoneNumber: "" };
+    
+    // Check if phone starts with a dial code
+    for (const country of countries) {
+      if (phone.startsWith(country.dialCode)) {
+        return {
+          dialCode: country.dialCode,
+          phoneNumber: phone.substring(country.dialCode.length).trim()
+        };
+      }
+    }
+    
+    // If no dial code found, return the phone as-is with default country code
+    return { dialCode: defaultDialCode || phoneCountryCode, phoneNumber: phone };
+  };
 
   // Load initial data from localStorage
   useEffect(() => {
-    console.log("EightFunnel - Loading data from localStorage:", data);
 
     // Fallback: Load directly from localStorage if hook data is empty
     let localStorageData = data;
     if (!data || Object.keys(data).length <= 1) {
       localStorageData = companyFormationService.getFromLocalStorage();
-      console.log("Fallback - Loading directly from localStorage:", localStorageData);
     }
 
     // Load user info from localStorage
     if (localStorageData?.userInfo) {
       const userInfo = localStorageData.userInfo;
-      console.log("Loading user info:", userInfo);
+      const phone = userInfo.phone_number || "";
+      
+      // Extract country code from phone if present
+      if (phone) {
+        const defaultDialCode = countries.find(c => c.code === detectedCountryCode)?.dialCode || phoneCountryCode;
+        const { dialCode } = extractDialCodeFromPhone(phone, defaultDialCode);
+        const country = countries.find(c => c.dialCode === dialCode) || selectedCountry;
+        setPhoneCountryCode(dialCode);
+        setSelectedCountry(country);
+      }
+      
       setPersonalInfo({
         name: `${userInfo.first_name} ${userInfo.last_name}`.trim(),
         email: userInfo.email || "",
-        phone: userInfo.phone_number || "",
+        phone: phone,
       });
     }
 
     // Load business info from localStorage
     if (localStorageData?.companyName || localStorageData?.businessDetails) {
-      console.log("Loading business info:", { companyName: localStorageData.companyName, businessDetails: localStorageData.businessDetails });
       setBusinessInfo({
         owner: localStorageData.companyName || "",
         state: localStorageData.businessDetails?.stateName || "",
@@ -165,15 +201,24 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   useEffect(() => {
     const loadInitialData = () => {
       const localStorageData = companyFormationService.getFromLocalStorage();
-      console.log("Component mount - Loading from localStorage:", localStorageData);
 
       // Load user info
       if (localStorageData?.userInfo) {
         const userInfo = localStorageData.userInfo;
+        const phone = userInfo.phone_number || "";
+        
+        // Extract country code from phone if present
+        if (phone) {
+          const { dialCode } = extractDialCodeFromPhone(phone);
+          const country = countries.find(c => c.dialCode === dialCode) || selectedCountry;
+          setPhoneCountryCode(dialCode);
+          setSelectedCountry(country);
+        }
+        
         setPersonalInfo({
           name: `${userInfo.first_name} ${userInfo.last_name}`.trim(),
           email: userInfo.email || "",
-          phone: userInfo.phone_number || "",
+          phone: phone,
         });
       }
 
@@ -191,13 +236,22 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     loadInitialData();
   }, []);
 
+  const stateFees = data?.stateFees || {
+    registration_fee: 100,
+    renewal_fee: 50,
+    transfer_fee: 25
+  };
+
+
+  const multimemberFee = data?.multimemberFee || 0
+
   const feeData = [
     {
       id: 1,
       title: "State Fee",
       subtitle: usStates.find(state => state.value === (data?.businessDetails?.stateName || companyFormationService.getFromLocalStorage()?.businessDetails?.stateName))?.label || (data?.businessDetails?.stateName || companyFormationService.getFromLocalStorage()?.businessDetails?.stateName) || "Select State",
       icon: "/icons/overview-company.svg",
-      price: "$100"
+      price: `$${stateFees.registration_fee}`
     },
     {
       id: 2,
@@ -215,27 +269,34 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
     },
     {
       id: 4,
+      title: "Multimember Fee",
+      subtitle: multimemberFee > 0 ? "Yes" : "No",
+      icon: "/icons/overview-free.svg",
+      price: multimemberFee > 0 ? `$${multimemberFee}` : "Free"
+    },
+    {
+      id: 5,
       title: "Registered Agent",
       subtitle: "Free",
       icon: "/icons/overview-free.svg",
       price: "Free"
     },
     {
-      id: 5,
+      id: 6,
       title: "EIN",
       subtitle: `${data?.en_amount === 0 ? 'No' : 'Yes'}`,
       icon: "/icons/overview-ein.svg",
       price: `${data?.en_amount === 0 ? 'Free' : `$${data?.en_amount}`}`
     },
     {
-      id: 6,
+      id: 7,
       title: "Operating Agreement / Bylaws",
       subtitle: `${data?.agreement_amount === 0 ? 'No' : 'Yes'}`,
       icon: "/icons/overview-aggrement.svg",
       price: `${data?.agreement_amount === 0 ? 'Free' : `$${data?.agreement_amount}`}`
     },
     {
-      id: 7,
+      id: 8,
       title: "Expedited Processing",
       subtitle: `${data?.rush_processing_amount === 0 ? 'No' : 'Yes'}`,
       icon: "/icons/overview-processing.svg",
@@ -247,17 +308,84 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
 
   const directorInfo = data?.businessType === 'non_profit'
 
+  // Validate phone number based on selected country
+  const validatePhone = (phone: string, country: Country): string => {
+    if (!phone) return ""; // Phone is optional
+    
+    // Remove dial code if present for validation
+    let phoneNumber = phone;
+    if (phone.startsWith(country.dialCode)) {
+      phoneNumber = phone.substring(country.dialCode.length).trim();
+    }
+    
+    // Remove any non-digit characters for validation
+    phoneNumber = phoneNumber.replace(/\D/g, '');
+    
+    if (!country.phoneRegex.test(phoneNumber)) {
+      return `Please use format: ${country.format}`;
+    }
+    
+    return "";
+  };
+
   // Handlers for edit/save/cancel
   const handleEdit = (section: string, data: any) => {
     setEditSection(section);
-    setTempData(data);
+    
+    // Extract country code from phone if editing personal info
+    if (section === "personal" && data.phone) {
+      const { dialCode, phoneNumber } = extractDialCodeFromPhone(data.phone, phoneCountryCode);
+      const country = countries.find(c => c.dialCode === dialCode) || selectedCountry;
+      setPhoneCountryCode(dialCode);
+      setSelectedCountry(country);
+      setTempData({ ...data, phone: phoneNumber });
+    } else {
+      setTempData(data);
+    }
+    setPhoneError("");
   };
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setTempData({ ...tempData, [e.target.name]: e.target.value });
+    const newTempData = { ...tempData, [e.target.name]: e.target.value };
+    setTempData(newTempData);
+    
+    // Validate phone in real-time
+    if (e.target.name === "phone") {
+      const error = validatePhone(e.target.value, selectedCountry);
+      setPhoneError(error);
+    }
+  };
+
+  const handleCountryCodeChange = (dialCode: string) => {
+    const country = countries.find(c => c.dialCode === dialCode) || selectedCountry;
+    setPhoneCountryCode(dialCode);
+    setSelectedCountry(country);
+    
+    // Re-validate phone when country changes
+    if (tempData.phone) {
+      const error = validatePhone(tempData.phone, country);
+      setPhoneError(error);
+    }
   };
   const handleSave = () => {
     if (editSection === "personal") {
-      setPersonalInfo(tempData);
+      // Validate phone before saving
+      if (tempData.phone) {
+        const error = validatePhone(tempData.phone, selectedCountry);
+        if (error) {
+          setPhoneError(error);
+          return; // Don't save if validation fails
+        }
+      }
+
+      // Combine country code with phone number
+      let phoneNumber = tempData.phone;
+      if (phoneNumber && !phoneNumber.startsWith(phoneCountryCode)) {
+        phoneNumber = `${phoneCountryCode} ${phoneNumber}`.trim();
+      }
+
+      setPersonalInfo({ ...tempData, phone: phoneNumber });
+      setPhoneError("");
 
       // Update localStorage with the new user info
       const nameParts = tempData.name.split(' ');
@@ -268,7 +396,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
         first_name: firstName,
         last_name: lastName,
         email: tempData.email,
-        phone_number: tempData.phone,
+        phone_number: phoneNumber,
       };
 
       // Update the localStorage data
@@ -303,6 +431,7 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
   const handleCancel = () => {
     setEditSection(null);
     setTempData({});
+    setPhoneError("");
   };
 
   const handleContinue = () => {
@@ -335,9 +464,52 @@ const EightFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
           </div>
           {editSection === "personal" ? (
             <div className="space-y-2">
-              <input name="name" value={tempData.name} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-              <input name="email" value={tempData.email} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
-              <input name="phone" value={tempData.phone} onChange={handleInputChange} className="w-full border rounded px-2 py-1" />
+              <input 
+                name="name" 
+                value={tempData.name || ""} 
+                onChange={handleInputChange} 
+                className="w-full border rounded px-2 py-1" 
+                placeholder="Full Name"
+              />
+              <input 
+                name="email" 
+                value={tempData.email || ""} 
+                onChange={handleInputChange} 
+                type="email"
+                className="w-full border rounded px-2 py-1" 
+                placeholder="Email"
+              />
+              <div>
+                <div className="relative flex items-center">
+                  <select
+                    value={phoneCountryCode}
+                    onChange={(e) => handleCountryCodeChange(e.target.value)}
+                    className="absolute left-0 w-[90px] pl-4 pr-8 py-2 bg-transparent border-0 appearance-none z-10 focus:ring-0 text-sm"
+                  >
+                    {countries.map((country) => (
+                      <option key={country.code} value={country.dialCode}>
+                        {country.code}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute left-[45px] top-1/2 -translate-y-1/2">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 6L8 10L12 6" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <input
+                    name="phone"
+                    type="tel"
+                    value={tempData.phone || ""}
+                    onChange={handleInputChange}
+                    className={`w-full pl-24 pr-4 py-2 border rounded ${phoneError ? 'border-red-500' : 'border-gray-300'}`}
+                    placeholder={selectedCountry.format || "Enter phone number"}
+                  />
+                </div>
+                {phoneError && (
+                  <p className="text-red-500 text-sm mt-1">{phoneError}</p>
+                )}
+              </div>
               <div className="flex gap-2 mt-2">
                 <button className="bg-[#7856FC] text-white px-3 py-1 rounded" onClick={handleSave}>Save</button>
                 <button className="bg-gray-200 px-3 py-1 rounded" onClick={handleCancel}>Cancel</button>

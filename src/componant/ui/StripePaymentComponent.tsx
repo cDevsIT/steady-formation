@@ -33,7 +33,9 @@ const StripePaymentComponent: React.FC<StripePaymentComponentProps> = ({
         const loadStripe = async () => {
             if (typeof window !== 'undefined' && !stripe) {
                 const { loadStripe } = await import('@stripe/stripe-js');
-                const stripeInstance = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+                // Force test mode in production - use test publishable key
+                const publishableKey = process.env.NEXT_PUBLIC_STRIPE_TEST_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+                const stripeInstance = await loadStripe(publishableKey!);
                 setStripe(stripeInstance);
             }
         };

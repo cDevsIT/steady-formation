@@ -11,25 +11,25 @@ const benefitsData = [
     id: 1,
     icon: "/icons/free.svg",
     title: "Free for the First Year",
-    description: "Every new formation comes with 1 year of Registered Agent service, free of charge. Cancel anytime if you switch your agent."
+    description: "Your first year of Registered Agent service is included at no cost when you form a new business with us."
   },
   {
     id: 2,
     icon: "/icons/guarantee.svg",
     title: "Guaranteed Renewal Rate",
-    description: "Every new formation comes with 1 year of Registered Agent service, free of charge. Cancel anytime if you switch your agent."
+    description: "Know what you’ll pay — enjoy a locked-in, transparent renewal rate with no surprise hikes."
   },
   {
     id: 3,
     icon: "/icons/save_money.svg",
     title: "No Extra Fees",
-    description: "Every new formation comes with 1 year of Registered Agent service, free of charge. Cancel anytime if you switch your agent."
+    description: "What you see is what you pay. No hidden charges, upsells, or unexpected add-ons for your Registered Agent service"
   },
   {
     id: 4,
     icon: "/icons/junk-mail.svg",
     title: "Reduce Junk Mail",
-    description: "Every new formation comes with 1 year of Registered Agent service, free of charge. Cancel anytime if you switch your agent."
+    description: "Keep your personal address private and cut down on unwanted mail by using our professional Registered Agent address."
   }
 ];
 
@@ -109,7 +109,7 @@ const FourthFunnel: React.FC<ChildComponentProps> = ({ handleFormSubmit }) => {
             Why Choose Steady?
           </FunnelSubHeading>
           <p className="mb-6 text-gray-600 text-[16px]">
-            A Registered Agent is a designated individual or service responsible for receiving important legal and government documents on behalf of your business.
+            A Registered Agent is a designated individual or company responsible for receiving important legal and government documents on behalf of your business.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             {benefitsData.map((benefit) => (

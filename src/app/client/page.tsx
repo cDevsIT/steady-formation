@@ -1,17 +1,69 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from '@/componant/ui/Image';
 import { useCompanyStatus } from '@/hooks/useCompanyStatus';
 import { useCompany } from '@/contexts/CompanyContext';
 import { useRouter } from 'next/navigation';
+import { getQuickActions, QuickAction } from '@/services/quickActionsService';
 
 export default function ClientDashboard() {
     const { selectedCompany } = useCompany();
     const { statusData, isLoading, error } = useCompanyStatus({ 
-        user_id: selectedCompany?.user_id || 3 
+        company_id: selectedCompany?.id 
     });
     const router = useRouter();
+    const [quickActions, setQuickActions] = useState<QuickAction[]>([]);
+    const [isLoadingActions, setIsLoadingActions] = useState(true);
+
+    useEffect(() => {
+        const fetchQuickActions = async () => {
+            if (selectedCompany?.id) {
+                setIsLoadingActions(true);
+                try {
+                    const actions = await getQuickActions(undefined, selectedCompany.id);
+                    setQuickActions(actions);
+                } catch (error) {
+                    console.error('Error fetching quick actions:', error);
+                } finally {
+                    setIsLoadingActions(false);
+                }
+            }
+        };
+
+        fetchQuickActions();
+    }, [selectedCompany?.id]);
+
+    const handleActionClick = (action: QuickAction) => {
+        if (!action.action_enabled) return;
+
+        switch (action.action_type) {
+            case 'view':
+                if (action.action_url) {
+                    window.open(action.action_url, '_blank');
+                }
+                break;
+            case 'renew':
+                // Navigate to renewal page or open modal
+                router.push('/client/compliance');
+                break;
+            case 'upload':
+                // Navigate to upload page
+                router.push('/client/compliance');
+                break;
+            case 'schedule':
+                // Navigate to scheduling page
+                router.push('/client/compliance');
+                break;
+            case 'process':
+                // Navigate to processing page
+                router.push('/client/compliance');
+                break;
+            default:
+                console.log('Action clicked:', action.name);
+        }
+    };
+
     return (
         <div>
 
@@ -108,48 +160,44 @@ export default function ClientDashboard() {
                             </tr>
                         </thead>
                         <tbody className="text-[#23272E]">
-                            {/* Row 1 */}
-                            <tr className="border-b border-[#E4E7EC]">
-                                <td className="py-5 px-7 font-medium text-[14px] leading-5">Renew US Business Address</td>
-                                <td className="py-5 px-4 font-medium text-[14px] leading-5">May 30, 2025</td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><span className="bg-[#F3F4F6] text-[#7C8493] px-3 py-1 rounded-lg font-medium">Pending</span></td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><button className="bg-[#F3F4F6] text-[#23272E] px-4 py-1 rounded-lg font-medium">Renew Now</button></td>
-                            </tr>
-                            {/* Row 2 */}
-                            <tr className="border-b border-[#E4E7EC]">
-                                <td className="py-5 px-7 font-medium text-[14px] leading-5">Download EIN Letter</td>
-                                <td className="py-5 px-4 font-medium text-[14px] leading-5">....</td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><span className="bg-[#D1FADF] text-[#039855] px-3 py-1 rounded-lg font-medium">Complete</span></td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><button className="bg-[#F3F4F6] text-[#23272E] px-4 py-1 rounded-lg font-medium">View</button></td>
-                            </tr>
-                            {/* Row 3 */}
-                            <tr className="border-b border-[#E4E7EC]">
-                                <td className="py-5 px-7 font-medium text-[14px] leading-5">Upload Passport Copy (KYC)</td>
-                                <td className="py-5 px-4 font-medium text-[14px] leading-5">....</td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><span className="bg-[#FEE4E2] text-[#D92D20] px-3 py-1 rounded-lg font-medium">Not Submitted</span></td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><button className="bg-[#F3F4F6] text-[#23272E] px-4 py-1 rounded-lg font-medium">Upload</button></td>
-                            </tr>
-                            {/* Row 4 */}
-                            <tr className="border-b border-[#E4E7EC]">
-                                <td className="py-5 px-7 font-medium text-[14px] leading-5">Registered Agent Reminder</td>
-                                <td className="py-5 px-4 font-medium text-[14px] leading-5">July 15, 2025</td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><span className="bg-[#FEF6EE] text-[#DC6803] px-3 py-1 rounded-lg font-medium">Due Soon</span></td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><button className="bg-[#F3F4F6] text-[#23272E] px-4 py-1 rounded-lg font-medium">Renew</button></td>
-                            </tr>
-                            {/* Row 5 */}
-                            <tr className="border-b border-[#E4E7EC]">
-                                <td className="py-5 px-7 font-medium text-[14px] leading-5">Annual Filling Reminder</td>
-                                <td className="py-5 px-4 font-medium text-[14px] leading-5">July 15, 2025</td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><span className="bg-[#EEF4FF] text-[#3538CD] px-3 py-1 rounded-lg font-medium">Scheduled</span></td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><button className="bg-[#F3F4F6] text-[#23272E] px-4 py-1 rounded-lg font-medium">Schedule Filling</button></td>
-                            </tr>
-                            {/* Row 6 */}
-                            <tr className="">
-                                <td className="py-5 px-7 font-medium text-[14px] leading-5">Tax filing reminder</td>
-                                <td className="py-5 px-4 font-medium text-[14px] leading-5">July 15, 2025</td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><span className="bg-[#FEF6EE] text-[#DC6803] px-3 py-1 rounded-lg font-medium">Due Soon</span></td>
-                                <td className="py-5 px-4 text-center font-medium text-[14px] leading-5"><button className="bg-[#F3F4F6] text-[#23272E] px-4 py-1 rounded-lg font-medium">Start Processing</button></td>
-                            </tr>
+                            {isLoadingActions ? (
+                                <tr>
+                                    <td colSpan={4} className="py-8 text-center text-[#7C8493]">
+                                        Loading quick actions...
+                                    </td>
+                                </tr>
+                            ) : quickActions.length === 0 ? (
+                                <tr>
+                                    <td colSpan={4} className="py-8 text-center text-[#7C8493]">
+                                        No quick actions available
+                                    </td>
+                                </tr>
+                            ) : (
+                                quickActions.map((action, index) => (
+                                    <tr key={action.id} className={index === quickActions.length - 1 ? '' : 'border-b border-[#E4E7EC]'}>
+                                        <td className="py-5 px-7 font-medium text-[14px] leading-5">{action.name}</td>
+                                        <td className="py-5 px-4 font-medium text-[14px] leading-5">{action.due_date}</td>
+                                        <td className="py-5 px-4 text-center font-medium text-[14px] leading-5">
+                                            <span className={`${action.status_class} px-3 py-1 rounded-lg font-medium`}>
+                                                {action.status}
+                                            </span>
+                                        </td>
+                                        <td className="py-5 px-4 text-center font-medium text-[14px] leading-5">
+                                            <button 
+                                                onClick={() => handleActionClick(action)}
+                                                disabled={!action.action_enabled}
+                                                className={`px-4 py-1 rounded-lg font-medium transition-colors ${
+                                                    action.action_enabled 
+                                                        ? 'bg-[#F3F4F6] text-[#23272E] hover:bg-[#E5E7EB] cursor-pointer' 
+                                                        : 'bg-[#F3F4F6] text-[#7C8493] cursor-not-allowed opacity-60'
+                                                }`}
+                                            >
+                                                {action.action_label}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>

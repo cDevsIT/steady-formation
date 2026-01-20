@@ -1,129 +1,10 @@
-"use client";
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from '@/componant/ui/Image';
 import PageHeader from '@/componant/ui/PageHeader';
-
-// Data for small cards
-const smallCards = [
-  {
-    img: '/blog/Steady-formations-blog-image-2.png',
-    alt: 'Blog 2',
-    title: 'Never Worry About What to Do About Banking Again',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'never-worry-about-banking-again'
-  },
-  {
-    img: '/blog/Steady-formations-blog-image-3.png',
-    alt: 'Blog 3',
-    title: 'Never Worry About What to Do About Banking Again',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'never-worry-about-banking-again-2'
-  },
-  {
-    img: '/blog/Steady-formations-blog-image-4.png',
-    alt: 'Blog 4',
-    title: 'Never Worry About What to Do About Banking Again',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'never-worry-about-banking-again-3'
-  },
-];
-
-// Data for latest blogs cards
-const latestBlogs = [
-  {
-    img: '/blog/Steady-formations-blog-image-1.png',
-    alt: 'Blog 1',
-    title: 'Quick and Easy Flaky Pastry for Tasty Breakfast',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'quick-and-easy-flaky-pastry'
-  },
-  {
-    img: '/blog/Steady-formations-blog-image-2.png',
-    alt: 'Blog 2',
-    title: 'Quick and Easy Flaky Pastry for Tasty Breakfast',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'quick-and-easy-flaky-pastry-2'
-  },
-  {
-    img: '/blog/Steady-formations-blog-image-3.png',
-    alt: 'Blog 3',
-    title: 'Quick and Easy Flaky Pastry for Tasty Breakfast',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'quick-and-easy-flaky-pastry-3'
-  },
-];
-
-// Data for business ideas and tips cards
-const businessIdeas = [
-  {
-    img: '/blog/Steady-formations-blog-image-2.png',
-    alt: 'Blog 2',
-    title: 'Never Worry About What to Do About Banking Again',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'banking-tips-and-tricks'
-  },
-  {
-    img: '/blog/Steady-formations-blog-image-2.png',
-    alt: 'Blog 2',
-    title: 'Never Worry About What to Do About Banking Again',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'banking-tips-and-tricks-2'
-  },
-  {
-    img: '/blog/Steady-formations-blog-image-3.png',
-    alt: 'Blog 3',
-    title: 'Never Worry About What to Do About Banking Again',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'banking-tips-and-tricks-3'
-  },
-  {
-    img: '/blog/Steady-formations-blog-image-3.png',
-    alt: 'Blog 3',
-    title: 'Never Worry About What to Do About Banking Again',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'banking-tips-and-tricks-4'
-  },
-  {
-    img: '/blog/Steady-formations-blog-image-4.png',
-    alt: 'Blog 4',
-    title: 'Never Worry About What to Do About Banking Again',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'banking-tips-and-tricks-5'
-  },
-  {
-    img: '/blog/Steady-formations-blog-image-4.png',
-    alt: 'Blog 4',
-    title: 'Never Worry About What to Do About Banking Again',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'banking-tips-and-tricks-6'
-  },
-];
-
-// Data for all main blog cards (featured + small cards)
-const mainBlogCards = [
-  {
-    img: '/blog/Steady-formations-blog-image-1.png',
-    alt: 'Blog 1',
-    title: 'Wise Spending Habits, 13 Tips for Maximizing Your Money.',
-    date: '18 Jul 2023',
-    comments: 'Comments',
-    slug: 'wise-spending-habits-tips'
-  },
-  ...smallCards,
-];
+import { blogService, Blog, getBaseUrl } from '@/lib/blogService';
+import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 
 type BlogCard = {
   img: string;
@@ -134,47 +15,192 @@ type BlogCard = {
   slug: string;
 };
 
-export default function BlogPage() {
+interface BlogPageProps {
+  searchParams: Promise<{
+    page?: string;
+  }>;
+}
+
+// Generate metadata for SEO (SSR)
+export async function generateMetadata({ searchParams }: BlogPageProps): Promise<Metadata> {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseInt(resolvedSearchParams?.page || '1', 10);
+  
+  try {
+    const response = await blogService.getAllBlogs(currentPage);
+    const blogs = response.data.data;
+    
+    const pageTitle = currentPage > 1 ? `Blog - Page ${currentPage}` : 'Blog';
+    const pageDescription = `Discover the latest industry news, interviews, technologies, and resources. ${blogs.length > 0 ? `Featured: ${blogs[0].title}` : ''}`;
+    
+    return {
+      title: pageTitle,
+      description: pageDescription,
+      openGraph: {
+        title: pageTitle,
+        description: pageDescription,
+        type: 'website',
+        images: blogs.length > 0 ? [`${getBaseUrl()}/storage/uploads/blog/${blogs[0].feature_image}`] : [],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: pageTitle,
+        description: pageDescription,
+        images: blogs.length > 0 ? [`${getBaseUrl()}/storage/uploads/blog/${blogs[0].feature_image}`] : [],
+      },
+      alternates: {
+        canonical: currentPage > 1 ? `/blog?page=${currentPage}` : '/blog',
+      },
+    };
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Blog',
+      description: 'Discover the latest industry news, interviews, technologies, and resources.',
+    };
+  }
+}
+
+
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseInt(resolvedSearchParams?.page || '1', 10);
+  const baseUrl = getBaseUrl();
+
+  // Fetch blogs data at request time (SSR)
+  let blogs: Blog[] = [];
+  let totalPages = 1;
+  let totalBlogs = 0;
+  let error: string | null = null;
+
+  try {
+    const response = await blogService.getAllBlogs(currentPage);
+    
+    if (response.status === 'success' && response.data) {
+      blogs = response.data.data;
+      totalPages = response.data.last_page;
+      totalBlogs = response.data.total;
+    } else {
+      throw new Error(response.message || 'Failed to fetch blogs');
+    }
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+    console.error('❌ Error fetching blogs:', errorMessage);
+    error = errorMessage;
+  }
+
+  // If there's an error or no blogs, show 404 for invalid pages
+  if (error || (currentPage > 1 && blogs.length === 0)) {
+    notFound();
+  }
+
+  // Convert API blog data to component format
+  const convertBlogToCard = (blog: Blog) => ({
+    img: `${baseUrl}/storage/uploads/blog/${blog.feature_image}`||`/blog/Steady-formations-blog-image-1.png`, //${baseUrl}/storage/uploads/blog/${blog.feature_image}
+    alt: blog.title,
+    title: blog.title,
+    date: new Date(blog.created_at).toLocaleDateString('en-US', { 
+      day: 'numeric', 
+      month: 'short', 
+      year: 'numeric' 
+    }),
+    comments: 'Comments', // Default, can be updated from API
+    slug: blog.slug
+  });
+
+  // Get featured blog (first blog)
+  const featuredBlog = blogs.length > 0 ? convertBlogToCard(blogs[0]) : null;
+  
+  // Get small cards (remaining blogs)
+  const smallCards = blogs.slice(1, 4).map(convertBlogToCard);
+  
+  // Get latest blogs (first 3 blogs)
+  const latestBlogs = blogs.slice(0, 3).map(convertBlogToCard);
+  
+  // Get business ideas (remaining blogs)
+  const businessIdeas = blogs.slice(0, 6).map(convertBlogToCard);
+
+  // Get main blog cards (featured + small cards)
+  const mainBlogCards = featuredBlog ? [featuredBlog, ...smallCards] : smallCards;
+
+  // Generate structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Steady Formation Blog",
+    "description": "The latest industry news, interviews, technologies, and resources",
+    "url": `${baseUrl}/blog`,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Steady Formation",
+      "url": baseUrl
+    },
+    "blogPost": blogs.map(blog => ({
+      "@type": "BlogPosting",
+      "headline": blog.title,
+      "description": blog.description,
+      "url": `${baseUrl}/blog/${blog.slug}`,
+      "datePublished": blog.created_at,
+      "author": {
+        "@type": "Person",
+        "name": blog.author.name
+      },
+      "image": `${baseUrl}/storage/uploads/blog/${blog.feature_image}`,
+      "publisher": {
+        "@type": "Organization",
+        "name": "Steady Formation"
+      }
+    }))
+  };
 
   return <div>
+    {/* Structured Data for SEO */}
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(structuredData)
+      }}
+    />
+    
     <PageHeader
       title="Resources and Insights"
       subTitle="The latest industry news, interviews, technologies, and resources."
       page="Blog"
     />
     <main className="w-full max-w-[390px] md:max-w-[1512px] mx-auto min-h-screen bg-white text-black">
-
       {/* Blog Cards Section - New Design */}
       {/* Desktop/Tablet Only */}
-      <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mt-24 mb-[80px] grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 hidden md:grid">
+        <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mt-24 mb-[80px] grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 hidden md:grid">
         {/* Featured Post (Left) */}
-        <Link href={`/blog/${mainBlogCards[0].slug}`} className="bg-white rounded-xl p-0 flex flex-col cursor-pointer hover:shadow-lg transition-shadow">
-          <Image
-            url="/blog/Steady-formations-blog-image-1.png"
-            alt="Featured Blog"
-            width={400}
-            height={300}
-            className="w-full h-[400px] object-cover rounded-xl mb-6"
-          />
-          <div className="flex items-center gap-6 mb-4 px-6">
-            <span className="font-inter font-medium text-[16px] leading-[1.7] text-[#526061] flex items-center gap-2">
-              <Image url="/blog/date-icon.svg" alt="Date" width={20} height={20} className="w-5 h-5" />
-              18 Jul 2023
-            </span>
-            <span className="font-inter font-medium text-[16px] leading-[1.7] text-[#526061] flex items-center gap-2">
-              <Image url="/blog/comment-icon.svg" alt="Comments" width={20} height={20} className="w-5 h-5" />
-              Comments
-            </span>
-          </div>
-          <h2 className="px-6 mb-6 font-cabinet font-bold text-[28px] leading-[42px] tracking-[-0.5px]">Wise Spending Habits, 13 Tips for Maximizing Your Money.</h2>
-          <div className="px-6 pb-6">
-            <button
-              className="px-6 py-2 border border-gray-300 rounded-full bg-transparent text-black font-medium hover:bg-gray-100 transition"
-            >
-              Learn More
-            </button>
-          </div>
-        </Link>
+        {featuredBlog && (
+          <Link href={`/blog/${featuredBlog.slug}`} className="bg-white rounded-xl p-0 flex flex-col cursor-pointer hover:shadow-lg transition-shadow">
+            <Image
+              url={featuredBlog.img}
+              alt={featuredBlog.alt}
+              width={400}
+              height={300}
+              className="w-full h-[400px] object-cover rounded-xl mb-6"
+            />
+            <div className="flex items-center gap-6 mb-4 px-6">
+              <span className="font-inter font-medium text-[16px] leading-[1.7] text-[#526061] flex items-center gap-2">
+                <Image url="/blog/date-icon.svg" alt="Date" width={20} height={20} className="w-5 h-5" />
+                {featuredBlog.date}
+              </span>
+              <span className="font-inter font-medium text-[16px] leading-[1.7] text-[#526061] flex items-center gap-2">
+                <Image url="/blog/comment-icon.svg" alt="Comments" width={20} height={20} className="w-5 h-5" />
+                {featuredBlog.comments}
+              </span>
+            </div>
+            <h2 className="px-6 mb-6 font-cabinet font-bold text-[28px] leading-[42px] tracking-[-0.5px]">{featuredBlog.title}</h2>
+            <div className="px-6 pb-6">
+              <button
+                className="px-6 py-2 border border-gray-300 rounded-full bg-transparent text-black font-medium hover:bg-gray-100 transition"
+              >
+                Learn More
+              </button>
+            </div>
+          </Link>
+        )}
 
         {/* Other Posts (Right) */}
         <div className="flex flex-col gap-6">
@@ -212,7 +238,6 @@ export default function BlogPage() {
           ))}
         </div>
       </section>
-
       {/* Mobile Only Slider */}
       <section className="block md:hidden w-full max-w-[390px] mx-auto mt-8 mb-12 px-4">
         <MobileBlogSlider cards={mainBlogCards} />
@@ -328,41 +353,66 @@ export default function BlogPage() {
           ))}
         </div>
       </section>
-
       {/* Pagination Section */}
-      <div className="w-full flex justify-center mb-[96px] px-4 md:px-0">
-        <nav className="inline-flex items-center gap-1 rounded-md border border-[#EFF1F5] bg-white px-2 py-1 md:px-2 md:py-1">
-          <button className="flex items-center cursor-pointer gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition">
-            <span className="text-lg mr-2 md:text-lg md:mr-2">&#8592;</span> Previous
-          </button>
-          {/* Mobile: short pagination, Desktop: full pagination */}
-          <span className="flex md:hidden">
-            {[1, 2, '...'].map((item, idx) => (
-              <button
-                key={`mobile-${item}-${idx}`}
-                className={`px-3 py-2 text-sm font-medium rounded-md ${item === 1 ? 'bg-[#F9FAFB] text-[#344054]' : 'text-[#475467] hover:bg-[#F9FAFB]'} transition`}
-                disabled={item === '...'}
+      {totalPages > 1 && (
+        <div className="w-full flex justify-center mb-[96px] px-4 md:px-0">
+          <nav className="inline-flex items-center gap-1 rounded-md border border-[#EFF1F5] bg-white px-2 py-1 md:px-2 md:py-1">
+            {currentPage > 1 ? (
+              <Link 
+                href={`/blog?page=${currentPage - 1}`}
+                className="flex items-center cursor-pointer gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition"
               >
-                {item}
-              </button>
-            ))}
-          </span>
-          <span className="hidden md:flex">
-            {[1, 2, 3, '...', 8, 9, 10].map((item, idx) => (
-              <button
-                key={`desktop-${item}-${idx}`}
-                className={`px-2 py-1 text-[16px] font-medium rounded-md ${item === 1 ? 'bg-[#F9FAFB] text-[#344054]' : 'text-[#475467] hover:bg-[#F9FAFB]'} transition`}
-                disabled={item === '...'}
+                <span className="text-lg mr-2 md:text-lg md:mr-2">&#8592;</span> Previous
+              </Link>
+            ) : (
+              <span className="flex items-center gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md opacity-50 cursor-not-allowed">
+                <span className="text-lg mr-2 md:text-lg md:mr-2">&#8592;</span> Previous
+              </span>
+            )}
+            {/* Mobile: short pagination, Desktop: full pagination */}
+            <span className="flex md:hidden">
+              {Array.from({ length: Math.min(3, totalPages) }, (_, i) => i + 1).map((item) => (
+                <Link
+                  key={`mobile-${item}`}
+                  href={`/blog?page=${item}`}
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${item === currentPage ? 'bg-[#F9FAFB] text-[#344054]' : 'text-[#475467] hover:bg-[#F9FAFB]'} transition`}
+                >
+                  {item}
+                </Link>
+              ))}
+              {totalPages > 3 && <span className="px-3 py-2 text-sm text-[#475467]">...</span>}
+            </span>
+            <span className="hidden md:flex">
+              {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
+                if (totalPages <= 7) return i + 1;
+                if (currentPage <= 4) return i + 1;
+                if (currentPage >= totalPages - 3) return totalPages - 6 + i;
+                return currentPage - 3 + i;
+              }).map((item, idx) => (
+                <Link
+                  key={`desktop-${item}-${idx}`}
+                  href={`/blog?page=${item}`}
+                  className={`px-2 py-1 text-[16px] font-medium rounded-md ${item === currentPage ? 'bg-[#F9FAFB] text-[#344054]' : 'text-[#475467] hover:bg-[#F9FAFB]'} transition`}
+                >
+                  {item}
+                </Link>
+              ))}
+            </span>
+            {currentPage < totalPages ? (
+              <Link 
+                href={`/blog?page=${currentPage + 1}`}
+                className="flex items-center cursor-pointer gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition"
               >
-                {item}
-              </button>
-            ))}
-          </span>
-          <button className="flex items-center cursor-pointer gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md hover:bg-[#F9FAFB] transition">
-            Next <span className="text-lg ml-2 md:text-lg md:ml-2">&#8594;</span>
-          </button>
-        </nav>
-      </div>
+                Next <span className="text-lg ml-2 md:text-lg md:ml-2">&#8594;</span>
+              </Link>
+            ) : (
+              <span className="flex items-center gap-1 px-3 py-2 text-sm md:text-[16px] text-[#475467] font-medium rounded-md opacity-50 cursor-not-allowed">
+                Next <span className="text-lg ml-2 md:text-lg md:ml-2">&#8594;</span>
+              </span>
+            )}
+          </nav>
+        </div>
+      )}
 
       <section className="w-full max-w-[980px] lg:max-w-[1100px] xl:max-w-[1280px] mx-auto mt-[96px] mb-[130px] md:px-0">
         <div className="flex flex-col md:flex-row gap-[21px]">
@@ -409,15 +459,15 @@ export default function BlogPage() {
 }
 
 function MobileBlogSlider({ cards }: { cards: BlogCard[] }) {
-  const [current, setCurrent] = useState(0);
-  const goTo = (idx: number) => setCurrent(idx);
+  // For SSG, we'll show the first card by default
+  const current = 0;
 
   return (
     <div className="w-full">
-      <Link href={`/blog/${cards[current].slug}`} className="block cursor-pointer">
+      <Link href={`/blog/${cards[current]?.slug}`} className="block cursor-pointer">
         <Image
-          url={cards[current].img}
-          alt={cards[current].alt}
+          url={cards[current]?.img}
+          alt={cards[current]?.alt}
           width={400}
           height={300}
           className="w-full h-[220px] object-cover rounded-xl mb-4"
@@ -425,31 +475,20 @@ function MobileBlogSlider({ cards }: { cards: BlogCard[] }) {
         <div className="flex items-center gap-6 mb-2">
           <span className="font-inter font-medium text-[16px] leading-6 text-[#475467] flex items-center gap-3">
             <Image url="/blog/date-icon.svg" alt="Date" width={20} height={20} className="w-5 h-5" />
-            {cards[current].date}
+            {cards[current]?.date}
           </span>
           <span className="font-inter font-medium text-[16px] leading-6 text-[#475467] flex items-center gap-3">
             <Image url="/blog/comment-icon.svg" alt="Comments" width={20} height={20} className="w-5 h-5" />
-            {cards[current].comments}
+            {cards[current]?.comments}
           </span>
         </div>
         <h3 className="font-inter font-bold text-[20px] leading-[30px] text-[#081717] mt-2 mb-6">
-          {cards[current].title}
+          {cards[current]?.title}
         </h3>
       </Link>
       <button className="w-full bg-white text-[#6C3EF5] font-medium rounded-md px-6 py-3 mb-10 shadow hover:bg-[#f3f0ff] transition">
         Book A Free Call
       </button>
-      <div className="flex justify-center gap-2">
-        {cards.map((_, idx: number) => (
-          <button
-            key={idx}
-            className={`w-2 h-2 rounded-full ${idx === current ? 'bg-[#6C3EF5]' : 'bg-[#E4E7EC]'} transition`}
-            style={{ outline: 'none', border: 'none' }}
-            onClick={() => goTo(idx)}
-            aria-label={`Go to slide ${idx + 1}`}
-          />
-        ))}
-      </div>
     </div>
   );
 }

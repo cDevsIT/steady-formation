@@ -63,7 +63,11 @@ export const CompanyProvider: React.FC<CompanyProviderProps> = ({ children }) =>
             
             const token = localStorage.getItem('auth_token');
             if (!token) {
-                throw new Error('Authentication token not found');
+                // If no token, just set empty state and stop loading
+                setCompanies([]);
+                setSelectedCompany(null);
+                setLoading(false);
+                return;
             }
 
             const response = await fetch(`${API_CONFIG.BASE_URL}/user/companies`, {
@@ -112,6 +116,9 @@ export const CompanyProvider: React.FC<CompanyProviderProps> = ({ children }) =>
         } catch (err: any) {
             setError(err.message);
             console.error('Error fetching companies:', err);
+            // Set empty state on error
+            setCompanies([]);
+            setSelectedCompany(null);
         } finally {
             setLoading(false);
         }
