@@ -12,7 +12,7 @@ const Rating: React.FC<CustomeRatingProps> = ({
     maxWidth = true
 }) => {
     return (
-        <div className={`flex justify-center items-center bg-white ${maxWidth && 'max-w-[413px]'}  p-[35px] rounded-b-[24px] rounded-t-[24px]  ${radius && 'lg:rounded-t-[24px] lg:rounded-b-[0px]'} ${className}`}>
+        <div className={`flex justify-center items-center bg-white ${maxWidth && 'max-w-[450px]'}  p-[35px] rounded-b-[24px] rounded-t-[24px]  ${radius && 'lg:rounded-t-[24px] lg:rounded-b-[0px]'} ${className}`}>
             <Image
                 className="w-[35px]"
                 url='/icons/leaf_left.svg'
@@ -23,14 +23,7 @@ const Rating: React.FC<CustomeRatingProps> = ({
             <h2 className="text-[72px] leading-[90px]"> 4.8 </h2>
 
             <div className="ml-[6px]">
-                <Image
-                    className="w-[121px]"
-                    url='/icons/rating_stars.svg'
-                    alt='Rating Stars'
-                    width={130}
-                    height={25}
-                />
-                <span className="text-[17px] leading-[26px]">502 reviews</span>
+                <span className="text-[17px] leading-[26px]">Reviews Base on <br/>1000+ Satisfied Clients</span>
             </div>
 
             <Image

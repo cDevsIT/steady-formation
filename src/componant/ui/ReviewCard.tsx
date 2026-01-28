@@ -118,11 +118,11 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                 </div>
 
                 {/* Customer Info Section */}
-                <div className="p-6 flex-1 flex flex-col justify-center">
+                {/* <div className="p-6 flex-1 flex flex-col justify-center">
                     <div className="space-y-3">
                         {getReviewTypeIcon()}
                     </div>
-                </div>
+                </div> */}
             </article>
         );
     }
@@ -152,9 +152,9 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
                 </div>
 
                 {/* Rating and Platform */}
-                <div className="pt-2 border-t border-gray-100 mt-auto">
+                {/* <div className="pt-2 border-t border-gray-100 mt-auto">
                     {getReviewTypeIcon()}
-                </div>
+                </div> */}
             </div>
         </article>
     );
