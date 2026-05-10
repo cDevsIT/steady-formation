@@ -102,7 +102,7 @@ const CompanyVerificationModal: React.FC<CompanyVerificationModalProps> = ({
                   onClick={onViewFormationPackages}
                   className="w-full bg-gray-700 text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-600 transition-colors duration-200"
                 >
-                  View Formation Packages
+                  Form a company
                 </button>
               </div>
             </div>

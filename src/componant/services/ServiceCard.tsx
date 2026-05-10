@@ -1,6 +1,8 @@
 'use client'
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import CompanyVerificationModal from './CompanyVerificationModal';
+import companyFormationService from '@/lib/companyFormationService';
 
 interface ServiceFeature {
   text: string;
@@ -19,6 +21,7 @@ export interface ServiceCardData {
 }
 
 const ServiceCard: React.FC<{ service: ServiceCardData }> = ({ service }) => {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOrderNow = () => {
@@ -33,8 +36,10 @@ const ServiceCard: React.FC<{ service: ServiceCardData }> = ({ service }) => {
 
   const handleViewFormationPackages = () => {
     setIsModalOpen(false);
-    // Here you would typically redirect to the formation packages page
-    console.log('View formation packages');
+    // Drop the visitor into the formation funnel at step 1 (FirstFunnel),
+    // where they enter the company name — same entry point as the home page flow.
+    companyFormationService.saveToLocalStorage({ currentStep: 1 });
+    router.push('/setup-company');
   };
 
   return (
