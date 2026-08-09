@@ -144,3 +144,55 @@ button:active {
   line-height: 1.6;
 }
 
+/* Policy / legal page content */
+.policy-content h2 {
+  color: #101828;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  margin-top: 40px;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.policy-content h3 {
+  color: #101828;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.policy-content p {
+  margin-bottom: 16px;
+}
+
+.policy-content ul {
+  margin-bottom: 16px;
+}
+
+.policy-content strong {
+  color: #101828;
+  font-weight: 600;
+}
+
+.policy-content .policy-address {
+  display: block;
+  font-style: normal;
+  margin-bottom: 16px;
+  line-height: 1.7;
+}
+
+@media (min-width: 768px) {
+  .policy-content h2 {
+    font-size: 30px;
+    line-height: 38px;
+  }
+
+  .policy-content h3 {
+    font-size: 20px;
+    line-height: 30px;
+  }
+}
+

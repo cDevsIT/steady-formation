@@ -3,6 +3,7 @@ import { sampleReviews } from '../../data/review';
 import Button from '../../ui/Button';
 import { useEffect, useState } from 'react';
 import Image from '@/componant/ui/Image';
+import ReviewAvatar from '@/componant/ui/ReviewAvatar';
 import Rating from '@/componant/shared/Rating';
 import companyFormationService, { useCompanyFormationData, CompanyFormationData } from '@/lib/companyFormationService';
 import { FunnelSidebarHeaderText } from '@/lib/funnelSidebarHeaderText';
@@ -78,11 +79,24 @@ const FunnelSidebar: React.FC<FunnelSidebarProps> = ({ currentFormState }) => {
     // Custom review card
     const ReviewCardCustom = ({ review }: { review: any }) => (
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3 max-w-[451px]">
-            <Image className='max-w-[112px]' url={`${review.type === 'trustpilot' ? '/icons/rating_stars.svg' : '/icons/google_review.svg'}`} alt="stars" width={60} height={16} />
+            {(review.type === 'trustpilot' || review.type === 'google') && (
+                <Image
+                    className="max-w-[112px]"
+                    url={review.type === 'trustpilot' ? '/icons/rating_stars.svg' : '/icons/google_review.svg'}
+                    alt="stars"
+                    width={60}
+                    height={16}
+                />
+            )}
             <p className="text-[#000000] text-[14px] mb-2 text-start">{review.description}</p>
 
             <div className='flex justify-start items-center gap-3'>
-                <Image url={review.profileImage} alt={review.name} width={40} height={40} className="!w-[44px] rounded-full border-2 border-gray-100" />
+                <ReviewAvatar
+                    name={review.name}
+                    profileImage={review.profileImage}
+                    className="!h-11 !w-11 !min-h-11 !min-w-11 text-[13px]"
+                    imageClassName="!h-11 !w-11 !min-h-11 !min-w-11"
+                />
                 <h4 className='text-[#000000] text-[14px] font-bold'>{review.name}</h4>
             </div>
         </div>

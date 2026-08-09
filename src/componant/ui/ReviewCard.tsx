@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Review } from '@/types/review';
 import Image from './Image';
+import ReviewAvatar from './ReviewAvatar';
 
 interface ReviewCardProps {
     review: Review;
@@ -62,19 +63,15 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
             case 'video':
                 return (
                     <div className="flex items-start gap-4 mb-4">
-                        <Image
-                            className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
-                            url={review.profileImage}
-                            alt={`${review.name}'s profile`}
-                            width={55}
-                            height={55}
-                        />
+                        <ReviewAvatar name={review.name} profileImage={review.profileImage} />
                         <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-gray-900 text-sm">{review.name}</h3>
                             <p className="text-gray-600 text-sm">{review.position}</p>
                         </div>
                     </div>
                 );
+            case 'text':
+                return null;
             default:
                 return <div className="flex"></div>;
         }
@@ -131,13 +128,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
         <article className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1 relative h-full flex flex-col">
             {/* Header with Profile */}
             <header className="flex items-start gap-4 mb-4">
-                <Image
-                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
-                    url={review.profileImage}
-                    alt={`${review.name}'s profile`}
-                    width={55}
-                    height={55}
-                />
+                <ReviewAvatar name={review.name} profileImage={review.profileImage} />
                 <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-gray-900 text-sm">{review.name}</h3>
                     <p className="text-gray-600 text-sm">{review.position}</p>

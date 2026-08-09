@@ -11,13 +11,13 @@ export default function Footer() {
     const hideHeaderFooter = pathname.startsWith('/login') || pathname.startsWith('/sign-up');
 
     const links = [
-        { name: 'Contact Us', href: '/contact-us' },
-        { name: 'Services', href: '/services'},
-        { name: 'Blog', href: '/blog' },
+        // { name: 'Contact Us', href: '/contact-us' },
+        // { name: 'Services', href: '/services'},
+        // { name: 'Blog', href: '/blog' },
         // { name: 'About Us', href: '/about' },
-        { name: 'Terms of Use', href: '' },
-        { name: 'Privacy Policy', href: '' },
-        // { name: 'Refund Policy', href: '#' },
+        { name: 'Terms of Service', href: '/terms' },
+        { name: 'Privacy Policy', href: '/privacy' },
+        { name: 'Refund Policy', href: '/refund-policy' },
     ];
 
     const socialLinks = [
@@ -137,7 +137,7 @@ export default function Footer() {
                                 Privacy Policy
                             </Link>
                             <Link href="/terms" className="text-black block text-sm hover:text-purple-600 transition-colors whitespace-nowrap">
-                                Terms of Use
+                                Terms of Service
                             </Link>
                         </div>
                     </div>

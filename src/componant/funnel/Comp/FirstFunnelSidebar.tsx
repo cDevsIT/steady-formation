@@ -5,8 +5,8 @@ const FirstFunnelSidebar = () => {
         <div className="max-w-[565px] min-h-[677px] bg-white rounded-3xl hidden lg:block pr-4">
             <div className="grid grid-cols-[70%_30%] bg-gray-100">
                 <div className="flex flex-col gap-4 rounded-br-3xl pl-10 pb-4 bg-white align-middle">
-                    <Image url='/icons/rating_stars.svg' alt='Trust Pilot' width={105} height={20} className="w-[105px]" />
-                    <p className="text-sm font-normal text-black">Their operating agreement service was on point my business setup process was smoother than expected team really know their job very happy.</p>
+                    {/* <Image url='/icons/rating_stars.svg' alt='Trust Pilot' width={105} height={20} className="w-[105px]" /> */}
+                    <p className="text-sm font-normal text-black mt-3">Their operating agreement service was on point my business setup process was smoother than expected team really know their job very happy.</p>
                     <div className="flex justify-start items-center gap-4">
                         <Image url='/icons/rating_avatar.svg' alt='Trust Pilot' width={41} height={41} className="w-[41px]" />
                         <p className="text-sm font-semibold text-black">Daniel Romero</p>

@@ -1,6 +1,6 @@
 export interface Review {
     id: string;
-    type: 'trustpilot' | 'google' | 'video';
+    type: 'trustpilot' | 'google' | 'video' | 'text';
     profileImage: string;
     name: string;
     position: string;
