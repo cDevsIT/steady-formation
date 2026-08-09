@@ -22,7 +22,6 @@ export default function Footer() {
 
     const socialLinks = [
         { name: 'Facebook', icon: '/icons/facebook.svg', href: 'https://facebook.com/steadyformation' },
-        { name: 'Skype', icon: '/icons/skype.svg', href: 'https://skype.com/steadyformation' },
         { name: 'Instagram', icon: '/icons/instagram-icon.svg', href: 'https://instagram.com/steadyformation' },
         { name: 'Linkedin', icon: '/icons/linkedin.svg', href: 'https://linkedin.com/company/steadyformation' },
     ];
@@ -92,7 +91,7 @@ export default function Footer() {
                             </div>
                             <div className="flex items-center gap-3">
                                 <Image className='h-4 w-4 mt-0.5 flex-shrink-0' url='/icons/call.svg' alt='Call' />
-                                <span className="text-[16px] font-medium text-black"><a href="tel:+13074001051">+1 (307) 400-1051</a></span>
+                                <span className="text-[16px] font-medium text-black"><a href="tel:+13074001666">+1 (307) 400-1666</a></span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <Image className='h-4 w-4 mt-0.5 flex-shrink-0' url='/icons/mail.svg' alt='Mail' />
